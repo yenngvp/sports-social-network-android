@@ -16,3 +16,6 @@
 ### Tasks management ###
 
 * https://trello.com/b/kuPhejLD/c-ng-d-ng-th-thao
+
+### Firebase project ###
+* https://console.firebase.google.com/project/project-4260171669835038324/overview
