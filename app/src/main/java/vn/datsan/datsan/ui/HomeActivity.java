@@ -3,6 +3,9 @@ package vn.datsan.datsan.ui;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
+import com.firebase.client.Firebase;
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -11,6 +14,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import vn.datsan.datsan.R;
+import vn.datsan.datsan.utils.Constants;
 
 public class HomeActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -41,8 +45,13 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
+        LatLng sydney = new LatLng(10.777098, 106.695487);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+        GeoFire geoFire = new GeoFire(new Firebase(Constants.FIREBASE_URL));
+
+        geoFire.setLocation("mycity", new GeoLocation(10.777098, 106.695487));
+
     }
 }
