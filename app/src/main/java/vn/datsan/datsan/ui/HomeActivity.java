@@ -1,4 +1,4 @@
-package vn.datsan.datsan;
+package vn.datsan.datsan.ui;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -9,6 +9,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import vn.datsan.datsan.R;
 
 public class HomeActivity extends FragmentActivity implements OnMapReadyCallback {
 
