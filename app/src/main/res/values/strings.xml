@@ -25,5 +25,6 @@
     <string name="address">Địa chỉ </string>
     <string name="birthday">Ngày sinh </string>
     <string name="sex">Giới tính </string>
+    <string name="register">Đăng ký </string>
 
 </resources>

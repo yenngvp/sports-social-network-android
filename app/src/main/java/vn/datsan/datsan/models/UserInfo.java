@@ -17,6 +17,7 @@ public class UserInfo {
     private Location location;
     private float rate;
 
+
     public String getFullName() {
         return fullName;
     }
