@@ -23,7 +23,7 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_main);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -49,9 +49,9 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
-        GeoFire geoFire = new GeoFire(new Firebase(Constants.FIREBASE_URL));
-
-        geoFire.setLocation("mycity", new GeoLocation(10.777098, 106.695487));
+//        GeoFire geoFire = new GeoFire(new Firebase(Constants.FIREBASE_URL));
+//
+//        geoFire.setLocation("mycity", new GeoLocation(10.777098, 106.695487));
 
     }
 }
