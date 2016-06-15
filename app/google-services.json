@@ -1,35 +1,27 @@
 {
   "project_info": {
-    "project_number": "76602369431",
-    "firebase_url": "https://project-3047399696855580640.firebaseio.com",
-    "project_id": "project-3047399696855580640",
-    "storage_bucket": "project-3047399696855580640.appspot.com"
+    "project_number": "258279741690",
+    "firebase_url": "https://social-sport-b1cff.firebaseio.com",
+    "project_id": "social-sport-b1cff",
+    "storage_bucket": "social-sport-b1cff.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:76602369431:android:a2e5320a3b184ccd",
+        "mobilesdk_app_id": "1:258279741690:android:a2e5320a3b184ccd",
         "android_client_info": {
           "package_name": "vn.datsan.datsan"
         }
       },
       "oauth_client": [
         {
-          "client_id": "76602369431-llanpfa2j8rfhpotmc56l5khbotkrt8r.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "vn.datsan.datsan",
-            "certificate_hash": "35D65C7F1BE83E74B734146C5BAB9AE30A3A05A7"
-          }
-        },
-        {
-          "client_id": "76602369431-j3u5c519ploid5samgmoggvprdhgc0p1.apps.googleusercontent.com",
+          "client_id": "258279741690-gtqm8lm2ns96vo0mcpv0jfvkeucqlaa6.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDm4UOiOuawaqaXE-cWHzo3lgw1KqnuCHw"
+          "current_key": "AIzaSyBd-Oyy5feApv28HTQbQutMvQtXVq_SCA0"
         }
       ],
       "services": {
