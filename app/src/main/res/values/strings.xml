@@ -6,6 +6,7 @@
     <!-- Strings related to login -->
     <string name="prompt_email">Số điện thoại</string>
     <string name="prompt_password">Mật khẩu</string>
+    <string name="prompt_repassword">Nhập lại mật khẩu</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
@@ -26,5 +27,6 @@
     <string name="birthday">Ngày sinh </string>
     <string name="sex">Giới tính </string>
     <string name="register">Đăng ký </string>
+    <string name="title_activity_profile">ProfileActivity</string>
 
 </resources>

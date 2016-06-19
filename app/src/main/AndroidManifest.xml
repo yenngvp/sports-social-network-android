@@ -37,7 +37,7 @@
 
         <activity
             android:name=".ui.HomeActivity"
-            android:label="@string/title_activity_home"></activity>
+            android:label="@string/title_activity_home" />
         <activity
             android:name=".activities.LoginActivity"
             android:label="@string/title_activity_login"
@@ -51,7 +51,11 @@
         </activity>
         <activity
             android:name=".activities.NewAccountActivity"
-            android:label="@string/title_activity_new_account"></activity>
+            android:label="@string/title_activity_new_account" />
+        <activity
+            android:name=".activities.ProfileActivity"
+            android:label="@string/title_activity_profile"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
