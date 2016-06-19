@@ -4,5 +4,5 @@
         android:color="@android:color/holo_blue_dark"/> <!-- pressed -->
     <item android:state_focused="true"
         android:color="@android:color/holo_blue_light"/> <!-- focused -->
-    <item android:color="@android:color/white"/> <!-- default -->
+    <item android:color="@color/blueSea"/> <!-- default -->
 </selector>
