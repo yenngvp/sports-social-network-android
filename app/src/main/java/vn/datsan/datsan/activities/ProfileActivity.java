@@ -15,6 +15,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import vn.datsan.datsan.R;
 import vn.datsan.datsan.models.User;
+import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.serverdata.UserManager;
 import vn.datsan.datsan.ui.customwidgets.SimpleProgress;
 
@@ -54,7 +55,7 @@ public class ProfileActivity extends AppCompatActivity {
         UserManager.getInstance().getUser(userId, profileFetchCallBack);
     }
 
-    UserManager.OnResultReceivedListener profileFetchCallBack = new UserManager.OnResultReceivedListener() {
+    CallBack.OnResultReceivedListener profileFetchCallBack = new CallBack.OnResultReceivedListener() {
         @Override
         public void onResultReceived(Object result) {
             SimpleProgress.dismiss();

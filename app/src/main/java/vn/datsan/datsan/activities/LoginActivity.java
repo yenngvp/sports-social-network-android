@@ -38,6 +38,10 @@ public class LoginActivity extends AppCompatActivity {
     EditText passwordEdt;
     @BindView(R.id.email_sign_in_button)
     Button signInBtn;
+    @BindView(R.id.loginFbBtn)
+    Button loginByFB;
+    @BindView(R.id.loginGgBtn)
+    Button loginByGG;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,13 +69,16 @@ public class LoginActivity extends AppCompatActivity {
     @OnClick(R.id.email_sign_in_button)
     public void signIn() {
         attemptLogin();
+    }
 
+    @OnClick(R.id.loginGgBtn)
+    public void signInGG() {
 
-//        User user = new User();
-//        user.setEmail("abc@gmail.com");
-//        user.setName("Mr.A");
-//        user.setPhone("01662583067");
-//        UserManager.getInstance().addUser(user);
+    }
+
+    @OnClick(R.id.loginFbBtn)
+    public void signInFB() {
+
     }
 
     /**

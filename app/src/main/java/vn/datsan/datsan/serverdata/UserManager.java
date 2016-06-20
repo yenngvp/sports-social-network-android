@@ -17,11 +17,11 @@ import vn.datsan.datsan.utils.XLog;
  */
 public class UserManager {
     private static UserManager instance;
-    private final String databaseUrl = "https://social-sport-b1cff.firebaseio.com/app/users";
+    private final String _Database_Url = "https://social-sport-b1cff.firebaseio.com/app/users";
     private Firebase userNode; // location
 
     private  UserManager() {
-        userNode = new Firebase(databaseUrl);
+        userNode = new Firebase(_Database_Url);
     }
 
     public static UserManager getInstance() {
@@ -48,7 +48,7 @@ public class UserManager {
 //        userNode.updateChildren(map);
 //    }
 
-    public void getUser(String id, final OnResultReceivedListener callBack) {
+    public void getUser(String id, final CallBack.OnResultReceivedListener callBack) {
         userNode.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -65,9 +65,5 @@ public class UserManager {
                     callBack.onResultReceived(null);
             }
         });
-    }
-
-    public interface OnResultReceivedListener {
-        void onResultReceived(Object result);
     }
 }
