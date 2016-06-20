@@ -21,6 +21,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import vn.datsan.datsan.R;
+import vn.datsan.datsan.models.User;
+import vn.datsan.datsan.serverdata.UserManager;
 
 /**
  * A login screen that offers login via email/password.
@@ -61,7 +63,14 @@ public class LoginActivity extends AppCompatActivity {
 
     @OnClick(R.id.email_sign_in_button)
     public void signIn() {
-        attemptLogin();
+//        attemptLogin();
+
+
+        User user = new User();
+        user.setEmail("abc@gmail.com");
+        user.setName("Mr.A");
+        user.setPhone("01662583067");
+        UserManager.getInstance().addUser(user);
     }
 
     /**
@@ -128,6 +137,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onForgotBtnClicked(View view) {
 
+        UserManager.getInstance().getUser("01662583067");
     }
 
     public void onNewAccountBtnClicked(View view) {

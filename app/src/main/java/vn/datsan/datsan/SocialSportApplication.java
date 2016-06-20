@@ -13,6 +13,6 @@ public class SocialSportApplication extends android.app.Application {
         /* Initialize Firebase */
         Firebase.setAndroidContext(this);
         /* Enable disk persistence  */
-        Firebase.getDefaultConfig().setPersistenceEnabled(true);
+        //Firebase.getDefaultConfig().setPersistenceEnabled(true);
     }
 }
