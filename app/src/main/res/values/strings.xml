@@ -31,5 +31,11 @@
     <string name="register">Đăng ký </string>
     <string name="title_activity_profile">ProfileActivity</string>
     <string name="in_progress">Đang xử lý</string>
+    <string name="title_activity_main_screen">MainScreenActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
 
 </resources>
