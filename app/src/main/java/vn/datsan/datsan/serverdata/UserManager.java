@@ -31,12 +31,22 @@ public class UserManager {
         return instance;
     }
 
-    public void addUser(User user) {
-        Map<String, User> map = new HashMap<>();
-        map.put(user.getPhone(), user);
-
-        userNode.setValue(map);
+    private String genIden(User user) {
+        return user.getPhone();
     }
+
+    public void addUser(User user) {
+        //Map<String, User> map = new HashMap<>();
+        //map.put(genIden(user), user);
+
+        userNode.child(genIden(user)).setValue(user);
+    }
+
+//    public void updateUser(User user) {
+//        Map<String, User> map = new HashMap<>();
+//        map.put(genIden(user), user);
+//        userNode.updateChildren(map);
+//    }
 
     public void getUser(String id) {
         userNode.child(id).addListenerForSingleValueEvent(new ValueEventListener() {

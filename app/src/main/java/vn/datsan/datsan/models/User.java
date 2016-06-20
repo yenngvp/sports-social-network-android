@@ -8,18 +8,16 @@ import java.util.Date;
  * Created by xuanpham on 6/13/16.
  */
 public class User {
+    private long id;
     private String name;
     private String email;
     private String phone;
+    private String address;
+    private String groups;
+    private String location;
 
     public User() {
 
-    }
-
-    public User(String name, String email, String phone) {
-        this.name = name;
-        this.email = email;
-        this.phone = phone;
     }
 
     public String getName() {
@@ -44,5 +42,29 @@ public class User {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getGroups() {
+        return groups;
+    }
+
+    public void setGroups(String groups) {
+        this.groups = groups;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 }
