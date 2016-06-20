@@ -48,18 +48,26 @@ public class UserManager {
 //        userNode.updateChildren(map);
 //    }
 
-    public void getUser(String id) {
+    public void getUser(String id, final OnResultReceivedListener callBack) {
         userNode.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
-                XLog.log(user.getEmail());
+                XLog.log("Hello " + user.getName());
+                if (callBack != null)
+                    callBack.onResultReceived(user);
             }
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
                 XLog.log(firebaseError.getMessage());
+                if (callBack != null)
+                    callBack.onResultReceived(null);
             }
         });
+    }
+
+    public interface OnResultReceivedListener {
+        void onResultReceived(Object result);
     }
 }

@@ -21,8 +21,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import vn.datsan.datsan.R;
-import vn.datsan.datsan.models.User;
 import vn.datsan.datsan.serverdata.UserManager;
+import vn.datsan.datsan.setting.UserDefine;
+import vn.datsan.datsan.ui.customwidgets.SimpleProgress;
 
 /**
  * A login screen that offers login via email/password.
@@ -31,8 +32,8 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     // UI references.
 
-    @BindView(R.id.email)
-    EditText emailEdt;
+    @BindView(R.id.phoneNumber)
+    EditText phoneEdt;
     @BindView(R.id.password)
     EditText passwordEdt;
     @BindView(R.id.email_sign_in_button)
@@ -63,14 +64,14 @@ public class LoginActivity extends AppCompatActivity {
 
     @OnClick(R.id.email_sign_in_button)
     public void signIn() {
-//        attemptLogin();
+        attemptLogin();
 
 
-        User user = new User();
-        user.setEmail("abc@gmail.com");
-        user.setName("Mr.A");
-        user.setPhone("01662583067");
-        UserManager.getInstance().addUser(user);
+//        User user = new User();
+//        user.setEmail("abc@gmail.com");
+//        user.setName("Mr.A");
+//        user.setPhone("01662583067");
+//        UserManager.getInstance().addUser(user);
     }
 
     /**
@@ -81,11 +82,11 @@ public class LoginActivity extends AppCompatActivity {
     private void attemptLogin() {
 
         // Reset errors.
-        emailEdt.setError(null);
+        phoneEdt.setError(null);
         passwordEdt.setError(null);
 
         // Store values at the time of the login attempt.
-        String email = emailEdt.getText().toString();
+        String phone = phoneEdt.getText().toString();
         String password = passwordEdt.getText().toString();
 
         // Check for a valid password, if the user entered one.
@@ -94,20 +95,26 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            emailEdt.setError(getString(R.string.error_field_required));
-        } else if (!isEmailValid(email)) {
-            emailEdt.setError(getString(R.string.error_invalid_email));
+        if (TextUtils.isEmpty(phone)) {
+            phoneEdt.setError(getString(R.string.error_field_required));
+        } else if (!isPhoneNumberValid(phone)) {
+            phoneEdt.setError(getString(R.string.error_invalid_email));
         }
 
-        login(email + "@gmail.com", password);
+        login(phone, password);
     }
 
-    private void login(String email, String password) {
+    private void login(final String phone, String password) {
+        SimpleProgress.show(LoginActivity.this);
+
+        String email = phone + UserDefine._Default_Email_Sufix;
+
         firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
+                        SimpleProgress.dismiss();
+
                         Log.d("TAG", "signInWithEmail:onComplete:" + task.isSuccessful());
 
                         // If sign in fails, display a message to the user. If sign in succeeds
@@ -120,14 +127,18 @@ public class LoginActivity extends AppCompatActivity {
                         } else {
                             Toast.makeText(LoginActivity.this, "Login Successful !",
                                     Toast.LENGTH_SHORT).show();
+
+                            Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
+                            intent.putExtra("id", phone);
+                            startActivity(intent);
                         }
                     }
                 });
     }
 
-    private boolean isEmailValid(String email) {
+    private boolean isPhoneNumberValid(String phone) {
         //TODO: Replace this with your own logic
-        return true;//email.contains("@");
+        return phone.startsWith("0");// && phone.length() > 8 && phone.length() < 12;
     }
 
     private boolean isPasswordValid(String password) {
@@ -137,7 +148,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onForgotBtnClicked(View view) {
 
-        UserManager.getInstance().getUser("01662583067");
+       // UserManager.getInstance().getUser("01662583067");
     }
 
     public void onNewAccountBtnClicked(View view) {

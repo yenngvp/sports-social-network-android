@@ -5,17 +5,18 @@
 
     <!-- Strings related to login -->
     <string name="prompt_email">Số điện thoại</string>
+    <string name="prompt_email_or_phone">Số điện thoại (Hoặc email)</string>
     <string name="prompt_password">Mật khẩu</string>
     <string name="prompt_repassword">Nhập lại mật khẩu</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_phone">This phone number is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
+    <string name="permission_rationale">Contacts permissions are needed for providing email </string>
+    <string name="wrong_fill_data">Dữ liệu nhập không đúng</string>
 
     <!-- Login-->
     <string name="forget_pwd"><u>Quên mật khẩu?</u></string>
@@ -23,10 +24,12 @@
     <string name="title_activity_new_account">Tạo tài khoản mới</string>
     <string name="full_name">Tên đầy đủ </string>
     <string name="nick_name">Biệt danh </string>
+    <string name="email">Email </string>
     <string name="address">Địa chỉ </string>
     <string name="birthday">Ngày sinh </string>
     <string name="sex">Giới tính </string>
     <string name="register">Đăng ký </string>
     <string name="title_activity_profile">ProfileActivity</string>
+    <string name="in_progress">Đang xử lý</string>
 
 </resources>

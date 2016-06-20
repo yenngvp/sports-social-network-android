@@ -5,29 +5,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/blueSea"
+    android:background="@color/blueBg"
     android:padding="5dp"
     tools:context="vn.datsan.datsan.activities.ProfileActivity">
 
     <ImageView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:scaleType="fitCenter"
         android:adjustViewBounds="true"
-        android:src="@android:drawable/star_big_on"/>
+        android:src="@drawable/avatar"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="10dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:background="@color/blueBg"
+        android:background="@android:color/holo_green_dark"
         android:orientation="vertical">
 
-
-
         <TextView
+            android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="POGBA"
@@ -36,12 +34,42 @@
             android:textSize="20sp"/>
 
         <TextView
+            android:id="@+id/years"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="22 years"
             android:gravity="center_horizontal"
             android:textColor="@android:color/holo_blue_bright"
             android:textSize="20sp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Dia chi : Hang Xanh, tp.Hcm"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"/>
+            <TextView
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Email   : abcxyz@socialsportvn.com"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"/>
+            <TextView
+                android:id="@+id/fc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="FC   : Crazy Bull"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"/>
+
+        </LinearLayout>
     </LinearLayout>
 
 

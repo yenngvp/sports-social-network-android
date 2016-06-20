@@ -19,6 +19,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import vn.datsan.datsan.R;
+import vn.datsan.datsan.models.User;
+import vn.datsan.datsan.serverdata.UserManager;
+import vn.datsan.datsan.setting.UserDefine;
 
 /**
  * A login screen that offers login via email/password.
@@ -28,7 +31,13 @@ public class NewAccountActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
 
     // UI references.
+    @BindView(R.id.fullNameEdt)
+    EditText nameEdt;
+    @BindView(R.id.addressEdt)
+    EditText addressEdt;
     @BindView(R.id.phoneNumber)
+    EditText phoneEdt;
+    @BindView(R.id.emailEdt)
     EditText emailEdt;
     @BindView(R.id.password)
     EditText pwdEdt;
@@ -75,11 +84,16 @@ public class NewAccountActivity extends AppCompatActivity {
         // Reset errors.
         emailEdt.setError(null);
         pwdEdt.setError(null);
+        rePwdEdt.setError(null);
+        nameEdt.setError(null);
+        phoneEdt.setError(null);
 
         // Store values at the time of the login attempt.
+        String name = nameEdt.getText().toString();
         String email = emailEdt.getText().toString();
         String password = pwdEdt.getText().toString();
         String repassword = pwdEdt.getText().toString();
+        String phoneNumber = phoneEdt.getText().toString();
 
         // Check for a valid password, if the user entered one.
         if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
@@ -89,17 +103,23 @@ public class NewAccountActivity extends AppCompatActivity {
             rePwdEdt.setError("Password not match !!!");
         }
 
+        if (phoneNumber == null || phoneNumber.isEmpty()) {
+            phoneEdt.setError("couldn't empty");
+        }
+
         // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            emailEdt.setError(getString(R.string.error_field_required));
-        } else if (!isEmailValid(email)) {
+        if (email != null && !isEmailValid(email)) {
             emailEdt.setError(getString(R.string.error_invalid_email));
         }
 
-        createAccount(email + "@gmail.com", password);
+        User user = new User(name, email, phoneNumber, addressEdt.getText().toString(), null, null);
+        createAccount(user, password);
     }
 
-    private void createAccount(String email, String password) {
+    private void createAccount(final User user, String password) {
+
+        String email = user.getPhone() + UserDefine._Default_Email_Sufix;
+
         firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -112,9 +132,9 @@ public class NewAccountActivity extends AppCompatActivity {
                         if (!task.isSuccessful()) {
                             Toast.makeText(NewAccountActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
+                        } else {
+                            UserManager.getInstance().addUser(user);
                         }
-
-                        // ...
                     }
                 });
     }

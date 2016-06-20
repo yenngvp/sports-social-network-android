@@ -52,10 +52,10 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/nickNameEdt"
+                    android:id="@+id/addressEdt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/nick_name"
+                    android:hint="@string/address"
                     android:imeActionId="@+id/login"
                     android:imeActionLabel="@string/action_sign_in_short"
                     android:imeOptions="actionUnspecified"
@@ -69,10 +69,10 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/addressEdt"
+                    android:id="@+id/emailEdt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/address"
+                    android:hint="@string/email"
                     android:imeActionId="@+id/login"
                     android:imeActionLabel="@string/action_sign_in_short"
                     android:imeOptions="actionUnspecified"

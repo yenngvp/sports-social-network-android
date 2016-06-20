@@ -8,7 +8,6 @@ import java.util.Date;
  * Created by xuanpham on 6/13/16.
  */
 public class User {
-    private long id;
     private String name;
     private String email;
     private String phone;
@@ -16,8 +15,15 @@ public class User {
     private String groups;
     private String location;
 
-    public User() {
+    public User() {}
 
+    public User(String name, String email, String phone, String address, String groups, String location) {
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+        this.address = address;
+        this.groups = groups;
+        this.location = location;
     }
 
     public String getName() {
