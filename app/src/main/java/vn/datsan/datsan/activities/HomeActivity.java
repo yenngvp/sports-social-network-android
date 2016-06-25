@@ -8,14 +8,17 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.EditText;
 
 import com.firebase.client.Firebase;
 import com.firebase.geofire.GeoFire;
@@ -27,17 +30,23 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import vn.datsan.datsan.R;
 import vn.datsan.datsan.utils.Constants;
+import vn.datsan.datsan.utils.XLog;
 
 public class HomeActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
 
     private GoogleMap mMap;
+    @BindView(R.id.searchResultView)
+    View searchResultView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
+        ButterKnife.bind(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -115,6 +124,89 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_screen, menu);
+        XLog.log("onCreateOptionMenu");
+        MenuItem itemSearch = menu.findItem(R.id.mapview_menu_search);
+
+    final SearchView searchView = (SearchView) MenuItemCompat.getActionView(itemSearch);
+    EditText searchEdit = ((EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text));
+    searchEdit.setFocusable(true);
+    searchEdit.setFocusableInTouchMode(true);
+    searchEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        @Override
+        public void onFocusChange(View v, boolean hasFocus) {
+            XLog.log("OnFocusChanged");
+            if (hasFocus) {
+                searchResultView.setVisibility(View.VISIBLE);
+            } else {
+                searchResultView.setVisibility(View.GONE);
+            }
+        }
+    });
+
+    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        @Override
+        public boolean onQueryTextSubmit(String query) {
+            XLog.log(query);
+            return false;
+        }
+
+        @Override
+        public boolean onQueryTextChange(String newText) {
+            XLog.log(newText);
+            return false;
+        }
+    });
+
+    searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+        @Override
+        public void onFocusChange(View v, boolean hasFocus) {
+            XLog.log("OnQueryTextFocusChange");
+        }
+    });
+    searchView.setOnSearchClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            searchResultView.setVisibility(View.VISIBLE);
+        }
+    });
+
+    searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+        @Override
+        public boolean onClose() {
+            searchResultView.setVisibility(View.GONE);
+            return false;
+        }
+    });
+
+    searchView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        @Override
+        public void onFocusChange(View v, boolean hasFocus) {
+            XLog.log("OnFocusChanged");
+            if (hasFocus) {
+                searchResultView.setVisibility(View.VISIBLE);
+            } else {
+                searchResultView.setVisibility(View.GONE);
+            }
+        }
+    });
+
+        MenuItemCompat.setOnActionExpandListener(itemSearch,
+                new MenuItemCompat.OnActionExpandListener() {
+                    @Override
+                    public boolean onMenuItemActionExpand(MenuItem menuItem) {
+                        // Return true to allow the action view to expand
+                        searchResultView.setVisibility(View.VISIBLE);
+                        return true;
+                    }
+
+                    @Override
+                    public boolean onMenuItemActionCollapse(MenuItem menuItem) {
+                        // When the action view is collapsed, reset the query
+                        searchResultView.setVisibility(View.GONE);
+                        // Return true to allow the action view to collapse
+                        return true;
+                    }
+                });
         return true;
     }
 
