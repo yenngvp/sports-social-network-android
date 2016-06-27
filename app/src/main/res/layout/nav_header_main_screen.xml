@@ -18,21 +18,25 @@
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:src="@drawable/avatar_sm" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:orientation="vertical">
         <TextView
+            android:id="@+id/userName"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:paddingTop="@dimen/nav_header_vertical_spacing"
             android:text="Alexis Sanches"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
-        <TextView
-            android:id="@+id/textView"
+        <Button
+            android:id="@+id/loginLogout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="alexissanches@socialsportvn.com" />
-    </LinearLayout>
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:backgroundTint="@android:color/holo_orange_light"
+            android:text="Login" />
+    </RelativeLayout>
 </LinearLayout>

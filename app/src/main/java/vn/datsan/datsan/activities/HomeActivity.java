@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.firebase.client.Firebase;
@@ -32,7 +33,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import vn.datsan.datsan.R;
+import vn.datsan.datsan.serverdata.FieldDataManager;
+import vn.datsan.datsan.ui.appviews.LoginPopup;
 import vn.datsan.datsan.utils.Constants;
 import vn.datsan.datsan.utils.XLog;
 
@@ -45,6 +49,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Firebase.setAndroidContext(this);
         setContentView(R.layout.activity_main_screen);
         ButterKnife.bind(this);
 
@@ -65,6 +70,8 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+
+                FieldDataManager.getInstance().genFakeFields(HomeActivity.this);
             }
         });
 
@@ -76,6 +83,9 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        View headerview = navigationView.getHeaderView(0);
+        Button loginLogout = (Button) headerview.findViewById(R.id.loginLogout);
+        loginLogout.setOnClickListener(onLoginLogoutBtnClicked);
 
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -231,7 +241,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_profile) {
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
 
@@ -249,4 +259,11 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    public View.OnClickListener onLoginLogoutBtnClicked = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            new LoginPopup(HomeActivity.this).show();
+        }
+    };
 }

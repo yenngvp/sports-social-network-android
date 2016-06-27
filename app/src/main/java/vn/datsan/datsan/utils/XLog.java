@@ -10,6 +10,6 @@ public class XLog {
         Log.e("Log", s);
     }
     public static void log(int i) {
-        //Log.e("Log", i + "");
+        Log.e("Log", i + "");
     }
 }
