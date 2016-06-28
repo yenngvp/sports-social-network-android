@@ -1,6 +1,5 @@
 package vn.datsan.datsan;
 
-import com.firebase.client.Firebase;
 
 /**
  * Created by yennguyen on 10/06/2016.
@@ -11,7 +10,7 @@ public class SocialSportApplication extends android.app.Application {
     public void onCreate() {
         super.onCreate();
         /* Initialize Firebase */
-        Firebase.setAndroidContext(this);
+        //Firebase.setAndroidContext(this);
         /* Enable disk persistence  */
         //Firebase.getDefaultConfig().setPersistenceEnabled(true);
     }

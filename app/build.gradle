@@ -2,13 +2,13 @@ apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 24
     buildToolsVersion "23.0.3"
 
     defaultConfig {
         applicationId "vn.datsan.datsan"
-        minSdkVersion 15
-        targetSdkVersion 23
+        minSdkVersion 16
+        targetSdkVersion 24
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
@@ -27,22 +27,28 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    //    compile 'com.google.firebase:firebase-core:9.0.2'
-    //    compile 'com.google.firebase:firebase-database:9.0.2'
-    //    compile 'com.google.firebase:firebase-auth:9.0.2'
+
+    // Firebase support
+    compile 'com.google.firebase:firebase-core:9.2.0'
+    compile 'com.google.firebase:firebase-database:9.2.0'
+    compile 'com.google.firebase:firebase-auth:9.2.0'
+
+    // Android support
     compile 'com.android.support:multidex:1.0.1'
-    compile 'com.android.support:appcompat-v7:23.4.0'
-    compile 'com.google.android.gms:play-services:9.0.2'
-    compile 'com.android.support:design:23.4.0'
-    compile 'com.firebase:firebase-client-android:2.2.4+'
-    compile 'com.firebase:firebase-client-jvm:2.2.4+'
-    compile ('com.firebase:geofire:1.1.0')  {
-        exclude module: 'firebase-client-android'
-        exclude module: 'firebase-client-jvm'
-    }
+    compile 'com.android.support:appcompat-v7:24.0.0'
+
+    // Google play services
+    compile 'com.google.android.gms:play-services:9.2.0'
+    compile 'com.android.support:design:24.0.0'
+
+
     compile 'com.jakewharton:butterknife:8.0.1'
     apt 'com.jakewharton:butterknife-compiler:8.0.1'
-    compile 'com.google.code.gson:gson:2.7'
+//    compile 'com.google.code.gson:gson:2.7'
+
+    // Jest (android) client for Elasticsearch
+    compile 'io.searchbox:jest-droid:2.0.0'
+
 }
 
 apply plugin: 'com.google.gms.google-services'
