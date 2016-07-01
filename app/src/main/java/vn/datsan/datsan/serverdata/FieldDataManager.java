@@ -2,6 +2,11 @@ package vn.datsan.datsan.serverdata;
 
 import android.content.Context;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -21,7 +26,7 @@ import vn.datsan.datsan.utils.XLog;
 public class FieldDataManager {
     private static FieldDataManager instance;
     private final String _Database_Url = "https://social-sport-b1cff.firebaseio.com/app/fields";
-//    private Firebase fieldLocation;
+    private DatabaseReference fieldLocation = FirebaseDatabase.getInstance().getReference("app/fields");
 
     private FieldDataManager() {
 //        fieldLocation = new Firebase(_Database_Url);
@@ -39,26 +44,26 @@ public class FieldDataManager {
     }
 
     public void addField(Field field) {
-//        fieldLocation.child(genIden(field)).setValue(field);
+        fieldLocation.child(genIden(field)).setValue(field);
     }
 
     public void getField(String id, final CallBack.OnResultReceivedListener callBack) {
-//        fieldLocation.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                Field user = dataSnapshot.getValue(Field.class);
-//                XLog.log("Hello " + user.getName());
-//                if (callBack != null)
-//                    callBack.onResultReceived(user);
-//            }
-//
-//            @Override
-//            public void onCancelled(FirebaseError firebaseError) {
-//                XLog.log(firebaseError.getMessage());
-//                if (callBack != null)
-//                    callBack.onResultReceived(null);
-//            }
-//        });
+        fieldLocation.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Field user = dataSnapshot.getValue(Field.class);
+                XLog.log("Hello " + user.getName());
+                if (callBack != null)
+                    callBack.onResultReceived(user);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError firebaseError) {
+                XLog.log(firebaseError.getMessage());
+                if (callBack != null)
+                    callBack.onResultReceived(null);
+            }
+        });
     }
 
     public void search(String text) {
