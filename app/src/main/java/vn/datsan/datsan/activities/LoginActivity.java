@@ -1,6 +1,7 @@
 package vn.datsan.datsan.activities;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -54,6 +55,7 @@ public class LoginActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
 
         Elasticsearch elasticsearch = new Elasticsearch();
+        elasticsearch.execute();
     }
 
     @Override
