@@ -24,6 +24,7 @@ import vn.datsan.datsan.R;
 import vn.datsan.datsan.serverdata.UserManager;
 import vn.datsan.datsan.setting.UserDefine;
 import vn.datsan.datsan.ui.customwidgets.SimpleProgress;
+import vn.datsan.datsan.utils.Elasticsearch;
 
 /**
  * A login screen that offers login via email/password.
@@ -51,6 +52,8 @@ public class LoginActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         firebaseAuth = FirebaseAuth.getInstance();
+
+        Elasticsearch elasticsearch = new Elasticsearch();
     }
 
     @Override

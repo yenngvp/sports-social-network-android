@@ -133,7 +133,7 @@ public class NewAccountActivity extends AppCompatActivity {
                             Toast.makeText(NewAccountActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         } else {
-                            UserManager.getInstance().addUser(user);
+                            //UserManager.getInstance().addUser(user);
                         }
                     }
                 });

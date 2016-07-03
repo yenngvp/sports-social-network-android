@@ -16,14 +16,15 @@ import java.util.List;
 import vn.datsan.datsan.R;
 import vn.datsan.datsan.models.FakeStadium;
 import vn.datsan.datsan.models.Field;
-import vn.datsan.datsan.models.User;
 import vn.datsan.datsan.utils.RawIO;
-import vn.datsan.datsan.utils.XLog;
+import vn.datsan.datsan.utils.AppLog;
 
 /**
  * Created by xuanpham on 6/20/16.
  */
 public class FieldDataManager {
+    private static final String TAG = FieldDataManager.class.getName();
+
     private static FieldDataManager instance;
     private final String _Database_Url = "https://social-sport-b1cff.firebaseio.com/app/fields";
     private DatabaseReference fieldLocation = FirebaseDatabase.getInstance().getReference("app/fields");
@@ -52,14 +53,14 @@ public class FieldDataManager {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Field user = dataSnapshot.getValue(Field.class);
-                XLog.log("Hello " + user.getName());
+                AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "Hello " + user.getName());
                 if (callBack != null)
                     callBack.onResultReceived(user);
             }
 
             @Override
             public void onCancelled(DatabaseError firebaseError) {
-                XLog.log(firebaseError.getMessage());
+                AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, firebaseError.getMessage());
                 if (callBack != null)
                     callBack.onResultReceived(null);
             }
@@ -74,7 +75,7 @@ public class FieldDataManager {
         String content = RawIO.loadStringFromRawResource(context.getResources(), R.raw.fields);
         Gson gson = new Gson();
         List<FakeStadium> stadiums = gson.fromJson(content, new TypeToken<ArrayList<FakeStadium>>(){}.getType());
-        XLog.log(stadiums.size());
+        AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, String.valueOf(stadiums.size()));
 
         for (FakeStadium stadium : stadiums) {
             if (stadium.getPhone() == null || stadium.getPhone().isEmpty())
@@ -87,7 +88,7 @@ public class FieldDataManager {
             field.setDistrict(stadium.getDistrict());
             field.setLocation(stadium.getLocation());
             addField(field);
-            XLog.log("insert " + stadium.getName());
+            AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "insert " + stadium.getName());
         }
     }
 }

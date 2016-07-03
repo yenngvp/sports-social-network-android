@@ -5,7 +5,6 @@ import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
@@ -29,14 +28,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import vn.datsan.datsan.R;
 import vn.datsan.datsan.serverdata.FieldDataManager;
 import vn.datsan.datsan.ui.appviews.LoginPopup;
-import vn.datsan.datsan.utils.Constants;
-import vn.datsan.datsan.utils.XLog;
+import vn.datsan.datsan.utils.AppLog;
 
 public class HomeActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
+    private static final String TAG = HomeActivity.class.getName();
 
     private GoogleMap mMap;
     @BindView(R.id.searchResultView)
@@ -129,7 +127,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_screen, menu);
-        XLog.log("onCreateOptionMenu");
+        AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "onCreateOptionMenu");
         MenuItem itemSearch = menu.findItem(R.id.mapview_menu_search);
 
     final SearchView searchView = (SearchView) MenuItemCompat.getActionView(itemSearch);
@@ -139,7 +137,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     searchEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
-            XLog.log("OnFocusChanged");
+            AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "OnFocusChanged");
             if (hasFocus) {
                 searchResultView.setVisibility(View.VISIBLE);
             } else {
@@ -151,13 +149,13 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
         @Override
         public boolean onQueryTextSubmit(String query) {
-            XLog.log(query);
+            AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, query);
             return false;
         }
 
         @Override
         public boolean onQueryTextChange(String newText) {
-            XLog.log(newText);
+            AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, newText);
             return false;
         }
     });
@@ -165,7 +163,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
-            XLog.log("OnQueryTextFocusChange");
+            AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "OnQueryTextFocusChange");
         }
     });
     searchView.setOnSearchClickListener(new View.OnClickListener() {
@@ -186,7 +184,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     searchView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
-            XLog.log("OnFocusChanged");
+            AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "OnFocusChanged");
             if (hasFocus) {
                 searchResultView.setVisibility(View.VISIBLE);
             } else {

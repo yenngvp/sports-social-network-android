@@ -12,4 +12,16 @@ public class Constants {
      */
     public static final String FIREBASE_URL = BuildConfig.UNIQUE_FIREBASE_ROOT_URL;
 
+    // Elasticsearch URL
+    public static final String ELASTICSEARCH_SERVER_URL = BuildConfig.ELASTICSEARCH_SERVER_URL;
+
+
+    /*
+     * Firebase objects
+     */
+    public static final String FIREBASE_USERS = "users";
+    public static final String FIREBASE_GROUPS = "groups";
+    public static final String FIREBASE_FIELDS = "fields";
+
+
 }

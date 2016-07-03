@@ -21,6 +21,7 @@ android {
     }
     buildTypes.each {
         it.buildConfigField 'String', 'UNIQUE_FIREBASE_ROOT_URL', UniqueFirebaseRootUrl
+        it.buildConfigField 'String', 'ELASTICSEARCH_SERVER_URL', ElasticsearchServerUrl
     }
 }
 
@@ -32,19 +33,19 @@ dependencies {
     compile 'com.google.firebase:firebase-core:9.2.0'
     compile 'com.google.firebase:firebase-database:9.2.0'
     compile 'com.google.firebase:firebase-auth:9.2.0'
+//    compile 'com.google.firebase:firebase-crash:9.2.0'
 
     // Android support
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support:appcompat-v7:24.0.0'
+    compile 'com.android.support:design:24.0.0'
 
     // Google play services
     compile 'com.google.android.gms:play-services:9.2.0'
-    compile 'com.android.support:design:24.0.0'
-
+//    compile 'com.google.code.gson:gson:2.7'
 
     compile 'com.jakewharton:butterknife:8.0.1'
     apt 'com.jakewharton:butterknife-compiler:8.0.1'
-//    compile 'com.google.code.gson:gson:2.7'
 
     // Jest (android) client for Elasticsearch
     compile 'io.searchbox:jest-droid:2.0.0'

@@ -5,18 +5,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.gson.Gson;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import vn.datsan.datsan.models.User;
-import vn.datsan.datsan.utils.XLog;
+import vn.datsan.datsan.utils.AppLog;
 
 /**
  * Created by xuanpham on 6/20/16.
  */
 public class UserManager {
+    private static final String TAG = UserManager.class.getName();
+
     private static UserManager instance;
     private final String _Database_Url = "https://social-sport-b1cff.firebaseio.com/app/users";
     private DatabaseReference userLocation;
@@ -54,14 +52,15 @@ public class UserManager {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
-                XLog.log("Hello " + user.getName());
+                AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "Hello " + user.getName());
+
                 if (callBack != null)
                     callBack.onResultReceived(user);
             }
 
             @Override
             public void onCancelled(DatabaseError firebaseError) {
-                XLog.log(firebaseError.getMessage());
+                AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, firebaseError.getMessage());
                 if (callBack != null)
                     callBack.onResultReceived(null);
             }
