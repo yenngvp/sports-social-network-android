@@ -26,6 +26,7 @@ import vn.datsan.datsan.serverdata.UserManager;
 import vn.datsan.datsan.setting.UserDefine;
 import vn.datsan.datsan.ui.customwidgets.SimpleProgress;
 import vn.datsan.datsan.utils.Elasticsearch;
+import vn.datsan.datsan.utils.ElasticsearchTask;
 
 /**
  * A login screen that offers login via email/password.
@@ -54,8 +55,8 @@ public class LoginActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
 
-        Elasticsearch elasticsearch = new Elasticsearch();
-        elasticsearch.execute();
+        ElasticsearchTask esTask = new ElasticsearchTask();
+        esTask.execute();
     }
 
     @Override

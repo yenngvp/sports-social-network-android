@@ -4,6 +4,7 @@ import android.util.Log;
 
 /**
  * Created by Xuan PhD on 1/29/16.
+ *
  */
 public class AppLog {
 
@@ -11,7 +12,7 @@ public class AppLog {
         LOG_INFO,
         LOG_WARN,
         LOG_DEBUG,
-        LOG_ERROR
+        LOG_ERROR,
     }
 
     public static void log(LogType type, String tag, String message) {
@@ -32,5 +33,9 @@ public class AppLog {
             default:
                 Log.i(tag, message);
         }
+    }
+
+    public static void log(Throwable e) {
+        Log.e("STACKTRACE", Log.getStackTraceString(e));
     }
 }

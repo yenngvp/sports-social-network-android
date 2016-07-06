@@ -2,105 +2,141 @@ package vn.datsan.datsan.utils;
 
 import android.os.AsyncTask;
 
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
 
+import java.io.IOException;
+
 import io.searchbox.client.JestClient;
+import io.searchbox.core.Delete;
+import io.searchbox.core.Index;
+import io.searchbox.core.Update;
 import io.searchbox.indices.CreateIndex;
 import io.searchbox.indices.DeleteIndex;
 import io.searchbox.indices.IndicesExists;
-import io.searchbox.indices.mapping.PutMapping;
+
 
 /**
  * Created by yennguyen on 6/27/16.
  */
-public class Elasticsearch extends AsyncTask<Void, Void, Long> {
+public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, Void> {
 
     private static final String TAG = Elasticsearch.class.getName();
 
     private JestClient jestClient;
-    private FirebaseDatabase firebaseDatabase;
+
+    public Elasticsearch() {
+        // JestClient is designed to be singleton, don't construct it for each request!
+        // See https://github.com/searchbox-io/Jest/tree/master/jest
+        if (jestClient == null) {
+            // Build connection factory to the Elasticsearch server
+            JestClientFactory factory = new JestClientFactory();
+            factory.setDroidClientConfig(
+                    new DroidClientConfig.Builder(Constants.ELASTICSEARCH_SERVER_URL)
+                            .defaultCredentials(Constants.ELASTICSEARCH_USERNAME,
+                                    Constants.ELASTICSEARCH_PASSWORD)
+                            .multiThreaded(true)
+                            .build());
+            jestClient = factory.getObject();
+        }
+    }
 
     @Override
-    protected Long doInBackground(Void... voids) {
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = firebaseDatabase.getReference("app");
-
-        // Build connection factory to the Elasticsearch server
-        JestClientFactory factory = new JestClientFactory();
-        factory.setDroidClientConfig(
-                new DroidClientConfig.Builder(Constants.ELASTICSEARCH_SERVER_URL)
-                        .defaultCredentials("po0j5nr3", "l4xxk8xp2z77890t")
-                        .multiThreaded(true)
-                        .build());
-        jestClient = factory.getObject();
-
-        // Creates search index if it not exist
-        createIndexIfNotExists();
-
-        databaseReference.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
+    protected Void doInBackground(ElasticsearchParam... elasticsearchParams) {
+        int count = elasticsearchParams.length;
+        ElasticsearchParam param;
+        for (int i = 0; i < count; i++) {
+            param = elasticsearchParams[i];
+            switch (param.getType()) {
+                case ADD_INDEX:
+                    createIndexIfNotExists(param.getIndexName());
+                    break;
+                case DELETE_INDEX:
+                    deleteIndex(param.getIndexName());
+                    break;
+                case ADD:
+                    createIndexIfNotExists(param.getIndexName());
+                    add(param.getIndexName(), param.getIndexType(), param.getSourceObj());
+                    break;
+                case UPDATE:
+                    update(param.getIndexName(), param.getIndexType(), param.getSourceObj());
+                    break;
+                case DELETE:
+                    delete(param.getIndexName(), param.getIndexType(), param.getSourceObj());
+                    break;
+                default:
+                    break;
             }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        }
 
         return null;
     }
 
-    @Override
-    protected void onProgressUpdate(Void... values) {
-        super.onProgressUpdate(values);
+    /**
+     * Create index
+     */
+    private void createIndexIfNotExists(String index) {
+        try {
+            boolean indexExists = jestClient.execute(new IndicesExists.Builder(index).build()).isSucceeded();
+            if (!indexExists) {
+                jestClient.execute(new CreateIndex.Builder(index).build());
+            }
+        } catch (Exception e) {
+            AppLog.log(e);
+        }
     }
 
     /**
-     * Create or update elasticsearch index
+     * Remove index
      */
-    private void createIndexIfNotExists() {
+    private void deleteIndex(String index) {
         try {
-            boolean indexExists = jestClient.execute(new IndicesExists.Builder(Constants.APP_INDEX).build()).isSucceeded();
-            if (!indexExists) {
-                jestClient.execute(new CreateIndex.Builder(Constants.APP_INDEX).build());
-            }
-        } catch (Exception e) {
-            AppLog.log(AppLog.LogType.LOG_ERROR, TAG, e.getMessage());
-        }
-    }
-
-    private void removeIndex() {
-        try {
-            boolean indexExists = jestClient.execute(new IndicesExists.Builder(Constants.APP_INDEX).build()).isSucceeded();
+            boolean indexExists = jestClient.execute(new IndicesExists.Builder(index).build()).isSucceeded();
             if (indexExists) {
-                jestClient.execute(new DeleteIndex.Builder(Constants.APP_INDEX).build());
+                jestClient.execute(new DeleteIndex.Builder(index).build());
             }
         } catch (Exception e) {
-            AppLog.log(AppLog.LogType.LOG_ERROR, TAG, e.getMessage());
+            AppLog.log(e);
         }
     }
 
+    /**
+     * Index document
+     */
+    private void add(String indexName, String indexType, Object source) {
+        try {
+            Index index = new Index.Builder(source).index(indexName).type(indexType).build();
+            jestClient.execute(index);
+        } catch (Exception e) {
+            AppLog.log(e);
+        }
+    }
+
+    /**
+     * Update document
+     */
+    private void update(String indexName, String indexType, Object source) {
+        try {
+            String script = "{\n" +
+                    "    \"script\" : \"ctx._source.tags += tag\",\n" +
+                    "    \"params\" : {\n" +
+                    "        \"tag\" : \"blue\"\n" +
+                    "    }\n" +
+                    "}";
+            jestClient.execute(new Update.Builder(script).index(indexName).type(indexType).id("").build());
+        } catch (Exception e) {
+            AppLog.log(e);
+        }
+    }
+
+    /**
+     * Delete a document
+     */
+    private void delete(String indexName, String indexType, Object source) {
+        try {
+            jestClient.execute(new Delete.Builder("").index(indexName).type(indexType).build());
+        } catch (Exception e) {
+            AppLog.log(e);
+        }
+    }
 }

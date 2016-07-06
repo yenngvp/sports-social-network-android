@@ -22,6 +22,8 @@ android {
     buildTypes.each {
         it.buildConfigField 'String', 'UNIQUE_FIREBASE_ROOT_URL', UniqueFirebaseRootUrl
         it.buildConfigField 'String', 'ELASTICSEARCH_SERVER_URL', ElasticsearchServerUrl
+        it.buildConfigField 'String', 'ELASTICSEARCH_USERNAME', ElasticsearchUsername
+        it.buildConfigField 'String', 'ELASTICSEARCH_PASSWORD', ElasticsearchPassword
     }
 }
 

@@ -19,9 +19,14 @@ public class Constants {
     public static final String FIREBASE_GROUPS = "groups";
     public static final String FIREBASE_FIELDS = "fields";
 
+    /*
+     * Elasticsearch server
+     */
     // Elasticsearch URL
     public static final String ELASTICSEARCH_SERVER_URL = BuildConfig.ELASTICSEARCH_SERVER_URL;
-    public static final String APP_INDEX = "app";
+    // Elasticsearch default credentials (api_key, api_value)
+    public static final String ELASTICSEARCH_USERNAME = BuildConfig.ELASTICSEARCH_USERNAME;
+    public static final String ELASTICSEARCH_PASSWORD = BuildConfig.ELASTICSEARCH_PASSWORD;
 
 
 }
