@@ -5,8 +5,6 @@ import android.os.AsyncTask;
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
 
-import java.io.IOException;
-
 import io.searchbox.client.JestClient;
 import io.searchbox.core.Delete;
 import io.searchbox.core.Index;
@@ -19,13 +17,13 @@ import io.searchbox.indices.IndicesExists;
 /**
  * Created by yennguyen on 6/27/16.
  */
-public class ElasticSearch extends AsyncTask<ElasticsearchParam, Void, Void> {
+public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, Void> {
 
-    private static final String TAG = ElasticSearch.class.getName();
+    private static final String TAG = Elasticsearch.class.getName();
 
     private JestClient jestClient;
 
-    public ElasticSearch() {
+    public Elasticsearch() {
         // JestClient is designed to be singleton, don't construct it for each request!
         // See https://github.com/searchbox-io/Jest/tree/master/jest
         if (jestClient == null) {

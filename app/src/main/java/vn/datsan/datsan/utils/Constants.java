@@ -27,6 +27,6 @@ public class Constants {
     // Elasticsearch default credentials (api_key, api_value)
     public static final String ELASTICSEARCH_USERNAME = BuildConfig.ELASTICSEARCH_USERNAME;
     public static final String ELASTICSEARCH_PASSWORD = BuildConfig.ELASTICSEARCH_PASSWORD;
-
+    public static final String ELASTICSEARCH_INDEX = "socialsport";
 
 }

@@ -2,7 +2,6 @@ package vn.datsan.datsan;
 
 
 import vn.datsan.datsan.utils.AppLog;
-import vn.datsan.datsan.utils.ElasticSearch;
 
 /**
  * Created by yennguyen on 10/06/2016.

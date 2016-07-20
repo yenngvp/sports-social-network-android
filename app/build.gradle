@@ -12,6 +12,7 @@ android {
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
+        manifestPlaceholders = [HOCKEYAPP_APP_ID: "1ea153ea663947dabeced25b541da1f4"]
     }
     buildTypes {
         release {
@@ -51,6 +52,9 @@ dependencies {
 
     // Jest (android) client for Elasticsearch
     compile 'io.searchbox:jest-droid:2.0.0'
+
+    // HockeyApp
+    compile 'net.hockeyapp.android:HockeySDK:4.0.1'
 
 }
 

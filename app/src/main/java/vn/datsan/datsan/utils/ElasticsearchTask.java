@@ -8,9 +8,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Created by yennguyen on 7/5/16.
  */
@@ -35,7 +32,7 @@ public class ElasticsearchTask  extends AsyncTask<Void, Void, Long> {
                 param.setIndexName(dataSnapshot.getKey());
                 param.setIndexType(dataSnapshot.getKey());
                 param.setSourceObj(dataSnapshot.getValue());
-                new ElasticSearch().execute(param);
+                new Elasticsearch().execute(param);
             }
 
             @Override

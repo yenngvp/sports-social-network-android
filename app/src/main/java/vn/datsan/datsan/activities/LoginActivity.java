@@ -1,7 +1,6 @@
 package vn.datsan.datsan.activities;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -26,13 +25,22 @@ import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.serverdata.UserManager;
 import vn.datsan.datsan.setting.UserDefine;
 import vn.datsan.datsan.ui.customwidgets.SimpleProgress;
-import vn.datsan.datsan.utils.ElasticSearch;
+import vn.datsan.datsan.utils.Constants;
+import vn.datsan.datsan.utils.Elasticsearch;
+import vn.datsan.datsan.utils.ElasticsearchEvent;
+import vn.datsan.datsan.utils.ElasticsearchParam;
 import vn.datsan.datsan.utils.ElasticsearchTask;
+
+import net.hockeyapp.android.CrashManager;
+import net.hockeyapp.android.UpdateManager;
 
 /**
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends AppCompatActivity {
+
+    private static final String TAG = LoginActivity.class.getName();
+
     private FirebaseAuth firebaseAuth;
     // UI references.
 
@@ -56,8 +64,18 @@ public class LoginActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
 
+        // Create elasticsearch index
+        // Create index as object's key, such as: users, groups or fields
+        ElasticsearchParam param = new ElasticsearchParam();
+        param.setType(ElasticsearchEvent.ADD);
+        param.setIndexName(Constants.ELASTICSEARCH_INDEX);
+        new Elasticsearch().execute(param);
+
         ElasticsearchTask esTask = new ElasticsearchTask();
         esTask.execute();
+
+        // HockeyApp update
+        checkForUpdates();
     }
 
     @Override
@@ -72,6 +90,18 @@ public class LoginActivity extends AppCompatActivity {
         if (authListener != null) {
             firebaseAuth.removeAuthStateListener(authListener);
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        unregisterManagers();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterManagers();
     }
 
     @OnClick(R.id.email_sign_in_button)
@@ -189,5 +219,18 @@ public class LoginActivity extends AppCompatActivity {
             // ...
         }
     };
+
+    private void checkForCrashes() {
+        CrashManager.register(this);
+    }
+
+    private void checkForUpdates() {
+        // Remove this for store builds!
+        UpdateManager.register(this);
+    }
+
+    private void unregisterManagers() {
+        UpdateManager.unregister();
+    }
 }
 

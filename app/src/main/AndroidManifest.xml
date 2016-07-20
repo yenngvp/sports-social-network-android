@@ -63,6 +63,10 @@
             android:name=".activities.MainScreenActivity"
             android:label="@string/title_activity_main_screen"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+
+        <!-- HockeyApp integration -->
+        <meta-data android:name="net.hockeyapp.android.appIdentifier" android:value="${HOCKEYAPP_APP_ID}" />
+
     </application>
 
 </manifest>
