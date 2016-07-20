@@ -1,5 +1,7 @@
 package vn.datsan.datsan.serverdata;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -14,13 +16,12 @@ import vn.datsan.datsan.utils.AppLog;
  */
 public class UserManager {
     private static final String TAG = UserManager.class.getName();
-
     private static UserManager instance;
-    private final String _Database_Url = "https://social-sport-b1cff.firebaseio.com/app/users";
-    private DatabaseReference userLocation;
+    private DatabaseReference userDatabaseRef;
+    private User userInfo;
 
     private  UserManager() {
-        userLocation = FirebaseDatabase.getInstance().getReference("app/users");
+        userDatabaseRef = FirebaseDatabase.getInstance().getReference("app/users");
     }
 
     public static UserManager getInstance() {
@@ -30,29 +31,31 @@ public class UserManager {
         return instance;
     }
 
-    private String genIden(User user) {
-        return user.getPhone();
-    }
-
     public void addUser(User user) {
-        //Map<String, User> map = new HashMap<>();
-        //map.put(genIden(user), user);
+        userDatabaseRef.child(user.getId()).setValue(user);
 
-        userLocation.child(genIden(user)).setValue(user);
+//        String key = userLocation.push().getKey();
+//        user.setId(key);
+//        userLocation.child(key).setValue(user);
     }
 
-//    public void updateUser(User user) {
-//        Map<String, User> map = new HashMap<>();
-//        map.put(genIden(user), user);
-//        userNode.updateChildren(map);
-//    }
+    public void updateUser(User user) {
+        userDatabaseRef.child(user.getId()).setValue(user);
+    }
 
-    public void getUser(String id, final CallBack.OnResultReceivedListener callBack) {
-        userLocation.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+    public void getCurrentUserInfo(CallBack.OnResultReceivedListener callBack) {
+        getUserInfo(FirebaseAuth.getInstance().getCurrentUser().getUid(), callBack);
+    }
+
+    public void getUserInfo(String id, final CallBack.OnResultReceivedListener callBack) {
+        AppLog.log(AppLog.LogType.LOG_ERROR, TAG, "Get for " + id);
+        userDatabaseRef.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
-                AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "Hello " + user.getName());
+                if (user != null)
+                    AppLog.log(AppLog.LogType.LOG_ERROR, TAG, "Hello " + user.getName());
+                userInfo = user;
 
                 if (callBack != null)
                     callBack.onResultReceived(user);
@@ -65,5 +68,13 @@ public class UserManager {
                     callBack.onResultReceived(null);
             }
         });
+    }
+
+    public User getUserInfo() {
+        return userInfo;
+    }
+
+    public void setUserInfo(User userInfo) {
+        this.userInfo = userInfo;
     }
 }

@@ -52,7 +52,7 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         SimpleProgress.show(ProfileActivity.this);
-       // UserManager.getInstance().getUser(userId, profileFetchCallBack);
+        UserManager.getInstance().getCurrentUserInfo(profileFetchCallBack);
     }
 
     CallBack.OnResultReceivedListener profileFetchCallBack = new CallBack.OnResultReceivedListener() {

@@ -22,10 +22,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import vn.datsan.datsan.R;
+import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.serverdata.UserManager;
 import vn.datsan.datsan.setting.UserDefine;
 import vn.datsan.datsan.ui.customwidgets.SimpleProgress;
-import vn.datsan.datsan.utils.Elasticsearch;
+import vn.datsan.datsan.utils.ElasticSearch;
 import vn.datsan.datsan.utils.ElasticsearchTask;
 
 /**
@@ -35,8 +36,8 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     // UI references.
 
-    @BindView(R.id.phoneNumber)
-    EditText phoneEdt;
+    @BindView(R.id.email)
+    EditText userNameEdt;
     @BindView(R.id.password)
     EditText passwordEdt;
     @BindView(R.id.email_sign_in_button)
@@ -96,11 +97,11 @@ public class LoginActivity extends AppCompatActivity {
     private void attemptLogin() {
 
         // Reset errors.
-        phoneEdt.setError(null);
+        userNameEdt.setError(null);
         passwordEdt.setError(null);
 
         // Store values at the time of the login attempt.
-        String phone = phoneEdt.getText().toString();
+        String phone = userNameEdt.getText().toString();
         String password = passwordEdt.getText().toString();
 
         // Check for a valid password, if the user entered one.
@@ -110,9 +111,9 @@ public class LoginActivity extends AppCompatActivity {
 
         // Check for a valid email address.
         if (TextUtils.isEmpty(phone)) {
-            phoneEdt.setError(getString(R.string.error_field_required));
+            userNameEdt.setError(getString(R.string.error_field_required));
         } else if (!isPhoneNumberValid(phone)) {
-            phoneEdt.setError(getString(R.string.error_invalid_email));
+            userNameEdt.setError(getString(R.string.error_invalid_email));
         }
 
         login(phone, password);
@@ -141,10 +142,14 @@ public class LoginActivity extends AppCompatActivity {
                         } else {
                             Toast.makeText(LoginActivity.this, "Login Successful !",
                                     Toast.LENGTH_SHORT).show();
-
-                            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                            intent.putExtra("id", phone);
-                            startActivity(intent);
+                            FirebaseUser fbUser = task.getResult().getUser();
+                            UserManager.getInstance().getUserInfo(fbUser.getUid(), new CallBack.OnResultReceivedListener() {
+                                @Override
+                                public void onResultReceived(Object result) {
+                                    Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                                    startActivity(intent);
+                                }
+                            });
                         }
                     }
                 });

@@ -35,7 +35,7 @@ public class ElasticsearchTask  extends AsyncTask<Void, Void, Long> {
                 param.setIndexName(dataSnapshot.getKey());
                 param.setIndexType(dataSnapshot.getKey());
                 param.setSourceObj(dataSnapshot.getValue());
-                new Elasticsearch().execute(param);
+                new ElasticSearch().execute(param);
             }
 
             @Override

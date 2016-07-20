@@ -14,6 +14,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -38,11 +39,13 @@ public class LoginPopup {
     private FirebaseAuth firebaseAuth;
     // UI references.
 
-    private EditText phoneEdt;
+    private EditText emailEdt;
     private EditText passwordEdt;
     private Button signInBtn;
     private Button loginByFB;
     private Button loginByGG;
+    private TextView forgotPwdBtn;
+    private TextView newAccBtn;
 
 
     public LoginPopup(Context context) {
@@ -63,15 +66,20 @@ public class LoginPopup {
 
         popupWindow.setAttributes(wlp);
 
-        phoneEdt = (EditText) popup.findViewById(R.id.phoneNumber);
+        emailEdt = (EditText) popup.findViewById(R.id.email);
         passwordEdt = (EditText) popup.findViewById(R.id.password);
         signInBtn = (Button) popup.findViewById(R.id.email_sign_in_button);
         loginByFB = (Button) popup.findViewById(R.id.loginFbBtn);
         loginByGG = (Button) popup.findViewById(R.id.loginGgBtn);
+        forgotPwdBtn = (TextView) popup.findViewById(R.id.forgotPwdBtn);
+        newAccBtn = (TextView) popup.findViewById(R.id.newAccountBtn);
 
         signInBtn.setOnClickListener(signInClicked);
         loginByFB.setOnClickListener(loginGGClicked);
         loginByGG.setOnClickListener(loginFBClicked);
+        forgotPwdBtn.setOnClickListener(forgotPwdBtnClick);
+        newAccBtn.setOnClickListener(newAccPwdBtnClick);
+
 
         firebaseAuth = FirebaseAuth.getInstance();
     }
@@ -97,6 +105,23 @@ public class LoginPopup {
         }
     };
 
+    private View.OnClickListener forgotPwdBtnClick = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View view) {
+
+        }
+    };
+
+    private View.OnClickListener newAccPwdBtnClick = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View view) {
+            Intent intent = new Intent(context, NewAccountActivity.class);
+            context.startActivity(intent);
+        }
+    };
+
     public void show() {
         popup.show();
     }
@@ -104,11 +129,11 @@ public class LoginPopup {
     private void attemptLogin() {
 
         // Reset errors.
-        phoneEdt.setError(null);
+        emailEdt.setError(null);
         passwordEdt.setError(null);
 
         // Store values at the time of the login attempt.
-        String phone = phoneEdt.getText().toString();
+        String phone = emailEdt.getText().toString();
         String password = passwordEdt.getText().toString();
 
         // Check for a valid password, if the user entered one.
@@ -118,18 +143,16 @@ public class LoginPopup {
 
         // Check for a valid email address.
         if (TextUtils.isEmpty(phone)) {
-            phoneEdt.setError(context.getString(R.string.error_field_required));
+            emailEdt.setError(context.getString(R.string.error_field_required));
         } else if (!isPhoneNumberValid(phone)) {
-            phoneEdt.setError(context.getString(R.string.error_invalid_email));
+            emailEdt.setError(context.getString(R.string.error_invalid_email));
         }
 
         login(phone, password);
     }
 
-    private void login(final String phone, String password) {
+    private void login(final String email, String password) {
         SimpleProgress.show(context);
-
-        String email = phone + UserDefine._Default_Email_Sufix;
 
         firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener((Activity) context, new OnCompleteListener<AuthResult>() {
@@ -170,27 +193,5 @@ public class LoginPopup {
     }
 
     public void onForgotBtnClicked(View view) {
-
-        // UserManager.getInstance().getUser("01662583067");
     }
-
-    public void onNewAccountBtnClicked(View view) {
-        Intent intent = new Intent(context, NewAccountActivity.class);
-        context.startActivity(intent);
-    }
-
-    FirebaseAuth.AuthStateListener authListener = new FirebaseAuth.AuthStateListener() {
-        @Override
-        public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-            FirebaseUser user = firebaseAuth.getCurrentUser();
-            if (user != null) {
-                // User is signed in
-                Log.e("TAG", "onAuthStateChanged:signed_in:" + user.getUid());
-            } else {
-                // User is signed out
-                Log.e("TAG", "onAuthStateChanged:signed_out");
-            }
-            // ...
-        }
-    };
 }

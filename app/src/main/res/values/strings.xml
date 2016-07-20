@@ -4,7 +4,8 @@
     <string name="title_activity_login">Đăng Nhập</string>
 
     <!-- Strings related to login -->
-    <string name="prompt_email">Số điện thoại</string>
+    <string name="prompt_email">Email</string>
+    <string name="phone_number">Số điện thoại</string>
     <string name="prompt_email_or_phone">Số điện thoại (Hoặc email)</string>
     <string name="prompt_password">Mật khẩu</string>
     <string name="prompt_repassword">Nhập lại mật khẩu</string>

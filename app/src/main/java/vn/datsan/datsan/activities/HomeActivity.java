@@ -1,7 +1,9 @@
 package vn.datsan.datsan.activities;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -13,18 +15,24 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,18 +41,23 @@ import vn.datsan.datsan.serverdata.FieldDataManager;
 import vn.datsan.datsan.ui.appviews.LoginPopup;
 import vn.datsan.datsan.utils.AppLog;
 
-public class HomeActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
+public class HomeActivity extends AppCompatActivity implements OnMapReadyCallback,
+        NavigationView.OnNavigationItemSelectedListener, FirebaseAuth.AuthStateListener {
     private static final String TAG = HomeActivity.class.getName();
 
     private GoogleMap mMap;
+    private TextView userName;
+    private Button loginLogout;
     @BindView(R.id.searchResultView)
     View searchResultView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
         ButterKnife.bind(this);
+        FirebaseAuth.getInstance().addAuthStateListener(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -55,7 +68,6 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                     WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
-
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -77,16 +89,29 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         View headerview = navigationView.getHeaderView(0);
-        Button loginLogout = (Button) headerview.findViewById(R.id.loginLogout);
-        loginLogout.setOnClickListener(onLoginLogoutBtnClicked);
 
+        loginLogout = (Button) headerview.findViewById(R.id.loginLogout);
+        loginLogout.setOnClickListener(onLoginLogoutBtnClicked);
+        userName = (TextView) headerview.findViewById(R.id.userName);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        reloadView();
     }
 
+    private void reloadView() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null || user.isAnonymous()) {
+            userName.setText("Annonymous");
+            loginLogout.setText("Login");
+        } else {
+            userName.setText(user.getEmail());
+            loginLogout.setText("Log out");
+        }
+    }
 
     /**
      * Manipulates the map once available.
@@ -107,7 +132,6 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
 //        GeoFire geoFire = new GeoFire(new Firebase(Constants.FIREBASE_URL));
-//
 //        geoFire.setLocation("mycity", new GeoLocation(10.777098, 106.695487));
 
     }
@@ -233,9 +257,11 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         if (id == R.id.nav_profile) {
-            // Handle the camera action
+            if (user != null)
+                startActivity(new Intent(HomeActivity.this, ProfileActivity.class));
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
@@ -256,7 +282,18 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     public View.OnClickListener onLoginLogoutBtnClicked = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            new LoginPopup(HomeActivity.this).show();
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user == null || user.isAnonymous()) {
+                new LoginPopup(HomeActivity.this).show();
+            } else {
+                FirebaseAuth.getInstance().signOut();
+            }
         }
     };
+
+    @Override
+    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+        AppLog.log(AppLog.LogType.LOG_ERROR, TAG, "AuthChanged");
+        reloadView();
+    }
 }

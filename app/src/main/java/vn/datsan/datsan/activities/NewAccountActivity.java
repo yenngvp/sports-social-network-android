@@ -22,6 +22,7 @@ import vn.datsan.datsan.R;
 import vn.datsan.datsan.models.User;
 import vn.datsan.datsan.serverdata.UserManager;
 import vn.datsan.datsan.setting.UserDefine;
+import vn.datsan.datsan.ui.customwidgets.SimpleProgress;
 
 /**
  * A login screen that offers login via email/password.
@@ -117,23 +118,23 @@ public class NewAccountActivity extends AppCompatActivity {
     }
 
     private void createAccount(final User user, String password) {
-
-        String email = user.getPhone() + UserDefine._Default_Email_Sufix;
+        SimpleProgress.show(NewAccountActivity.this);
+        String email = user.getEmail();
 
         firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.e("TAG", "createUserWithEmail:onComplete:" + task.isSuccessful());
-
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
+                        SimpleProgress.dismiss();
                         if (!task.isSuccessful()) {
-                            Toast.makeText(NewAccountActivity.this, "Authentication failed.",
+                            Toast.makeText(NewAccountActivity.this, "Failed.",
                                     Toast.LENGTH_SHORT).show();
                         } else {
-                            //UserManager.getInstance().addUser(user);
+                            Toast.makeText(NewAccountActivity.this, "Register successfully !",
+                                    Toast.LENGTH_SHORT).show();
+
+                            user.setId(task.getResult().getUser().getUid());
+                            UserManager.getInstance().addUser(user);
                         }
                     }
                 });
@@ -141,7 +142,7 @@ public class NewAccountActivity extends AppCompatActivity {
 
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
-        return true;//email.contains("@");
+        return email.contains("@");
     }
 
     private boolean isPasswordValid(String password) {

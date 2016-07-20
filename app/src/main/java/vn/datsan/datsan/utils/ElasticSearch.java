@@ -19,13 +19,13 @@ import io.searchbox.indices.IndicesExists;
 /**
  * Created by yennguyen on 6/27/16.
  */
-public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, Void> {
+public class ElasticSearch extends AsyncTask<ElasticsearchParam, Void, Void> {
 
-    private static final String TAG = Elasticsearch.class.getName();
+    private static final String TAG = ElasticSearch.class.getName();
 
     private JestClient jestClient;
 
-    public Elasticsearch() {
+    public ElasticSearch() {
         // JestClient is designed to be singleton, don't construct it for each request!
         // See https://github.com/searchbox-io/Jest/tree/master/jest
         if (jestClient == null) {
