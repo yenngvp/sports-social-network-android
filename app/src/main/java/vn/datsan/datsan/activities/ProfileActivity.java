@@ -42,14 +42,6 @@ public class ProfileActivity extends AppCompatActivity {
         String userId = getIntent().getStringExtra("id");
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         SimpleProgress.show(ProfileActivity.this);
         UserManager.getInstance().getCurrentUserInfo(profileFetchCallBack);

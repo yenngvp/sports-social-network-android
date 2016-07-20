@@ -26,7 +26,6 @@ public class FieldDataManager {
     private static final String TAG = FieldDataManager.class.getName();
 
     private static FieldDataManager instance;
-    private final String _Database_Url = "https://social-sport-b1cff.firebaseio.com/app/fields";
     private DatabaseReference fieldLocation = FirebaseDatabase.getInstance().getReference("app/fields");
 
     private FieldDataManager() {

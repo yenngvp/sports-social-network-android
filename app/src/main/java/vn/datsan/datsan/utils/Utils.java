@@ -11,5 +11,6 @@ public class Utils {
      * Format the timestamp with SimpleDateFormat
      */
     public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    public static final SimpleDateFormat FILENAME_DATE_FORMAT = new SimpleDateFormat("yyyyMMdd HH:mm");
 
 }

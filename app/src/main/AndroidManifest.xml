@@ -58,8 +58,7 @@
             android:label="@string/title_activity_new_account" />
         <activity
             android:name=".activities.ProfileActivity"
-            android:label="@string/title_activity_profile"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="@string/title_activity_profile"/>
         <activity
             android:name=".activities.MainScreenActivity"
             android:label="@string/title_activity_main_screen"

@@ -38,6 +38,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import vn.datsan.datsan.R;
 import vn.datsan.datsan.serverdata.FieldDataManager;
+import vn.datsan.datsan.serverdata.storage.CloudDataStorage;
 import vn.datsan.datsan.ui.appviews.LoginPopup;
 import vn.datsan.datsan.utils.AppLog;
 
@@ -76,7 +77,8 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
 
-                FieldDataManager.getInstance().genFakeFields(HomeActivity.this);
+                String name = CloudDataStorage.getInstance().genUniqFileName();
+                AppLog.log(AppLog.LogType.LOG_ERROR, TAG, name);
             }
         });
 

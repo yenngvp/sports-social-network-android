@@ -22,7 +22,9 @@ import vn.datsan.datsan.R;
 import vn.datsan.datsan.models.User;
 import vn.datsan.datsan.serverdata.UserManager;
 import vn.datsan.datsan.setting.UserDefine;
+import vn.datsan.datsan.ui.customwidgets.Alert.SimpleAlert;
 import vn.datsan.datsan.ui.customwidgets.SimpleProgress;
+import vn.datsan.datsan.utils.AppLog;
 
 /**
  * A login screen that offers login via email/password.
@@ -127,8 +129,8 @@ public class NewAccountActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         SimpleProgress.dismiss();
                         if (!task.isSuccessful()) {
-                            Toast.makeText(NewAccountActivity.this, "Failed.",
-                                    Toast.LENGTH_SHORT).show();
+                            SimpleAlert.showAlert(NewAccountActivity.this, getString(R.string.error), task.getException().getMessage() + "",
+                                    getString(R.string.close));
                         } else {
                             Toast.makeText(NewAccountActivity.this, "Register successfully !",
                                     Toast.LENGTH_SHORT).show();
@@ -141,13 +143,11 @@ public class NewAccountActivity extends AppCompatActivity {
     }
 
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
         return email.contains("@");
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return password.length() > 5;
     }
 
     FirebaseAuth.AuthStateListener authListener = new FirebaseAuth.AuthStateListener() {
