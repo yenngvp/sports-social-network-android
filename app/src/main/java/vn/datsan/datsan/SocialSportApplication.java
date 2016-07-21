@@ -1,6 +1,12 @@
 package vn.datsan.datsan;
 
 
+import android.content.Context;
+import android.support.multidex.MultiDex;
+
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+
 import vn.datsan.datsan.utils.AppLog;
 
 /**
@@ -13,7 +19,17 @@ public class SocialSportApplication extends android.app.Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "App starting up");
+
+        AppLog.log(AppLog.LogType.LOG_ERROR, TAG, "App starting up");
 //        Elasticsearch elasticsearch = new Elasticsearch();
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 }

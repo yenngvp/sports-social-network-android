@@ -1,6 +1,7 @@
 package vn.datsan.datsan.serverdata;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,10 +27,9 @@ public class FieldDataManager {
     private static final String TAG = FieldDataManager.class.getName();
 
     private static FieldDataManager instance;
-    private DatabaseReference fieldLocation = FirebaseDatabase.getInstance().getReference("app/fields");
+    private DatabaseReference fieldRef = FirebaseDatabase.getInstance().getReference("app/fields");
 
     private FieldDataManager() {
-//        fieldLocation = new Firebase(_Database_Url);
     }
 
     public static FieldDataManager getInstance() {
@@ -44,11 +44,11 @@ public class FieldDataManager {
     }
 
     public void addField(Field field) {
-        fieldLocation.child(genIden(field)).setValue(field);
+        fieldRef.child(genIden(field)).setValue(field);
     }
 
     public void getField(String id, final CallBack.OnResultReceivedListener callBack) {
-        fieldLocation.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+        fieldRef.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Field user = dataSnapshot.getValue(Field.class);
@@ -66,8 +66,30 @@ public class FieldDataManager {
         });
     }
 
-    public void search(String text) {
-//        fieldLocation.
+    public void getFields(final CallBack.OnResultReceivedListener callBack) {
+        fieldRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.e("Count " ,"" + dataSnapshot.getChildrenCount());
+
+                List<Field> fields = new ArrayList<>();
+
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    Field field = postSnapshot.getValue(Field.class);
+
+                    if (field != null)
+                        fields.add(field);
+                }
+
+                if (callBack != null)
+                    callBack.onResultReceived(fields);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public void genFakeFields(Context context) {

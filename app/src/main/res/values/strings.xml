@@ -41,5 +41,7 @@
     <string name="error">Lỗi</string>
     <string name="close">Đóng</string>
     <string name="user_collision_exception">Email này đã được sử dụng bởi một tài khoản khác !</string>
+    <string name="facebook_app_id">664109537069553</string>
+    <string name="fb_login_protocol_scheme">fb664109537069553</string>
 
 </resources>

@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,20 +24,39 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import vn.datsan.datsan.R;
+import vn.datsan.datsan.models.Field;
+import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.serverdata.FieldDataManager;
 import vn.datsan.datsan.serverdata.storage.CloudDataStorage;
 import vn.datsan.datsan.ui.appviews.LoginPopup;
@@ -51,7 +71,8 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Button loginLogout;
     @BindView(R.id.searchResultView)
     View searchResultView;
-
+    CallbackManager callbackManager;
+    LoginPopup loginPopup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +80,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_main_screen);
         ButterKnife.bind(this);
         FirebaseAuth.getInstance().addAuthStateListener(this);
-
+        FacebookSdk.sdkInitialize(this.getApplicationContext());
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -74,11 +95,9 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
 
-                String name = CloudDataStorage.getInstance().genUniqFileName();
-                AppLog.log(AppLog.LogType.LOG_ERROR, TAG, name);
+                //String name = CloudDataStorage.getInstance().genUniqFileName();
+                //AppLog.log(AppLog.LogType.LOG_ERROR, TAG, name);
             }
         });
 
@@ -102,6 +121,74 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this);
 
         reloadView();
+        callbackManager = CallbackManager.Factory.create();
+
+        loginPopup = new LoginPopup(HomeActivity.this, callbackManager);
+
+        FieldDataManager.getInstance().getFields(new CallBack.OnResultReceivedListener() {
+            @Override
+            public void onResultReceived(Object result) {
+                if (result != null) {
+                    List<Field> fieldList = (List<Field>) result;
+                    addMarkers(fieldList);
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == LoginPopup.RC_SIGN_IN) {
+                GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            AppLog.log(AppLog.LogType.LOG_ERROR, TAG, "Google login finish " + result.isSuccess());
+                if (result.isSuccess()) {
+                    // Google Sign In was successful, authenticate with Firebase
+                    GoogleSignInAccount account = result.getSignInAccount();
+                    firebaseAuthWithGoogle(account);
+                } else {
+                    // Google Sign In failed, update UI appropriately
+                    // [START_EXCLUDE]
+                    //updateUI(null);
+                    // [END_EXCLUDE]
+
+            }
+        } else {
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    private void addMarkers(List<Field> fieldList) {
+        for (Field field : fieldList) {
+            String latlon = field.getLocation();
+            if (latlon != null && latlon.length() > 6) {
+                String arr[] = latlon.split(",");
+                MarkerOptions marker = new MarkerOptions();
+                marker.position(new LatLng(Double.parseDouble(arr[0]), Double.parseDouble(arr[1])));
+                marker.title(field.getName());
+                marker.snippet(field.getAddress());
+                mMap.addMarker(marker);
+            }
+        }
+    }
+
+    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+
+        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        FirebaseAuth.getInstance().signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (!task.isSuccessful()) {
+                            Toast.makeText(HomeActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            loginPopup.dismiss();
+                        }
+                        // ...
+                    }
+                });
     }
 
     private void reloadView() {
@@ -132,10 +219,6 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         LatLng sydney = new LatLng(10.777098, 106.695487);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-
-//        GeoFire geoFire = new GeoFire(new Firebase(Constants.FIREBASE_URL));
-//        geoFire.setLocation("mycity", new GeoLocation(10.777098, 106.695487));
-
     }
 
 
@@ -241,12 +324,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
@@ -286,9 +364,10 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         public void onClick(View v) {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             if (user == null || user.isAnonymous()) {
-                new LoginPopup(HomeActivity.this).show();
+                loginPopup.show();
             } else {
                 FirebaseAuth.getInstance().signOut();
+                LoginManager.getInstance().logOut();
             }
         }
     };

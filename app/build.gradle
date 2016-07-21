@@ -39,7 +39,6 @@ dependencies {
 //    compile 'com.google.firebase:firebase-crash:9.2.0'
 
     // Android support
-    compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support:appcompat-v7:24.0.0'
     compile 'com.android.support:design:24.0.0'
 
@@ -53,6 +52,7 @@ dependencies {
     // Jest (android) client for Elasticsearch
     compile 'io.searchbox:jest-droid:2.0.0'
 
+    compile 'com.facebook.android:facebook-android-sdk:4.+'
     // HockeyApp
     compile 'net.hockeyapp.android:HockeySDK:4.0.1'
 

@@ -97,7 +97,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:onClick="onForgotBtnClicked"
-                    android:padding="4dp"
+                    android:padding="10dp"
                     android:textColor="@drawable/textclickwhite"
                     android:text="@string/forget_pwd"/>
 
@@ -105,7 +105,7 @@
                     android:id="@+id/newAccountBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="4dp"
+                    android:padding="10dp"
                     android:textColor="@drawable/textclickwhite"
                     android:text="@string/create_account"/>
             </LinearLayout>
@@ -115,30 +115,22 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_gravity="center_horizontal"
-                android:orientation="horizontal">
-                <Button
-                    android:layout_margin="10dp"
-                    android:id="@+id/loginFbBtn"
-                    style="?android:textAppearanceSmall"
+                android:orientation="vertical">
+                <com.facebook.login.widget.LoginButton
+                    android:id="@+id/fbLoginBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:textColor="@android:color/white"
-                    android:backgroundTint="@android:color/holo_blue_dark"
-                    android:text="Facebook"
-                    android:textStyle="bold" />
+                    android:layout_gravity="center_horizontal"
+                    android:padding="10dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginBottom="30dp" />
 
-                <Button
-                    android:layout_margin="10dp"
-                    android:id="@+id/loginGgBtn"
-                    style="?android:textAppearanceSmall"
+                <com.google.android.gms.common.SignInButton
+                    android:id="@+id/ggLoginBtn"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:textColor="@android:color/white"
-                    android:backgroundTint="@android:color/holo_green_dark"
-                    android:text="Google"
-                    android:textStyle="bold" />
+                    android:layout_height="wrap_content">
+                </com.google.android.gms.common.SignInButton>
+
             </LinearLayout>
 
         </LinearLayout>
