@@ -9,7 +9,7 @@ import io.searchbox.client.JestClient;
 import io.searchbox.core.Delete;
 import io.searchbox.core.Index;
 import io.searchbox.core.Update;
-import io.searchbox.indices.CreateIndex;å
+import io.searchbox.indices.CreateIndex;
 import io.searchbox.indices.DeleteIndex;
 import io.searchbox.indices.IndicesExists;
 
@@ -41,10 +41,10 @@ public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, Void> {
 
     @Override
     protected Void doInBackground(ElasticsearchParam... elasticsearchParams) {
-        int count = elasticsearchParams.length;
+
         ElasticsearchParam param;
-        for (int i = 0; i < count; i++) {
-            param = elasticsearchParams[i];
+        for (ElasticsearchParam elasticsearchParam : elasticsearchParams) {
+            param = elasticsearchParam;
             switch (param.getType()) {
                 case ADD_INDEX:
                     createIndexIfNotExists(param.getIndexName());
