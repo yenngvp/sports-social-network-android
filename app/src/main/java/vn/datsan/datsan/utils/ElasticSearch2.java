@@ -9,7 +9,7 @@ import io.searchbox.client.JestClient;
 import io.searchbox.core.Delete;
 import io.searchbox.core.Index;
 import io.searchbox.core.Update;
-import io.searchbox.indices.CreateIndex;
+import io.searchbox.indices.CreateIndex;å
 import io.searchbox.indices.DeleteIndex;
 import io.searchbox.indices.IndicesExists;
 
@@ -26,13 +26,13 @@ public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, Void> {
     public Elasticsearch() {
         // JestClient is designed to be singleton, don't construct it for each request!
         // See https://github.com/searchbox-io/Jest/tree/master/jest
+        //  .defaultCredentials(Constants.ELASTICSEARCH_USERNAME,
+        //        Constants.ELASTICSEARCH_PASSWORD)
         if (jestClient == null) {
             // Build connection factory to the Elasticsearch server
             JestClientFactory factory = new JestClientFactory();
             factory.setDroidClientConfig(
                     new DroidClientConfig.Builder(Constants.ELASTICSEARCH_SERVER_URL)
-                            .defaultCredentials(Constants.ELASTICSEARCH_USERNAME,
-                                    Constants.ELASTICSEARCH_PASSWORD)
                             .multiThreaded(true)
                             .build());
             jestClient = factory.getObject();

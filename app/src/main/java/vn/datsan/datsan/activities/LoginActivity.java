@@ -60,15 +60,15 @@ public class LoginActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
 
-        // Create elasticsearch index
-        // Create index as object's key, such as: users, groups or fields
-        ElasticsearchParam param = new ElasticsearchParam();
-        param.setType(ElasticsearchEvent.ADD);
-        param.setIndexName(Constants.ELASTICSEARCH_INDEX);
-        new Elasticsearch().execute(param);
-
-        ElasticsearchTask esTask = new ElasticsearchTask();
-        esTask.execute();
+//        // Create elasticsearch index
+//        // Create index as object's key, such as: users, groups or fields
+//        ElasticsearchParam param = new ElasticsearchParam();
+//        param.setType(ElasticsearchEvent.ADD);
+//        param.setIndexName(Constants.ELASTICSEARCH_INDEX);
+//        new Elasticsearch().execute(param);
+//
+//        ElasticsearchTask esTask = new ElasticsearchTask();
+//        esTask.execute();
 
         // HockeyApp update
         checkForUpdates();

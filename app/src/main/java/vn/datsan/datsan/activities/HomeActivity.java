@@ -61,6 +61,11 @@ import vn.datsan.datsan.serverdata.FieldDataManager;
 import vn.datsan.datsan.serverdata.storage.CloudDataStorage;
 import vn.datsan.datsan.ui.appviews.LoginPopup;
 import vn.datsan.datsan.utils.AppLog;
+import vn.datsan.datsan.utils.Constants;
+import vn.datsan.datsan.utils.Elasticsearch;
+import vn.datsan.datsan.utils.ElasticsearchEvent;
+import vn.datsan.datsan.utils.ElasticsearchParam;
+import vn.datsan.datsan.utils.ElasticsearchTask;
 
 public class HomeActivity extends AppCompatActivity implements OnMapReadyCallback,
         NavigationView.OnNavigationItemSelectedListener, FirebaseAuth.AuthStateListener {
@@ -134,6 +139,16 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             }
         });
+
+        // Create elasticsearch index
+        // Create index as object's key, such as: users, groups or fields
+        ElasticsearchParam param = new ElasticsearchParam();
+        param.setType(ElasticsearchEvent.ADD);
+        param.setIndexName(Constants.ELASTICSEARCH_INDEX);
+        new Elasticsearch().execute(param);
+
+        ElasticsearchTask esTask = new ElasticsearchTask();
+        esTask.execute();
     }
 
     @Override

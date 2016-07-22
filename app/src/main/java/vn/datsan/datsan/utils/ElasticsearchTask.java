@@ -29,7 +29,7 @@ public class ElasticsearchTask  extends AsyncTask<Void, Void, Long> {
                 // Create index as object's key, such as: users, groups or fields
                 ElasticsearchParam param = new ElasticsearchParam();
                 param.setType(ElasticsearchEvent.ADD);
-                param.setIndexName(dataSnapshot.getKey());
+                param.setIndexName(Constants.ELASTICSEARCH_INDEX);
                 param.setIndexType(dataSnapshot.getKey());
                 param.setSourceObj(dataSnapshot.getValue());
                 new Elasticsearch().execute(param);
