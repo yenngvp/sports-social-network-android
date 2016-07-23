@@ -19,6 +19,8 @@ public class User {
 
     public User() {}
 
+
+
     public User(String name, String email, String phone, String address, String groups, String location) {
         this.name = name;
         this.email = email;

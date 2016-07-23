@@ -38,8 +38,6 @@ public class NewAccountActivity extends AppCompatActivity {
     // UI references.
     @BindView(R.id.fullNameEdt)
     EditText nameEdt;
-    @BindView(R.id.addressEdt)
-    EditText addressEdt;
     @BindView(R.id.phoneNumber)
     EditText phoneEdt;
     @BindView(R.id.emailEdt)
@@ -111,21 +109,24 @@ public class NewAccountActivity extends AppCompatActivity {
         // Check for a valid password, if the user entered one.
         if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
             pwdEdt.setError(getString(R.string.error_invalid_password));
+            return;
         }
         if (repassword == null || !repassword.equals(password)) {
             rePwdEdt.setError("Password not match !!!");
+            return;
         }
 
         if (phoneNumber == null || phoneNumber.isEmpty()) {
-            phoneEdt.setError("couldn't empty");
+            //phoneEdt.setError("couldn't empty");
         }
 
         // Check for a valid email address.
         if (email != null && !isEmailValid(email)) {
             emailEdt.setError(getString(R.string.error_invalid_email));
+            return;
         }
 
-        User user = new User(name, email, phoneNumber, addressEdt.getText().toString(), null, null);
+        User user = new User(name, email, phoneNumber, null, null, null);
         createAccount(user, password);
     }
 

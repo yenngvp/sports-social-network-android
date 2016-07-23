@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@android:color/background_light"
+    android:background="@color/lightpink"
     tools:context="vn.datsan.datsan.activities.ProfileActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -22,60 +22,48 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:scaleType="fitCenter"
-        android:adjustViewBounds="true"
-        android:src="@drawable/avatar"/>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="10dp"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:textColor="@android:color/holo_red_dark"
-            android:textSize="20sp"/>
-
-        <TextView
-            android:id="@+id/years"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="22 years"
-            android:gravity="center_horizontal"
-            android:textSize="20sp"/>
-
+        android:layout_height="match_parent">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_height="match_parent"
+            android:padding="10dp"
             android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:src="@drawable/avatar"/>
             <TextView
-                android:id="@+id/address"
+                android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Dia chi : Hang Xanh, tp.Hcm"
-                android:textSize="20sp"/>
-            <TextView
-                android:id="@+id/email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Email   : abcxyz@socialsportvn.com"
-                android:textSize="20sp"/>
-            <TextView
-                android:id="@+id/fc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="FC   : Crazy Bull"
+                android:gravity="center_horizontal"
+                android:textColor="@android:color/holo_red_dark"
                 android:textSize="20sp"/>
 
+            <TextView
+                android:id="@+id/years"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="22 years"
+                android:gravity="center_horizontal"
+                android:textSize="20sp"/>
+
+
+
+
+            <fragment
+                class="vn.datsan.datsan.fragments.LinearInfoListFragment"
+                android:id="@+id/userInfoFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </fragment>
         </LinearLayout>
-    </LinearLayout>
+    </ScrollView>
 </LinearLayout>

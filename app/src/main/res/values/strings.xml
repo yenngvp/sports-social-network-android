@@ -24,6 +24,7 @@
     <string name="create_account"><u>Tạo tài khoản mới</u></string>
     <string name="title_activity_new_account">Tạo tài khoản mới</string>
     <string name="full_name">Tên đầy đủ </string>
+    <string name="display_name">Tên hiển thị</string>
     <string name="nick_name">Biệt danh </string>
     <string name="email">Email </string>
     <string name="address">Địa chỉ </string>
@@ -43,5 +44,8 @@
     <string name="user_collision_exception">Email này đã được sử dụng bởi một tài khoản khác !</string>
     <string name="facebook_app_id">664109537069553</string>
     <string name="fb_login_protocol_scheme">fb664109537069553</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

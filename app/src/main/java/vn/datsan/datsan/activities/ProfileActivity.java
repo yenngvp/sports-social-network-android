@@ -27,12 +27,6 @@ public class ProfileActivity extends AppCompatActivity {
     TextView name;
     @BindView(R.id.years)
     TextView years;
-    @BindView(R.id.email)
-    TextView email;
-    @BindView(R.id.fc)
-    TextView fc;
-    @BindView(R.id.address)
-    TextView address;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,9 +62,6 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void reloadView(User user) {
         name.setText(user.getName());
-        email.setText(user.getEmail());
-        fc.setText(user.getGroups());
-        address.setText(user.getAddress());
     }
 
     @Override

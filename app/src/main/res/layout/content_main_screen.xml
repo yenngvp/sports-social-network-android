@@ -15,7 +15,7 @@
         android:id="@+id/searchResultView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/wallet_holo_blue_light"
+        android:background="@color/lightpink"
         android:visibility="gone"
         android:orientation="vertical">
 
