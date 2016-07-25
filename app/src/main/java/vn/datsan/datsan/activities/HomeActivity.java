@@ -76,7 +76,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Button loginLogout;
     @BindView(R.id.searchResultView)
     View searchResultView;
-    CallbackManager callbackManager;
+
     LoginPopup loginPopup;
 
     @Override
@@ -126,9 +126,9 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this);
 
         reloadView();
-        callbackManager = CallbackManager.Factory.create();
 
-        loginPopup = new LoginPopup(HomeActivity.this, callbackManager);
+
+        loginPopup = new LoginPopup(HomeActivity.this);
 
         FieldDataManager.getInstance().getFields(new CallBack.OnResultReceivedListener() {
             @Override
@@ -154,24 +154,6 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == LoginPopup.RC_SIGN_IN) {
-                GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            AppLog.log(AppLog.LogType.LOG_ERROR, TAG, "Google login finish " + result.isSuccess());
-                if (result.isSuccess()) {
-                    // Google Sign In was successful, authenticate with Firebase
-                    GoogleSignInAccount account = result.getSignInAccount();
-                    firebaseAuthWithGoogle(account);
-                } else {
-                    // Google Sign In failed, update UI appropriately
-                    // [START_EXCLUDE]
-                    //updateUI(null);
-                    // [END_EXCLUDE]
-
-            }
-        } else {
-            callbackManager.onActivityResult(requestCode, resultCode, data);
-        }
     }
 
     private void addMarkers(List<Field> fieldList) {
@@ -186,24 +168,6 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                 mMap.addMarker(marker);
             }
         }
-    }
-
-    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-
-        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        FirebaseAuth.getInstance().signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (!task.isSuccessful()) {
-                            Toast.makeText(HomeActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                        } else {
-                            loginPopup.dismiss();
-                        }
-                        // ...
-                    }
-                });
     }
 
     private void reloadView() {

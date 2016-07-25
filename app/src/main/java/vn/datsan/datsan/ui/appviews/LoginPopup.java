@@ -49,6 +49,7 @@ import butterknife.BindView;
 import vn.datsan.datsan.R;
 import vn.datsan.datsan.activities.HomeActivity;
 import vn.datsan.datsan.activities.NewAccountActivity;
+import vn.datsan.datsan.fragments.LoginFragment;
 import vn.datsan.datsan.setting.UserDefine;
 import vn.datsan.datsan.ui.customwidgets.SimpleProgress;
 
@@ -69,10 +70,10 @@ public class LoginPopup {
     private LoginButton fbLoginBtn;
     private SignInButton ggLoginBtn;
     private String TAG = "LOGIN POPUP";
-    public static final int RC_SIGN_IN = 9001;
+
     private GoogleApiClient mGoogleApiClient;
 
-    public LoginPopup(final AppCompatActivity context, CallbackManager fbCallBack) {
+    public LoginPopup(final AppCompatActivity context) {
         popup = new Dialog(context);
         this.context = context;
 
@@ -89,83 +90,70 @@ public class LoginPopup {
 
         popupWindow.setAttributes(wlp);
 
-        emailEdt = (EditText) popup.findViewById(R.id.email);
-        passwordEdt = (EditText) popup.findViewById(R.id.password);
-        signInBtn = (Button) popup.findViewById(R.id.email_sign_in_button);
-        forgotPwdBtn = (TextView) popup.findViewById(R.id.forgotPwdBtn);
-        newAccBtn = (TextView) popup.findViewById(R.id.newAccountBtn);
-        fbLoginBtn = (LoginButton) popup.findViewById(R.id.fbLoginBtn);
-        ggLoginBtn = (SignInButton) popup.findViewById(R.id.ggLoginBtn);
-
-        signInBtn.setOnClickListener(signInClicked);
-        forgotPwdBtn.setOnClickListener(forgotPwdBtnClick);
-        newAccBtn.setOnClickListener(newAccPwdBtnClick);
-
-        fbLoginBtn.setReadPermissions("email", "public_profile","user_photos", "user_birthday");
-
-        fbLoginBtn.registerCallback(fbCallBack, new FacebookCallback<LoginResult>() {
+        LoginFragment loginFragment = (LoginFragment) context.getSupportFragmentManager().findFragmentById(R.id.login_fragment);
+        loginFragment.setCallBack(new LoginPopupCallBack() {
             @Override
-            public void onSuccess(LoginResult loginResult) {
-                handleFacebookAccessToken(loginResult.getAccessToken());
-            }
-            @Override
-            public void onCancel() {
-                Log.e("LoginPopup", "facebook:onCancel");
-                // ...
-            }
-            @Override
-            public void onError(FacebookException error) {
-                Log.e("LoginPopup", "facebook:onError", error);
-                // ...
+            public void dismiss(int code) {
+                hidePopUp();
             }
         });
-
-        ggLoginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                signInGoogle();
-            }
-        });
-
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(context.getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-
-        mGoogleApiClient = new GoogleApiClient.Builder(context)
-                .enableAutoManage(context /* FragmentActivity */, new GoogleApiClient.OnConnectionFailedListener() {
-                    @Override
-                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-                    }
-                } /* OnConnectionFailedListener */)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
-
-        firebaseAuth = FirebaseAuth.getInstance();
+//        emailEdt = (EditText) popup.findViewById(R.id.email);
+//        passwordEdt = (EditText) popup.findViewById(R.id.password);
+//        signInBtn = (Button) popup.findViewById(R.id.email_sign_in_button);
+//        forgotPwdBtn = (TextView) popup.findViewById(R.id.forgotPwdBtn);
+//        newAccBtn = (TextView) popup.findViewById(R.id.newAccountBtn);
+//        fbLoginBtn = (LoginButton) popup.findViewById(R.id.fbLoginBtn);
+//        ggLoginBtn = (SignInButton) popup.findViewById(R.id.ggLoginBtn);
+//
+//        signInBtn.setOnClickListener(signInClicked);
+//        forgotPwdBtn.setOnClickListener(forgotPwdBtnClick);
+//        newAccBtn.setOnClickListener(newAccPwdBtnClick);
+//
+//        fbLoginBtn.setReadPermissions("email", "public_profile","user_photos", "user_birthday");
+//
+//        fbLoginBtn.registerCallback(fbCallBack, new FacebookCallback<LoginResult>() {
+//            @Override
+//            public void onSuccess(LoginResult loginResult) {
+//                handleFacebookAccessToken(loginResult.getAccessToken());
+//            }
+//            @Override
+//            public void onCancel() {
+//                Log.e("LoginPopup", "facebook:onCancel");
+//                // ...
+//            }
+//            @Override
+//            public void onError(FacebookException error) {
+//                Log.e("LoginPopup", "facebook:onError", error);
+//                // ...
+//            }
+//        });
+//
+//        ggLoginBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                signInGoogle();
+//            }
+//        });
+//
+//        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                .requestIdToken(context.getString(R.string.default_web_client_id))
+//                .requestEmail()
+//                .build();
+//
+//        mGoogleApiClient = new GoogleApiClient.Builder(context)
+//                .enableAutoManage(context /* FragmentActivity */, new GoogleApiClient.OnConnectionFailedListener() {
+//                    @Override
+//                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+//
+//                    }
+//                } /* OnConnectionFailedListener */)
+//                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+//                .build();
+//
+//        firebaseAuth = FirebaseAuth.getInstance();
     }
 
-    private void signInGoogle() {
-        SimpleProgress.show(context);
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        context.startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
 
-    private void handleFacebookAccessToken(AccessToken token) {
-        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
-        firebaseAuth.signInWithCredential(credential)
-                .addOnCompleteListener(context, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (!task.isSuccessful()) {
-                            Toast.makeText(context, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                        } else {
-                            popup.dismiss();
-                        }
-                    }
-                });
-    }
 
     private View.OnClickListener signInClicked = new View.OnClickListener() {
         @Override
@@ -250,10 +238,15 @@ public class LoginPopup {
         return popup.isShowing();
     }
 
-    public void dismiss() {
+    public void hidePopUp() {
         if (popup.isShowing()) {
             popup.dismiss();
             SimpleProgress.dismiss();
         }
+    }
+
+
+    public interface LoginPopupCallBack {
+        void dismiss(int code);
     }
 }

@@ -29,4 +29,6 @@ public class Constants {
     public static final String ELASTICSEARCH_PASSWORD = BuildConfig.ELASTICSEARCH_PASSWORD;
     public static final String ELASTICSEARCH_INDEX = "socialsport";
 
+    public static final int GOOGLE_SIGN_IN_CODE = 9001;
+
 }

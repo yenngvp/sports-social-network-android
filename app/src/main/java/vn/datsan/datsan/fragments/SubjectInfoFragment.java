@@ -1,4 +1,4 @@
-package vn.datsan.datsan.ui.appviews;
+package vn.datsan.datsan.fragments;
 
 import android.content.Context;
 import android.net.Uri;
@@ -9,12 +9,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import vn.datsan.datsan.R;
+import vn.datsan.datsan.ui.appviews.SubjectInfoAdapter;
 import vn.datsan.datsan.utils.AppLog;
 
 /**

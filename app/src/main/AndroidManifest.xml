@@ -48,13 +48,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.LoginActivity"
-            android:label="@string/title_activity_login"
-            android:theme="@style/LoginTheme"
-            android:windowSoftInputMode="stateHidden|adjustPan">
-
-        </activity>
-        <activity
             android:name=".activities.NewAccountActivity"
             android:label="@string/title_activity_new_account" />
         <activity
