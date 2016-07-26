@@ -55,9 +55,6 @@
                 android:gravity="center_horizontal"
                 android:textSize="20sp"/>
 
-
-
-
             <fragment
                 class="vn.datsan.datsan.fragments.LinearInfoListFragment"
                 android:id="@+id/userInfoFragment"

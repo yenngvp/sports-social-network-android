@@ -6,17 +6,19 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,41 +26,30 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GoogleAuthProvider;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import vn.datsan.datsan.R;
+import vn.datsan.datsan.fragments.SportClubFragment;
+import vn.datsan.datsan.fragments.FriendlyMatchFragment;
+import vn.datsan.datsan.fragments.SportFieldFragment;
 import vn.datsan.datsan.models.Field;
 import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.serverdata.FieldDataManager;
-import vn.datsan.datsan.serverdata.storage.CloudDataStorage;
 import vn.datsan.datsan.ui.appviews.LoginPopup;
 import vn.datsan.datsan.utils.AppLog;
 import vn.datsan.datsan.utils.Constants;
@@ -67,11 +58,10 @@ import vn.datsan.datsan.utils.ElasticsearchEvent;
 import vn.datsan.datsan.utils.ElasticsearchParam;
 import vn.datsan.datsan.utils.ElasticsearchTask;
 
-public class HomeActivity extends AppCompatActivity implements OnMapReadyCallback,
+public class HomeActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, FirebaseAuth.AuthStateListener {
     private static final String TAG = HomeActivity.class.getName();
 
-    private GoogleMap mMap;
     private TextView userName;
     private Button loginLogout;
     @BindView(R.id.searchResultView)
@@ -83,11 +73,19 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
-        ButterKnife.bind(this);
+//        ButterKnife.bind(this);
         FirebaseAuth.getInstance().addAuthStateListener(this);
         FacebookSdk.sdkInitialize(this.getApplicationContext());
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Setting ViewPager for each Tabs
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        setupViewPager(viewPager);
+        viewPager.setOffscreenPageLimit(3);
+        // Set Tabs inside Toolbar
+        TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
+        tabs.setupWithViewPager(viewPager);
 
 
         if (Build.VERSION.SDK_INT >= 21) {
@@ -119,26 +117,11 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         loginLogout = (Button) headerview.findViewById(R.id.loginLogout);
         loginLogout.setOnClickListener(onLoginLogoutBtnClicked);
         userName = (TextView) headerview.findViewById(R.id.userName);
-
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-
-        reloadView();
+//
+//        reloadView();
 
 
         loginPopup = new LoginPopup(HomeActivity.this);
-
-        FieldDataManager.getInstance().getFields(new CallBack.OnResultReceivedListener() {
-            @Override
-            public void onResultReceived(Object result) {
-                if (result != null) {
-                    List<Field> fieldList = (List<Field>) result;
-                    addMarkers(fieldList);
-                }
-            }
-        });
 
         // Create elasticsearch index
         // Create index as object's key, such as: users, groups or fields
@@ -151,23 +134,47 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         esTask.execute();
     }
 
+    // Add Fragments to Tabs
+    private void setupViewPager(ViewPager viewPager) {
+        Adapter adapter = new Adapter(getSupportFragmentManager());
+        adapter.addFragment( SportFieldFragment.newInstance("",""), getString(R.string.sport_field));
+        adapter.addFragment(FriendlyMatchFragment.newInstance("", ""), getString(R.string.friendly_match));
+        adapter.addFragment(SportClubFragment.newInstance("", ""), getString(R.string.sport_club));
+        viewPager.setAdapter(adapter);
+    }
+
+    static class Adapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public Adapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    private void addMarkers(List<Field> fieldList) {
-        for (Field field : fieldList) {
-            String latlon = field.getLocation();
-            if (latlon != null && latlon.length() > 6) {
-                String arr[] = latlon.split(",");
-                MarkerOptions marker = new MarkerOptions();
-                marker.position(new LatLng(Double.parseDouble(arr[0]), Double.parseDouble(arr[1])));
-                marker.title(field.getName());
-                marker.snippet(field.getAddress());
-                mMap.addMarker(marker);
-            }
-        }
     }
 
     private void reloadView() {
@@ -180,26 +187,6 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
             loginLogout.setText("Log out");
         }
     }
-
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(10.777098, 106.695487);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-    }
-
 
     @Override
     public void onBackPressed() {

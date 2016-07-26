@@ -2,15 +2,12 @@ package vn.datsan.datsan.ui.appviews;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -19,38 +16,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GoogleAuthProvider;
 
-import java.util.Arrays;
-import java.util.List;
-
-import butterknife.BindView;
 import vn.datsan.datsan.R;
-import vn.datsan.datsan.activities.HomeActivity;
 import vn.datsan.datsan.activities.NewAccountActivity;
 import vn.datsan.datsan.fragments.LoginFragment;
-import vn.datsan.datsan.setting.UserDefine;
 import vn.datsan.datsan.ui.customwidgets.SimpleProgress;
 
 /**
@@ -81,7 +57,7 @@ public class LoginPopup {
 
         Window popupWindow = popup.getWindow();
         popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        popup.setContentView(R.layout.activity_login);
+        popup.setContentView(R.layout.login_popup);
 
         WindowManager.LayoutParams wlp = popupWindow.getAttributes();
         wlp.width = WindowManager.LayoutParams.MATCH_PARENT;

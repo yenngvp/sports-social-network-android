@@ -47,5 +47,8 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="sport_field">Sân thi đấu</string>
+    <string name="friendly_match">Giao hữu</string>
+    <string name="sport_club">Câu lạc bộ</string>
 
 </resources>

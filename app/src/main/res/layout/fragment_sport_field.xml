@@ -1,0 +1,27 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="vn.datsan.datsan.fragments.SportFieldFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            layout="@layout/mapview_layout"/>
+
+        <LinearLayout
+            android:id="@+id/searchResultView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/lightpink"
+            android:visibility="gone"
+            android:orientation="vertical">
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+</FrameLayout>

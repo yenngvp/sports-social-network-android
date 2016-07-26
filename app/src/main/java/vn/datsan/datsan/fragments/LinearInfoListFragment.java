@@ -15,10 +15,9 @@ import vn.datsan.datsan.R;
 import vn.datsan.datsan.models.SubjectInfo;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link LinearInfoListFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Created by xuanpham on 7/25/16.
  */
+
 public class LinearInfoListFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER

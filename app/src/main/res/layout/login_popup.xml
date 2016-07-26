@@ -1,0 +1,8 @@
+<fragment xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    class="vn.datsan.datsan.fragments.LoginFragment"
+    android:id="@+id/login_fragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+</fragment>

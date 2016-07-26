@@ -9,7 +9,7 @@
     tools:showIn="@layout/app_bar_main_screen">
 
     <include
-        layout="@layout/activity_home"/>
+        layout="@layout/mapview_layout"/>
 
     <LinearLayout
         android:id="@+id/searchResultView"
