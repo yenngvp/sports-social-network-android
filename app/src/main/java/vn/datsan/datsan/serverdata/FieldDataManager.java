@@ -28,6 +28,7 @@ public class FieldDataManager {
 
     private static FieldDataManager instance;
     private DatabaseReference fieldRef = FirebaseDatabase.getInstance().getReference("app/fields");
+    private List<Field> fields;
 
     private FieldDataManager() {
     }
@@ -66,14 +67,16 @@ public class FieldDataManager {
         });
     }
 
-    public void getFields(final CallBack.OnResultReceivedListener callBack) {
+    public List<Field> getFields(final CallBack.OnResultReceivedListener callBack) {
+
+        if (fields != null && fields.isEmpty()) {
+            return fields;
+        }
+
         fieldRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.e("Count " ,"" + dataSnapshot.getChildrenCount());
-
-                List<Field> fields = new ArrayList<>();
-
+                fields = new ArrayList<>();
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
                     Field field = postSnapshot.getValue(Field.class);
 
@@ -90,6 +93,8 @@ public class FieldDataManager {
 
             }
         });
+
+        return fields;
     }
 
     public void genFakeFields(Context context) {

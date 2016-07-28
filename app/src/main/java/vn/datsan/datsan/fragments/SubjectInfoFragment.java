@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vn.datsan.datsan.R;
-import vn.datsan.datsan.ui.appviews.SubjectInfoAdapter;
+import vn.datsan.datsan.ui.adapters.SubjectInfoAdapter;
 import vn.datsan.datsan.utils.AppLog;
 
 /**

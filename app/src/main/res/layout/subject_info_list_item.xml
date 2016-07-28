@@ -6,7 +6,7 @@
     <data>
         <variable
             name="dataItem"
-            type="vn.datsan.datsan.ui.appviews.SubjectInfoAdapter.DataItem">
+            type="vn.datsan.datsan.ui.adapters.SubjectInfoAdapter.DataItem">
         </variable>
     </data>
 

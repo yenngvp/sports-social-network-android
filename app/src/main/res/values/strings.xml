@@ -48,7 +48,17 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="sport_field">Sân thi đấu</string>
+    <string name="place">Địa điểm</string>
+    <string name="clubs">Clubs</string>
+    <string name="sport_market">Thị trường</string>
     <string name="friendly_match">Giao hữu</string>
     <string name="sport_club">Câu lạc bộ</string>
+    <string name="time_open">GIỜ MỞ CỬA</string>
+    <string name="call">Gọi</string>
+    <string name="field_types">CÁC LOẠI SÂN THI ĐẤU</string>
+    <string name="title_activity_location_search">Tìm sân</string>
+    <string name="search_saved">Đã lưu</string>
+    <string name="search_all">Tất cả</string>
+    <string name="section_format">Hello World from section: %1$d</string>
 
 </resources>

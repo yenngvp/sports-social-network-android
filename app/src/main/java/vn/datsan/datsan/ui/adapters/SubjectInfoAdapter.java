@@ -1,15 +1,13 @@
-package vn.datsan.datsan.ui.appviews;
+package vn.datsan.datsan.ui.adapters;
 
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
-import android.support.annotation.StringDef;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import vn.datsan.datsan.BR;
 import vn.datsan.datsan.R;
-import vn.datsan.datsan.utils.AppLog;
 
 import java.util.List;
 
