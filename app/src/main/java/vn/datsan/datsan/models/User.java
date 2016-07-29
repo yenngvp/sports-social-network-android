@@ -1,14 +1,11 @@
 package vn.datsan.datsan.models;
 
-import android.location.Location;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import vn.datsan.datsan.utils.interfaces.Searchable;
+import vn.datsan.datsan.search.interfaces.Searchable;
 
 /**
  * Created by xuanpham on 6/13/16.

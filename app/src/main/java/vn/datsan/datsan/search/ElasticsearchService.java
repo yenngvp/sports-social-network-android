@@ -1,6 +1,7 @@
-package vn.datsan.datsan.utils;
+package vn.datsan.datsan.search;
 
-import io.searchbox.core.SearchResult;
+import vn.datsan.datsan.serverdata.CallBack;
+import vn.datsan.datsan.utils.Constants;
 
 /**
  * Created by yennguyen on 7/29/16.
@@ -25,11 +26,12 @@ public class ElasticsearchService {
         new Elasticsearch().execute(param);
     }
 
-    public void search(String searchText, String searchType) {
+    public void search(SearchOption searchOption, CallBack.OnSearchResultListener searchResultListener) {
         ElasticsearchParam param = new ElasticsearchParam();
         param.setEventType(ElasticsearchEvent.SEARCH);
         param.setIndexName(Constants.ELASTICSEARCH_INDEX);
-        param.setSearchText(searchText);
+        param.setSearchOption(searchOption);
+        param.setSearchResultListener(searchResultListener);
         new Elasticsearch().execute(param);
     }
 

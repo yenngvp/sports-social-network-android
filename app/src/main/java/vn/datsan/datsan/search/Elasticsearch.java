@@ -1,9 +1,7 @@
-package vn.datsan.datsan.utils;
+package vn.datsan.datsan.search;
 
 import android.os.AsyncTask;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import com.searchly.jestdroid.DroidClientConfig;
@@ -18,13 +16,16 @@ import io.searchbox.core.Update;
 import io.searchbox.indices.CreateIndex;
 import io.searchbox.indices.DeleteIndex;
 import io.searchbox.indices.IndicesExists;
-import vn.datsan.datsan.utils.interfaces.Searchable;
+import vn.datsan.datsan.serverdata.CallBack;
+import vn.datsan.datsan.utils.AppLog;
+import vn.datsan.datsan.utils.Constants;
+import vn.datsan.datsan.search.interfaces.Searchable;
 
 
 /**
  * Created by yennguyen on 6/27/16.
  */
-public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, List> {
+public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, Void> {
 
     private static final String TAG = Elasticsearch.class.getName();
 
@@ -50,9 +51,8 @@ public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, List> {
     }
 
     @Override
-    protected List doInBackground(ElasticsearchParam... elasticsearchParams) {
+    protected Void doInBackground(ElasticsearchParam... elasticsearchParams) {
 
-        List result = null;
         ElasticsearchParam param;
         for (ElasticsearchParam elasticsearchParam : elasticsearchParams) {
             param = elasticsearchParam;
@@ -78,19 +78,14 @@ public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, List> {
                     delete(param.getIndexName(), param.getIndexType(), param.getSource());
                     break;
                 case SEARCH:
-                    result = search(param.getIndexName(), param.getIndexType(), param.getSearchText());
+                    search(param.getSearchOption(), param.getSearchResultListener());
                     break;
                 default:
                     break;
             }
         }
 
-        return result;
-    }
-
-    @Override
-    protected void onPostExecute(List hits) {
-        super.onPostExecute(hits);
+        return null;
     }
 
     /**
@@ -190,39 +185,47 @@ public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, List> {
     /**
      * Search
      */
-    private List search(String indexName, String indexType, String text) {
+    private void search(SearchOption searchOption, CallBack.OnSearchResultListener searchResultListener) {
 
         try {
             String query = "{\n" +
-                    "    \"id\": \"ssSearchTemplate\"," +
-                    "    \"params\": {\n" +
-                    "        \"query_string\" : " + text +
+                    "    \"query\": {\n" +
+                    "        \"filtered\" : {\n" +
+                    "            \"query\" : {\n" +
+                    "                \"query_string\" : {\n" +
+                    "                    \"query\" : " + searchOption.getKeyword()  + "\n" +
+                    "                }\n" +
+                    "            },\n" +
+                    "            \"filter\" : {\n" +
+                    "            }\n" +
+                    "        }\n" +
                     "    }\n" +
                     "}";
             AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "Query string: " + query);
 
-            Search search = new Search.TemplateBuilder(query)
-                    // multiple index or types can be added.
-                    .addIndex(indexName)
-                    .addIndex(indexType)
+            Search search = new Search.Builder(query)
+                    .addIndex(searchOption.getIndices())
+                    .addType(searchOption.getTypes())
                     .build();
 
             SearchResult result = jestClient.execute(search);
+            if (result.isSucceeded()) {
+                AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "Search result for keyword \"" + searchOption.getKeyword() + "\"" + " found " + result.getTotal());
 
-            List<SearchResult.Hit<Searchable, Void>> hits = result.getHits(Searchable.class);
-            for (SearchResult.Hit hit : hits) {
-                String type = hit.type;
-                Object source = hit.source;
+                if (searchResultListener != null) {
+                    searchResultListener.onSearchResult(result);
+                }
+            } else {
+                AppLog.log(AppLog.LogType.LOG_ERROR, TAG, "Search result for keyword \"" + searchOption.getKeyword() + "\"" + " error: " + result.getErrorMessage());
 
-                AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "Found a " + type + " : " + source);
+                if (searchResultListener != null) {
+                    searchResultListener.onSearchResult(null);
+                }
             }
 
-            return hits;
         } catch (Exception e) {
             AppLog.log(e);
         }
-
-        return null;
     }
 
 }

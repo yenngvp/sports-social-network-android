@@ -13,15 +13,26 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.searchbox.core.SearchResult;
 import vn.datsan.datsan.R;
+import vn.datsan.datsan.models.Field;
 import vn.datsan.datsan.models.User;
+import vn.datsan.datsan.search.ElasticsearchService;
+import vn.datsan.datsan.search.SearchOption;
+import vn.datsan.datsan.search.interfaces.Searchable;
 import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.serverdata.UserManager;
 import vn.datsan.datsan.ui.customwidgets.SimpleProgress;
+import vn.datsan.datsan.utils.AppLog;
 
 public class ProfileActivity extends AppCompatActivity {
+
+    private static final String TAG = ProfileActivity.class.getName();
 
     @BindView(R.id.name)
     TextView name;
@@ -44,6 +55,35 @@ public class ProfileActivity extends AppCompatActivity {
 
         SimpleProgress.show(ProfileActivity.this);
         UserManager.getInstance().getCurrentUserInfo(profileFetchCallBack);
+
+        /*
+         * Search a text
+         */
+        final String keyword = "68";
+        List<String> searchTypes = new ArrayList<>();
+        searchTypes.add("users");
+        searchTypes.add("fields");
+        SearchOption searchOption = new SearchOption(keyword, searchTypes);
+        ElasticsearchService.getInstance().search(searchOption, new CallBack.OnSearchResultListener() {
+            @Override
+            public void onSearchResult(SearchResult searchResult) {
+                if (searchResult == null) {
+                    // No search result found
+                    return;
+                }
+
+                AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "Callback returns " + searchResult.getTotal());
+
+                // Get search result type fields
+                List<SearchResult.Hit<Field, Void>> fieldHits = searchResult.getHits(Field.class);
+                for (SearchResult.Hit hit : fieldHits) {
+                    String type = hit.type;
+                    Object source = hit.source;
+
+                    AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "Found a " + type + " : " + source);
+                }
+            }
+        });
     }
 
     CallBack.OnResultReceivedListener profileFetchCallBack = new CallBack.OnResultReceivedListener() {

@@ -1,10 +1,9 @@
-package vn.datsan.datsan.utils;
+package vn.datsan.datsan.search;
 
-import java.util.HashMap;
 import java.util.Map;
 
-import vn.datsan.datsan.models.Field;
-import vn.datsan.datsan.utils.interfaces.Searchable;
+import vn.datsan.datsan.serverdata.CallBack;
+import vn.datsan.datsan.search.interfaces.Searchable;
 
 /**
  * Created by yennguyen on 7/5/16.
@@ -17,7 +16,8 @@ public class ElasticsearchParam {
     private Object sourceObj;
     private Map sourceMap;
     private Searchable source;
-    private String searchText;
+    private SearchOption searchOption;
+    private CallBack.OnSearchResultListener searchResultListener;
 
     public ElasticsearchEvent getType() {
         return type;
@@ -67,11 +67,23 @@ public class ElasticsearchParam {
         this.source = source;
     }
 
-    public String getSearchText() {
-        return searchText;
+    public void setType(ElasticsearchEvent type) {
+        this.type = type;
     }
 
-    public void setSearchText(String searchText) {
-        this.searchText = searchText;
+    public SearchOption getSearchOption() {
+        return searchOption;
+    }
+
+    public void setSearchOption(SearchOption searchOption) {
+        this.searchOption = searchOption;
+    }
+
+    public CallBack.OnSearchResultListener getSearchResultListener() {
+        return searchResultListener;
+    }
+
+    public void setSearchResultListener(CallBack.OnSearchResultListener searchResultListener) {
+        this.searchResultListener = searchResultListener;
     }
 }

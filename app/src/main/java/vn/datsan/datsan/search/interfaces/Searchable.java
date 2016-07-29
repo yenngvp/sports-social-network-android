@@ -1,8 +1,6 @@
-package vn.datsan.datsan.utils.interfaces;
+package vn.datsan.datsan.search.interfaces;
 
 import java.util.Map;
-
-import vn.datsan.datsan.utils.listeners.FirebaseChildEventListener;
 
 /**
  * Created by yennguyen on 7/27/16.

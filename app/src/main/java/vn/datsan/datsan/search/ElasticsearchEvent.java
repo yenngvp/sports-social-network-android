@@ -1,4 +1,4 @@
-package vn.datsan.datsan.utils;
+package vn.datsan.datsan.search;
 
 /**
  * Created by yennguyen on 7/5/16.

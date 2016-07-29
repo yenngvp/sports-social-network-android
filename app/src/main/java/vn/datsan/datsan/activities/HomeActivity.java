@@ -33,18 +33,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import io.searchbox.core.SearchResult;
 import vn.datsan.datsan.R;
 import vn.datsan.datsan.fragments.SportClubFragment;
 import vn.datsan.datsan.fragments.FriendlyMatchFragment;
 import vn.datsan.datsan.fragments.SportFieldFragment;
+import vn.datsan.datsan.search.SearchOption;
+import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.ui.appviews.LoginPopup;
 import vn.datsan.datsan.ui.appviews.NewFCPopup;
 import vn.datsan.datsan.utils.AppLog;
-import vn.datsan.datsan.utils.Constants;
-import vn.datsan.datsan.utils.Elasticsearch;
-import vn.datsan.datsan.utils.ElasticsearchEvent;
-import vn.datsan.datsan.utils.ElasticsearchParam;
-import vn.datsan.datsan.utils.ElasticsearchService;
+import vn.datsan.datsan.search.ElasticsearchService;
+import vn.datsan.datsan.search.interfaces.Searchable;
 
 public class HomeActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, FirebaseAuth.AuthStateListener {
@@ -111,12 +111,6 @@ public class HomeActivity extends AppCompatActivity implements
          * Create elasticsearch index if it not exists
          */
         ElasticsearchService.getInstance().createIndex();
-
-        /*
-         * Search a text
-         */
-        String searchText = "68";
-        ElasticsearchService.getInstance().search(searchText, null);
 
     }
 

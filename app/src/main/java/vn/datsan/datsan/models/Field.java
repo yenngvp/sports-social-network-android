@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.HashMap;
 import java.util.Map;
 
-import vn.datsan.datsan.utils.interfaces.Searchable;
+import vn.datsan.datsan.search.interfaces.Searchable;
 
 /**
  * Created by xuanpham on 6/20/16.

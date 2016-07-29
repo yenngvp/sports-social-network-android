@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
-import vn.datsan.datsan.utils.interfaces.Searchable;
+import vn.datsan.datsan.search.interfaces.Searchable;
 import vn.datsan.datsan.utils.Utils;
 
 /**
