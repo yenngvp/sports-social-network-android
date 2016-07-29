@@ -2,12 +2,20 @@ package vn.datsan.datsan.models;
 
 import android.location.Location;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import vn.datsan.datsan.utils.interfaces.Searchable;
 
 /**
  * Created by xuanpham on 6/13/16.
  */
-public class User {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class User implements Searchable {
+
     private String id;
     private String name;
     private String email;
@@ -19,8 +27,6 @@ public class User {
 
     public User() {}
 
-
-
     public User(String name, String email, String phone, String address, String groups, String location) {
         this.name = name;
         this.email = email;
@@ -28,6 +34,22 @@ public class User {
         this.address = address;
         this.groups = groups;
         this.location = location;
+    }
+
+    @Override
+    public String getDocumentId() {
+        return getId();
+    }
+
+    @Override
+    public Map<String, String> getSearchableSource() {
+        Map<String, String> source = new HashMap<>();
+        source.put("name", getName());
+        source.put("email", getEmail());
+        source.put("phone", getPhone());
+        source.put("address", getAddress());
+        source.put("location", getLocation());
+        return source;
     }
 
     public String getId() {

@@ -1,9 +1,17 @@
 package vn.datsan.datsan.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import vn.datsan.datsan.utils.interfaces.Searchable;
+
 /**
  * Created by xuanpham on 6/20/16.
  */
-public class Field {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Field implements Searchable {
     private String id;
     private String name;
     private String address;
@@ -13,6 +21,22 @@ public class Field {
     private String district;
     private String details;
     private String type;
+
+    @Override
+    public String getDocumentId() {
+        return getId();
+    }
+
+    @Override
+    public Map<String, String> getSearchableSource() {
+        Map<String, String> source = new HashMap<>();
+        source.put("name", getName());
+        source.put("contactName", getContactName());
+        source.put("phone", getPhone());
+        source.put("address", getAddress());
+        source.put("location", getLocation());
+        return source;
+    }
 
     public String getId() {
         return id;
@@ -84,5 +108,10 @@ public class Field {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Field (%s, %s, %s)", getName(), getAddress(), getPhone());
     }
 }

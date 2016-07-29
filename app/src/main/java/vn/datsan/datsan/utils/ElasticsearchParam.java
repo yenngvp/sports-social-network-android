@@ -1,6 +1,10 @@
 package vn.datsan.datsan.utils;
 
+import java.util.HashMap;
 import java.util.Map;
+
+import vn.datsan.datsan.models.Field;
+import vn.datsan.datsan.utils.interfaces.Searchable;
 
 /**
  * Created by yennguyen on 7/5/16.
@@ -11,13 +15,15 @@ public class ElasticsearchParam {
     private String indexName;
     private String indexType;
     private Object sourceObj;
-    private Map<String, Map> sourceMap;
+    private Map sourceMap;
+    private Searchable source;
+    private String searchText;
 
     public ElasticsearchEvent getType() {
         return type;
     }
 
-    public void setType(ElasticsearchEvent type) {
+    public void setEventType(ElasticsearchEvent type) {
         this.type = type;
     }
 
@@ -45,11 +51,27 @@ public class ElasticsearchParam {
         this.sourceObj = sourceObj;
     }
 
-    public Map<String, Map> getSourceMap() {
+    public Map getSourceMap() {
         return sourceMap;
     }
 
-    public void setSourceMap(Map<String, Map> sourceMap) {
+    public void setSourceMap(Map sourceMap) {
         this.sourceMap = sourceMap;
+    }
+
+    public Searchable getSource() {
+        return source;
+    }
+
+    public void setSource(Searchable source) {
+        this.source = source;
+    }
+
+    public String getSearchText() {
+        return searchText;
+    }
+
+    public void setSearchText(String searchText) {
+        this.searchText = searchText;
     }
 }

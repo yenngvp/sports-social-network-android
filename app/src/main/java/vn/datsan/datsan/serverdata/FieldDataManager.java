@@ -1,7 +1,6 @@
 package vn.datsan.datsan.serverdata;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -19,6 +18,7 @@ import vn.datsan.datsan.models.FakeStadium;
 import vn.datsan.datsan.models.Field;
 import vn.datsan.datsan.utils.RawIO;
 import vn.datsan.datsan.utils.AppLog;
+import vn.datsan.datsan.utils.listeners.FirebaseChildEventListener;
 
 /**
  * Created by xuanpham on 6/20/16.
@@ -26,10 +26,16 @@ import vn.datsan.datsan.utils.AppLog;
 public class FieldDataManager {
     private static final String TAG = FieldDataManager.class.getName();
     private static FieldDataManager instance;
-    private DatabaseReference fieldRef = FirebaseDatabase.getInstance().getReference("app/fields");
+    private DatabaseReference fieldDatabaseRef;
     private List<Field> fields;
 
     private FieldDataManager() {
+        fieldDatabaseRef = FirebaseDatabase.getInstance().getReference("app/fields");
+
+        // Listening on the field object change
+        FirebaseChildEventListener listener = new FirebaseChildEventListener();
+        listener.setEventClazz(Field.class);
+        fieldDatabaseRef.addChildEventListener(listener);
     }
 
     public static FieldDataManager getInstance() {
@@ -44,11 +50,11 @@ public class FieldDataManager {
     }
 
     public void addField(Field field) {
-        fieldRef.child(genIden(field)).setValue(field);
+        fieldDatabaseRef.child(genIden(field)).setValue(field);
     }
 
     public void getField(String id, final CallBack.OnResultReceivedListener callBack) {
-        fieldRef.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+        fieldDatabaseRef.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Field user = dataSnapshot.getValue(Field.class);
@@ -72,7 +78,7 @@ public class FieldDataManager {
             return fields;
         }
 
-        fieldRef.addValueEventListener(new ValueEventListener() {
+        fieldDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 fields = new ArrayList<>();

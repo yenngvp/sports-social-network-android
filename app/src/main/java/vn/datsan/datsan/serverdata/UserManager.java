@@ -1,7 +1,6 @@
 package vn.datsan.datsan.serverdata;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -10,6 +9,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import vn.datsan.datsan.models.User;
 import vn.datsan.datsan.utils.AppLog;
+import vn.datsan.datsan.utils.listeners.FirebaseChildEventListener;
 
 /**
  * Created by xuanpham on 6/20/16.
@@ -22,6 +22,11 @@ public class UserManager {
 
     private  UserManager() {
         userDatabaseRef = FirebaseDatabase.getInstance().getReference("app/users");
+
+        // Listening on user object change
+        FirebaseChildEventListener listener = new FirebaseChildEventListener();
+        listener.setEventClazz(User.class);
+        userDatabaseRef.addChildEventListener(listener);
     }
 
     public static UserManager getInstance() {

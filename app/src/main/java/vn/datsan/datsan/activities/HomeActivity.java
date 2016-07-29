@@ -44,7 +44,7 @@ import vn.datsan.datsan.utils.Constants;
 import vn.datsan.datsan.utils.Elasticsearch;
 import vn.datsan.datsan.utils.ElasticsearchEvent;
 import vn.datsan.datsan.utils.ElasticsearchParam;
-import vn.datsan.datsan.utils.ElasticsearchTask;
+import vn.datsan.datsan.utils.ElasticsearchService;
 
 public class HomeActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, FirebaseAuth.AuthStateListener {
@@ -107,15 +107,17 @@ public class HomeActivity extends AppCompatActivity implements
 
         loginPopup = new LoginPopup(HomeActivity.this);
 
-        // Create elasticsearch index
-        // Create index as object's key, such as: users, groups or fields
-        ElasticsearchParam param = new ElasticsearchParam();
-        param.setType(ElasticsearchEvent.ADD);
-        param.setIndexName(Constants.ELASTICSEARCH_INDEX);
-        new Elasticsearch().execute(param);
+        /*
+         * Create elasticsearch index if it not exists
+         */
+        ElasticsearchService.getInstance().createIndex();
 
-        ElasticsearchTask esTask = new ElasticsearchTask();
-        esTask.execute();
+        /*
+         * Search a text
+         */
+        String searchText = "68";
+        ElasticsearchService.getInstance().search(searchText, null);
+
     }
 
     // Add Fragments to Tabs

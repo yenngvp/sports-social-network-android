@@ -16,6 +16,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,6 +29,7 @@ import vn.datsan.datsan.setting.UserDefine;
 import vn.datsan.datsan.ui.customwidgets.Alert.SimpleAlert;
 import vn.datsan.datsan.ui.customwidgets.SimpleProgress;
 import vn.datsan.datsan.utils.AppLog;
+import vn.datsan.datsan.utils.listeners.FirebaseChildEventListener;
 
 /**
  * A login screen that offers login via email/password.

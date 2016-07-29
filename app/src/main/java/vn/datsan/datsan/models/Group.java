@@ -2,13 +2,16 @@ package vn.datsan.datsan.models;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
+import vn.datsan.datsan.utils.interfaces.Searchable;
 import vn.datsan.datsan.utils.Utils;
 
 /**
  * Created by xuanpham on 6/20/16.
  */
-public class Group {
+public class Group implements Searchable {
     private String id;
     private int type;
     private String createDate;
@@ -24,6 +27,18 @@ public class Group {
         this.name = name;
         this.members = members;
         this.createDate = Utils.SIMPLE_DATE_FORMAT.format(new Date());
+    }
+
+    @Override
+    public String getDocumentId() {
+        return getId();
+    }
+
+    @Override
+    public Map<String, String> getSearchableSource() {
+        Map<String, String> source = new HashMap<>();
+        source.put("name", getName());
+        return source;
     }
 
     public List<String> getAdmins() {

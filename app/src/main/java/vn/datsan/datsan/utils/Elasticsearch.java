@@ -2,28 +2,36 @@ package vn.datsan.datsan.utils;
 
 import android.os.AsyncTask;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
 
 import io.searchbox.client.JestClient;
 import io.searchbox.core.Delete;
 import io.searchbox.core.Index;
+import io.searchbox.core.Search;
+import io.searchbox.core.SearchResult;
 import io.searchbox.core.Update;
 import io.searchbox.indices.CreateIndex;
 import io.searchbox.indices.DeleteIndex;
 import io.searchbox.indices.IndicesExists;
+import vn.datsan.datsan.utils.interfaces.Searchable;
 
 
 /**
  * Created by yennguyen on 6/27/16.
  */
-public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, Void> {
+public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, List> {
 
     private static final String TAG = Elasticsearch.class.getName();
 
-    private JestClient jestClient;
+    private static JestClient jestClient;
 
     public Elasticsearch() {
+
         // JestClient is designed to be singleton, don't construct it for each request!
         // See https://github.com/searchbox-io/Jest/tree/master/jest
         //  .defaultCredentials(Constants.ELASTICSEARCH_USERNAME,
@@ -32,21 +40,24 @@ public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, Void> {
             // Build connection factory to the Elasticsearch server
             JestClientFactory factory = new JestClientFactory();
             factory.setDroidClientConfig(
-                    new DroidClientConfig.Builder(Constants.ELASTICSEARCH_SERVER_URL)
+                    new DroidClientConfig
+                            .Builder(Constants.ELASTICSEARCH_SERVER_URL)
                             .multiThreaded(true)
                             .build());
             jestClient = factory.getObject();
         }
+
     }
 
     @Override
-    protected Void doInBackground(ElasticsearchParam... elasticsearchParams) {
+    protected List doInBackground(ElasticsearchParam... elasticsearchParams) {
 
+        List result = null;
         ElasticsearchParam param;
         for (ElasticsearchParam elasticsearchParam : elasticsearchParams) {
             param = elasticsearchParam;
             switch (param.getType()) {
-                case ADD_INDEX:
+                case CREATE_INDEX:
                     createIndexIfNotExists(param.getIndexName());
                     break;
                 case DELETE_INDEX:
@@ -54,20 +65,32 @@ public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, Void> {
                     break;
                 case ADD:
                     createIndexIfNotExists(param.getIndexName());
-                    add(param.getIndexName(), param.getIndexType(), param.getSourceObj());
+                    if (param.getSourceObj() != null) {
+                        add(param.getIndexName(), param.getIndexType(), param.getSource());
+                    } else if (param.getSourceMap() != null) {
+                        add(param.getIndexName(), param.getIndexType(), param.getSourceMap());
+                    }
                     break;
                 case UPDATE:
-                    update(param.getIndexName(), param.getIndexType(), param.getSourceObj());
+                    update(param.getIndexName(), param.getIndexType(), param.getSource());
                     break;
                 case DELETE:
-                    delete(param.getIndexName(), param.getIndexType(), param.getSourceObj());
+                    delete(param.getIndexName(), param.getIndexType(), param.getSource());
+                    break;
+                case SEARCH:
+                    result = search(param.getIndexName(), param.getIndexType(), param.getSearchText());
                     break;
                 default:
                     break;
             }
         }
 
-        return null;
+        return result;
+    }
+
+    @Override
+    protected void onPostExecute(List hits) {
+        super.onPostExecute(hits);
     }
 
     /**
@@ -99,9 +122,22 @@ public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, Void> {
     }
 
     /**
-     * Index document
+     * Index document from an object
      */
-    private void add(String indexName, String indexType, Object source) {
+    private void add(String indexName, String indexType, Searchable source) {
+
+        try {
+            Index index = new Index.Builder(source.getSearchableSource()).index(indexName).type(indexType).id(source.getDocumentId()).build();
+            jestClient.execute(index);
+        } catch (Exception e) {
+            AppLog.log(e);
+        }
+    }
+
+    /**
+     * Index document from a hash map
+     */
+    private void add(String indexName, String indexType, Map source) {
         try {
             Index index = new Index.Builder(source).index(indexName).type(indexType).build();
             jestClient.execute(index);
@@ -113,15 +149,28 @@ public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, Void> {
     /**
      * Update document
      */
-    private void update(String indexName, String indexType, Object source) {
+    private void update(String indexName, String indexType, Searchable source) {
+
         try {
-            String script = "{\n" +
-                    "    \"script\" : \"ctx._source.tags += tag\",\n" +
-                    "    \"params\" : {\n" +
-                    "        \"tag\" : \"blue\"\n" +
-                    "    }\n" +
-                    "}";
-            jestClient.execute(new Update.Builder(script).index(indexName).type(indexType).id("").build());
+            if (source.getSearchableSource().isEmpty()) {
+                return; // nothing to update
+            }
+
+            // Build update script
+            StringBuilder scriptBuilder = new StringBuilder(
+                    "{\n" +
+                    "  \"doc\" : {\n"
+            );
+            for (Map.Entry<String, String> e : source.getSearchableSource().entrySet()) {
+                scriptBuilder.append(e.getKey()).append(" : ").append(e.getValue()).append(",\n");
+            }
+            // replace to last comma ','
+            scriptBuilder.delete(scriptBuilder.lastIndexOf(",\n"), scriptBuilder.length());
+            scriptBuilder.append("}\n}");
+            scriptBuilder.append("}\n}");
+            AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "Update script: " + scriptBuilder.toString());
+
+            jestClient.execute(new Update.Builder(scriptBuilder.toString()).index(indexName).type(indexType).id(source.getDocumentId()).build());
         } catch (Exception e) {
             AppLog.log(e);
         }
@@ -130,11 +179,50 @@ public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, Void> {
     /**
      * Delete a document
      */
-    private void delete(String indexName, String indexType, Object source) {
+    private void delete(String indexName, String indexType, Searchable source) {
         try {
-            jestClient.execute(new Delete.Builder("").index(indexName).type(indexType).build());
+            jestClient.execute(new Delete.Builder(source.getDocumentId()).index(indexName).type(indexType).build());
         } catch (Exception e) {
             AppLog.log(e);
         }
     }
+
+    /**
+     * Search
+     */
+    private List search(String indexName, String indexType, String text) {
+
+        try {
+            String query = "{\n" +
+                    "    \"id\": \"ssSearchTemplate\"," +
+                    "    \"params\": {\n" +
+                    "        \"query_string\" : " + text +
+                    "    }\n" +
+                    "}";
+            AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "Query string: " + query);
+
+            Search search = new Search.TemplateBuilder(query)
+                    // multiple index or types can be added.
+                    .addIndex(indexName)
+                    .addIndex(indexType)
+                    .build();
+
+            SearchResult result = jestClient.execute(search);
+
+            List<SearchResult.Hit<Searchable, Void>> hits = result.getHits(Searchable.class);
+            for (SearchResult.Hit hit : hits) {
+                String type = hit.type;
+                Object source = hit.source;
+
+                AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "Found a " + type + " : " + source);
+            }
+
+            return hits;
+        } catch (Exception e) {
+            AppLog.log(e);
+        }
+
+        return null;
+    }
+
 }

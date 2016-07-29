@@ -1,5 +1,7 @@
 package vn.datsan.datsan.utils;
 
+import java.util.List;
+
 import vn.datsan.datsan.BuildConfig;
 
 /**
@@ -15,9 +17,15 @@ public class Constants {
     /*
      * Firebase objects
      */
+    public static final String FIREBASE_APP_ROOT = "app";
     public static final String FIREBASE_USERS = "users";
     public static final String FIREBASE_GROUPS = "groups";
     public static final String FIREBASE_FIELDS = "fields";
+
+    /*
+     * Indexed objects used for searching
+     */
+    public static final String[] ACCEPT_INDEX_TYPES = {FIREBASE_USERS, FIREBASE_FIELDS, FIREBASE_GROUPS, "user-posts", "posts"};
 
     /*
      * Elasticsearch server
