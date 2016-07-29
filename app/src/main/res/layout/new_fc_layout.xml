@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <ImageButton
+        android:id="@+id/btn_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@android:drawable/ic_menu_close_clear_cancel"
+        android:layout_gravity="top|right"/>
+
+    <vn.datsan.datsan.ui.customwidgets.SemillaTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:paddingBottom="10dp"
+        android:textSize="20sp"
+        android:textColor="@color/greengrass"
+        android:text="TẠO ĐỘI BÓNG - FC"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="90dp"
+            android:padding="10dp"
+            android:text="@string/name"
+            android:textSize="17sp"
+            android:textColor="@android:color/black"/>
+
+        <EditText
+            android:id="@+id/group_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="My FC"
+            android:minWidth="150dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:minWidth="90dp"
+            android:textSize="17dp"
+            android:textColor="@android:color/black"
+            android:text="Khu vực"/>
+
+        <EditText
+            android:id="@+id/group_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="150dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:minWidth="90dp"
+            android:textSize="17dp"
+            android:textColor="@android:color/black"
+            android:text="@string/phone_number"/>
+
+        <EditText
+            android:id="@+id/group_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="150dp"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/register"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:drawableRight="@android:drawable/ic_media_play"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/register"/>
+
+</LinearLayout>

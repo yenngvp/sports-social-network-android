@@ -60,5 +60,27 @@
     <string name="search_saved">Đã lưu</string>
     <string name="search_all">Tất cả</string>
     <string name="section_format">Hello World from section: %1$d</string>
+    <string name="post_entry">Đăng tin</string>
+    <string name="name">Tên</string>
 
+
+    <string-array name="positions">
+        <item>Không yêu cầu</item>
+        <item>Tiền đạo</item>
+        <item>Tiền vệ</item>
+        <item>Hậu vệ</item>
+        <item>Trung vệ</item>
+        <item>Thủ môn</item>
+        <item>Huấn luyện viên</item>
+    </string-array>
+
+    <string-array name="member_level">
+        <item>Không yêu cầu</item>
+        <item>Biết đá</item>
+        <item>Trung bình</item>
+        <item>Trung bình khá</item>
+        <item>Khá</item>
+        <item>Giỏi</item>
+        <item>Chuyên nghiệp</item>
+    </string-array>
 </resources>

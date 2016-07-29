@@ -34,25 +34,9 @@ import vn.datsan.datsan.ui.customwidgets.SimpleProgress;
  */
 public class LoginPopup {
     private Dialog popup;
-    private AppCompatActivity context;
-    private FirebaseAuth firebaseAuth;
-    // UI references.
-
-    private EditText emailEdt;
-    private EditText passwordEdt;
-    private Button signInBtn;
-    private TextView forgotPwdBtn;
-    private TextView newAccBtn;
-    private LoginButton fbLoginBtn;
-    private SignInButton ggLoginBtn;
-    private String TAG = "LOGIN POPUP";
-
-    private GoogleApiClient mGoogleApiClient;
 
     public LoginPopup(final AppCompatActivity context) {
         popup = new Dialog(context);
-        this.context = context;
-
         popup.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         Window popupWindow = popup.getWindow();
@@ -73,142 +57,12 @@ public class LoginPopup {
                 hidePopUp();
             }
         });
-//        emailEdt = (EditText) popup.findViewById(R.id.email);
-//        passwordEdt = (EditText) popup.findViewById(R.id.password);
-//        signInBtn = (Button) popup.findViewById(R.id.email_sign_in_button);
-//        forgotPwdBtn = (TextView) popup.findViewById(R.id.forgotPwdBtn);
-//        newAccBtn = (TextView) popup.findViewById(R.id.newAccountBtn);
-//        fbLoginBtn = (LoginButton) popup.findViewById(R.id.fbLoginBtn);
-//        ggLoginBtn = (SignInButton) popup.findViewById(R.id.ggLoginBtn);
-//
-//        signInBtn.setOnClickListener(signInClicked);
-//        forgotPwdBtn.setOnClickListener(forgotPwdBtnClick);
-//        newAccBtn.setOnClickListener(newAccPwdBtnClick);
-//
-//        fbLoginBtn.setReadPermissions("email", "public_profile","user_photos", "user_birthday");
-//
-//        fbLoginBtn.registerCallback(fbCallBack, new FacebookCallback<LoginResult>() {
-//            @Override
-//            public void onSuccess(LoginResult loginResult) {
-//                handleFacebookAccessToken(loginResult.getAccessToken());
-//            }
-//            @Override
-//            public void onCancel() {
-//                Log.e("LoginPopup", "facebook:onCancel");
-//                // ...
-//            }
-//            @Override
-//            public void onError(FacebookException error) {
-//                Log.e("LoginPopup", "facebook:onError", error);
-//                // ...
-//            }
-//        });
-//
-//        ggLoginBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                signInGoogle();
-//            }
-//        });
-//
-//        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//                .requestIdToken(context.getString(R.string.default_web_client_id))
-//                .requestEmail()
-//                .build();
-//
-//        mGoogleApiClient = new GoogleApiClient.Builder(context)
-//                .enableAutoManage(context /* FragmentActivity */, new GoogleApiClient.OnConnectionFailedListener() {
-//                    @Override
-//                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-//
-//                    }
-//                } /* OnConnectionFailedListener */)
-//                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-//                .build();
-//
-//        firebaseAuth = FirebaseAuth.getInstance();
     }
-
-
-
-    private View.OnClickListener signInClicked = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            attemptLogin();
-        }
-    };
-
-    private View.OnClickListener forgotPwdBtnClick = new View.OnClickListener() {
-
-        @Override
-        public void onClick(View view) {
-
-        }
-    };
-
-    private View.OnClickListener newAccPwdBtnClick = new View.OnClickListener() {
-
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(context, NewAccountActivity.class);
-            context.startActivity(intent);
-        }
-    };
 
     public void show() {
         popup.show();
     }
 
-    private void attemptLogin() {
-
-        // Reset errors.
-        emailEdt.setError(null);
-        passwordEdt.setError(null);
-
-        // Store values at the time of the login attempt.
-        String email = emailEdt.getText().toString();
-        String password = passwordEdt.getText().toString();
-
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            passwordEdt.setError(context.getString(R.string.error_invalid_password));
-        }
-
-        // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            emailEdt.setError(context.getString(R.string.error_field_required));
-        } else if (!isPhoneNumberValid(email)) {
-            emailEdt.setError(context.getString(R.string.error_invalid_email));
-        }
-
-        loginEmail(email, password);
-    }
-
-    private void loginEmail(final String email, String password) {
-        SimpleProgress.show(context);
-
-        firebaseAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener((Activity) context, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        SimpleProgress.dismiss();
-                        if (!task.isSuccessful()) {
-                        } else {
-                            Toast.makeText(context, "Login Successful !",
-                                    Toast.LENGTH_SHORT).show();
-                            popup.dismiss();
-                        }
-                    }
-                });
-    }
-
-    private boolean isPhoneNumberValid(String phone) {
-        return phone.startsWith("0");// && phone.length() > 8 && phone.length() < 12;
-    }
-
-    private boolean isPasswordValid(String password) {
-        return password.length() > 4;
-    }
 
     public boolean isShowing() {
         return popup.isShowing();
@@ -220,7 +74,6 @@ public class LoginPopup {
             SimpleProgress.dismiss();
         }
     }
-
 
     public interface LoginPopupCallBack {
         void dismiss(int code);

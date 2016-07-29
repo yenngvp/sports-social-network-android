@@ -25,7 +25,6 @@ import vn.datsan.datsan.utils.AppLog;
  */
 public class FieldDataManager {
     private static final String TAG = FieldDataManager.class.getName();
-
     private static FieldDataManager instance;
     private DatabaseReference fieldRef = FirebaseDatabase.getInstance().getReference("app/fields");
     private List<Field> fields;

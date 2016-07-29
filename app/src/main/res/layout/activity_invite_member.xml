@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="vn.datsan.datsan.activities.InviteMemberActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:minWidth="90dp"
+                android:textSize="17dp"
+                android:textColor="@android:color/black"
+                android:text="Tiêu đề"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="FC Gà Mờ / Quận 6 tuyển quân"
+                android:minWidth="150dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:minWidth="90dp"
+                android:textSize="17dp"
+                android:textColor="@android:color/black"
+                android:text="FC tuyển"/>
+            <Spinner
+                android:id="@+id/spinner_fc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:entries="@array/positions"
+                android:minWidth="90dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:minWidth="90dp"
+                android:textSize="17dp"
+                android:textColor="@android:color/black"
+                android:text="Vị trí"/>
+            <Spinner
+                android:id="@+id/spinner_position"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:entries="@array/positions"
+                android:minWidth="70dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:minWidth="90dp"
+                android:textSize="17dp"
+                android:textColor="@android:color/black"
+                android:text="Trình độ"/>
+            <Spinner
+                android:id="@+id/spinner_level"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:entries="@array/member_level"
+                android:minWidth="70dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:minWidth="90dp"
+                android:textSize="17dp"
+                android:textColor="@android:color/black"
+                android:text="Tuổi"/>
+            <EditText
+                android:id="@+id/from_age_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="14"
+                android:minWidth="30dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:text="Đến"/>
+            <EditText
+                android:id="@+id/to_age_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="40"
+                android:minWidth="30dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:minWidth="90dp"
+                android:textSize="17dp"
+                android:textColor="@android:color/black"
+                android:text="Khu vực"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="150dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:minWidth="90dp"
+                android:textSize="17dp"
+                android:textColor="@android:color/black"
+                android:text="Sân hay đá"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="150dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:minWidth="90dp"
+                android:textSize="17dp"
+                android:textColor="@android:color/black"
+                android:text="Thông điệp"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="150dp"/>
+        </LinearLayout>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:drawableRight="@android:drawable/ic_media_play"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/post_entry"/>
+    </LinearLayout>
+
+</ScrollView>

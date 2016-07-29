@@ -38,6 +38,7 @@ import vn.datsan.datsan.fragments.SportClubFragment;
 import vn.datsan.datsan.fragments.FriendlyMatchFragment;
 import vn.datsan.datsan.fragments.SportFieldFragment;
 import vn.datsan.datsan.ui.appviews.LoginPopup;
+import vn.datsan.datsan.ui.appviews.NewFCPopup;
 import vn.datsan.datsan.utils.AppLog;
 import vn.datsan.datsan.utils.Constants;
 import vn.datsan.datsan.utils.Elasticsearch;
@@ -77,12 +78,12 @@ public class HomeActivity extends AppCompatActivity implements
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 //String name = CloudDataStorage.getInstance().genUniqFileName();
                 //AppLog.log(AppLog.LogType.LOG_ERROR, TAG, name);
-
-                Intent intent = new Intent(HomeActivity.this, FieldSearchActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(HomeActivity.this, FieldSearchActivity.class);
+//                startActivity(intent);
+                NewFCPopup popup = new NewFCPopup(HomeActivity.this);
+                popup.show();
 
             }
         });
