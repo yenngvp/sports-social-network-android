@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import vn.datsan.datsan.search.interfaces.Searchable;
+import vn.datsan.datsan.utils.localization.VietnameseUnsignedTranslator;
 
 /**
  * Created by xuanpham on 6/13/16.
@@ -46,6 +47,10 @@ public class User implements Searchable {
         source.put("phone", getPhone());
         source.put("address", getAddress());
         source.put("location", getLocation());
+        // Localization attributes
+        source.put("name_unsigned", VietnameseUnsignedTranslator.getInstance().getTranslation(getName()));
+        source.put("address_unsigned", VietnameseUnsignedTranslator.getInstance().getTranslation(getAddress()));
+
         return source;
     }
 

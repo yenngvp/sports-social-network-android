@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 import vn.datsan.datsan.search.interfaces.Searchable;
 import vn.datsan.datsan.utils.Utils;
+import vn.datsan.datsan.utils.localization.VietnameseUnsignedTranslator;
 
 /**
  * Created by xuanpham on 6/20/16.
@@ -41,6 +42,9 @@ public class Group implements Searchable {
     public Map<String, String> getSearchableSource() {
         Map<String, String> source = new HashMap<>();
         source.put("name", getName());
+        // Localization attributes
+        source.put("name_unsigned", VietnameseUnsignedTranslator.getInstance().getTranslation(getName()));
+
         return source;
     }
 
