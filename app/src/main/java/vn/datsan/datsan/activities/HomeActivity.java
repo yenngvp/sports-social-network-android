@@ -80,10 +80,9 @@ public class HomeActivity extends AppCompatActivity implements
             public void onClick(View view) {
 //                String name = CloudDataStorage.getInstance().genUniqFileName();
 //                AppLog.log(AppLog.LogType.LOG_ERROR, TAG, name);
-                Intent intent = new Intent(HomeActivity.this, GroupDetailActivity.class);
-                startActivity(intent);
-//                NewFCPopup popup = new NewFCPopup(HomeActivity.this);
-//                popup.show();
+
+                NewFCPopup popup = new NewFCPopup(HomeActivity.this);
+                popup.show();
 
             }
         });

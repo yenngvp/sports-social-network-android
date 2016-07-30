@@ -21,13 +21,18 @@ import vn.datsan.datsan.models.ImageModel;
 public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     Context context;
-    List<ImageModel> data = new ArrayList<>();
+    List<ImageModel> dataSource = new ArrayList<>();
 
     public GalleryAdapter(Context context, List<ImageModel> data) {
         this.context = context;
-        this.data = data;
+        this.dataSource = data;
     }
 
+    public void update(List<ImageModel> data) {
+        dataSource.clear();
+        dataSource.addAll(data);
+        notifyDataSetChanged();
+    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -43,8 +48,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         Picasso.with(context)
-                .load(data.get(position).getUrl())
-                .resize(50, 50)
+                .load(dataSource.get(position).getUrl())
+                .resize(100, 100)
                 .centerCrop()
                 .into(((MyItemHolder) holder).mImg);
 //        Glide.with(context).load(data.get(position).getUrl())
@@ -58,7 +63,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return dataSource.size();
     }
 
     public static class MyItemHolder extends RecyclerView.ViewHolder {

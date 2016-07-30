@@ -1,13 +1,19 @@
 package vn.datsan.datsan.fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import vn.datsan.datsan.R;
+import vn.datsan.datsan.serverdata.DummyData;
+import vn.datsan.datsan.ui.adapters.GalleryAdapter;
+import vn.datsan.datsan.ui.adapters.RecyclerTouchListener;
 
 public class GaleryFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
@@ -16,6 +22,9 @@ public class GaleryFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    GalleryAdapter adapter;
+    RecyclerView recyclerView;
 
 
     public GaleryFragment() {
@@ -44,7 +53,30 @@ public class GaleryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_galery, container, false);
+        View view = inflater.inflate(R.layout.fragment_galery, container, false);
+
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+        recyclerView.setHasFixedSize(true);
+
+
+        adapter = new GalleryAdapter(getActivity(), DummyData.getImageModels());
+        recyclerView.setAdapter(adapter);
+
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), recyclerView,
+                new RecyclerTouchListener.ClickListener() {
+
+                    @Override
+                    public void onClick(View view, int position) {
+
+                    }
+
+                    @Override
+                    public void onLongClick(View view, int position) {
+
+                    }
+                }));
+        return view;
     }
 
 }

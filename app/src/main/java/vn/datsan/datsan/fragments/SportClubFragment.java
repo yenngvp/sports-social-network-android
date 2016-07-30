@@ -18,6 +18,7 @@ import java.util.List;
 
 import vn.datsan.datsan.R;
 import vn.datsan.datsan.activities.FieldDetailActivity;
+import vn.datsan.datsan.activities.GroupDetailActivity;
 import vn.datsan.datsan.models.Field;
 import vn.datsan.datsan.models.Group;
 import vn.datsan.datsan.serverdata.CallBack;
@@ -77,7 +78,7 @@ public class SportClubFragment extends Fragment {
             @Override
             public void onClick(View view, int position) {
                 Toast.makeText(getActivity(), "Touch " + position, Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getActivity(), FieldDetailActivity.class);
+                Intent intent = new Intent(getActivity(), GroupDetailActivity.class);
                 startActivity(intent);
             }
 

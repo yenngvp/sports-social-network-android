@@ -29,13 +29,7 @@ public class FieldDetailActivity extends AppCompatActivity {
         url_maps.put("House of Cards", "http://cdn3.nflximg.net/images/3093/2043093.jpg");
         url_maps.put("Game of Thrones", "http://images.boomsbeat.com/data/images/full/19640/game-of-thrones-season-4-jpg.jpg");
 
-        HashMap<String,Integer> file_maps = new HashMap<String, Integer>();
-        file_maps.put("Hannibal",R.drawable.avatar);
-        file_maps.put("Big Bang Theory",R.drawable.avatar);
-        file_maps.put("House of Cards",R.drawable.avatar);
-        file_maps.put("Game of Thrones", R.drawable.avatar);
-
-        for(String name : file_maps.keySet()){
+        for(String name : url_maps.keySet()){
             TextSliderView textSliderView = new TextSliderView(this);
             // initialize a SliderLayout
             textSliderView
