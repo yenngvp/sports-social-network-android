@@ -163,7 +163,7 @@ public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, Void> {
             scriptBuilder.delete(scriptBuilder.lastIndexOf(",\n"), scriptBuilder.length());
             scriptBuilder.append("}\n}");
             scriptBuilder.append("}\n}");
-            AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "Update script: " + scriptBuilder.toString());
+            AppLog.d(TAG, "Update script: " + scriptBuilder.toString());
 
             jestClient.execute(new Update.Builder(scriptBuilder.toString()).index(indexName).type(indexType).id(source.getDocumentId()).build());
         } catch (Exception e) {
@@ -201,7 +201,7 @@ public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, Void> {
                     "        }\n" +
                     "    }\n" +
                     "}";
-            AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "Query string: " + query);
+            AppLog.d(TAG, "Query string: " + query);
 
             Search search = new Search.Builder(query)
                     .addIndex(searchOption.getIndices())
@@ -210,13 +210,13 @@ public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, Void> {
 
             SearchResult result = jestClient.execute(search);
             if (result.isSucceeded()) {
-                AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "Search result for keyword \"" + searchOption.getKeyword() + "\"" + " found " + result.getTotal());
+                AppLog.d(TAG, "Search result for keyword \"" + searchOption.getKeyword() + "\"" + " found " + result.getTotal());
 
                 if (searchResultListener != null) {
                     searchResultListener.onSearchResult(result);
                 }
             } else {
-                AppLog.log(AppLog.LogType.LOG_ERROR, TAG, "Search result for keyword \"" + searchOption.getKeyword() + "\"" + " error: " + result.getErrorMessage());
+                AppLog.d(TAG, "Search result for keyword \"" + searchOption.getKeyword() + "\"" + " error: " + result.getErrorMessage());
 
                 if (searchResultListener != null) {
                     searchResultListener.onSearchResult(null);
