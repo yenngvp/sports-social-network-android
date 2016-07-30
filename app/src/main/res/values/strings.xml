@@ -62,7 +62,15 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="post_entry">Đăng tin</string>
     <string name="name">Tên</string>
-
+    <string name="info">Thông tin</string>
+    <string name="footballer">Cầu thủ</string>
+    <string name="photo">Hình ảnh</string>
+    <string name="member_number">Số thành viên</string>
+    <string name="contact">Liên hệ</string>
+    <string name="favourite_location">Khu vực hay đá</string>
+    <string name="level">Cấp độ</string>
+    <string name="found_date">Tham gia từ</string>
+    <string name="intro">Giới thiệu</string>
 
     <string-array name="positions">
         <item>Không yêu cầu</item>
@@ -83,4 +91,5 @@
         <item>Giỏi</item>
         <item>Chuyên nghiệp</item>
     </string-array>
+    <string name="title_activity_group_detail">GroupDetailActivity</string>
 </resources>

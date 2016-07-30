@@ -72,7 +72,7 @@ public class FieldDataManager {
 
     public List<Field> getFields(final CallBack.OnResultReceivedListener callBack) {
 
-        if (fields != null && fields.isEmpty()) {
+        if (fields != null && !fields.isEmpty()) {
             return fields;
         }
 
@@ -82,18 +82,15 @@ public class FieldDataManager {
                 fields = new ArrayList<>();
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
                     Field field = postSnapshot.getValue(Field.class);
-
                     if (field != null)
                         fields.add(field);
                 }
-
                 if (callBack != null)
                     callBack.onResultReceived(fields);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
 

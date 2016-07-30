@@ -1,44 +1,50 @@
 package vn.datsan.datsan.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import vn.datsan.datsan.R;
+import vn.datsan.datsan.activities.FieldDetailActivity;
+import vn.datsan.datsan.models.Field;
+import vn.datsan.datsan.models.Group;
+import vn.datsan.datsan.serverdata.CallBack;
+import vn.datsan.datsan.serverdata.FieldDataManager;
+import vn.datsan.datsan.serverdata.UserGroupDataManager;
+import vn.datsan.datsan.ui.adapters.DividerItemDecoration;
+import vn.datsan.datsan.ui.adapters.FlexListAdapter;
+import vn.datsan.datsan.ui.adapters.RecyclerTouchListener;
+import vn.datsan.datsan.ui.appviews.NewFCPopup;
+import vn.datsan.datsan.utils.AppLog;
 
 /**
  * Created by xuanpham on 7/25/16.
  */
 
 public class SportClubFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    FlexListAdapter adapter;
     private OnFragmentInteractionListener mListener;
 
     public SportClubFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SportClubFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static SportClubFragment newInstance(String param1, String param2) {
         SportClubFragment fragment = new SportClubFragment();
         Bundle args = new Bundle();
@@ -61,14 +67,37 @@ public class SportClubFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_club, null);
-    }
+        View view = inflater.inflate(R.layout.fragment_club, null);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        adapter = new FlexListAdapter();
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+        recyclerView.setAdapter(adapter);
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), recyclerView, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                Toast.makeText(getActivity(), "Touch " + position, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), FieldDetailActivity.class);
+                startActivity(intent);
+            }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
+
+        FloatingActionButton add = (FloatingActionButton) view.findViewById(R.id.add);
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NewFCPopup popup = new NewFCPopup(getActivity());
+                popup.show();
+            }
+        });
+
+        populateData();
+        return view;
     }
 
     @Override
@@ -88,18 +117,24 @@ public class SportClubFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private void populateData() {
+        UserGroupDataManager.getInstance().getUserGroups(new CallBack.OnResultReceivedListener() {
+            @Override
+            public void onResultReceived(Object result) {
+                List<Group> groupList = (List<Group> )  result;
+                if (groupList != null) {
+                    List<FlexListAdapter.FlexItem> list = new ArrayList<>();
+                    for (Group group : groupList) {
+                        FlexListAdapter.FlexItem item = adapter.createItem(null, group.getName(), group.getCity(), null);
+                        list.add(item);
+                    }
+                    adapter.update(list);
+                }
+            }
+        });
     }
 }
