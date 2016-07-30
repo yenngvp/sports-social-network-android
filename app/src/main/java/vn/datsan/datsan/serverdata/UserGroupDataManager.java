@@ -10,8 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vn.datsan.datsan.models.Group;
-import vn.datsan.datsan.models.User;
-import vn.datsan.datsan.utils.AppLog;
+import vn.datsan.datsan.utils.listeners.FirebaseChildEventListener;
 
 /**
  * Created by xuanpham on 7/29/16.
@@ -19,8 +18,12 @@ import vn.datsan.datsan.utils.AppLog;
 public class UserGroupDataManager {
     private static final String TAG = FieldDataManager.class.getName();
     private static UserGroupDataManager instance;
-    private DatabaseReference ref = FirebaseDatabase.getInstance().getReference("app/usergroups");
+    private DatabaseReference groupDatabaseRef = FirebaseDatabase.getInstance().getReference("app/usergroups");
     private List<Group> userGroups;
+
+    public UserGroupDataManager() {
+        groupDatabaseRef.addChildEventListener(new FirebaseChildEventListener(Group.class));
+    }
 
     public static UserGroupDataManager getInstance() {
         if (instance == null) {
@@ -30,9 +33,9 @@ public class UserGroupDataManager {
     }
 
     public void addGroup(Group group) {
-        String key = ref.push().getKey();
+        String key = groupDatabaseRef.push().getKey();
         group.setId(key);
-        ref.child(key).setValue(group);
+        groupDatabaseRef.child(key).setValue(group);
     }
 
     public List<Group> getUserGroups(final CallBack.OnResultReceivedListener callBack) {
@@ -43,7 +46,7 @@ public class UserGroupDataManager {
             return userGroups;
         }
 
-        ref.addValueEventListener(new ValueEventListener() {
+        groupDatabaseRef.addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
