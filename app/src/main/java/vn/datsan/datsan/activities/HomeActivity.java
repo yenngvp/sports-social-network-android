@@ -52,9 +52,6 @@ public class HomeActivity extends AppCompatActivity implements
 
     private TextView userName;
     private Button loginLogout;
-    @BindView(R.id.searchResultView)
-    View searchResultView;
-
     LoginPopup loginPopup;
 
     @Override
@@ -191,12 +188,6 @@ public class HomeActivity extends AppCompatActivity implements
     searchEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
-            AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "OnFocusChanged");
-            if (hasFocus) {
-                searchResultView.setVisibility(View.VISIBLE);
-            } else {
-                searchResultView.setVisibility(View.GONE);
-            }
         }
     });
 
@@ -220,50 +211,6 @@ public class HomeActivity extends AppCompatActivity implements
             AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "OnQueryTextFocusChange");
         }
     });
-    searchView.setOnSearchClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            searchResultView.setVisibility(View.VISIBLE);
-        }
-    });
-
-    searchView.setOnCloseListener(new SearchView.OnCloseListener() {
-        @Override
-        public boolean onClose() {
-            searchResultView.setVisibility(View.GONE);
-            return false;
-        }
-    });
-
-    searchView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-        @Override
-        public void onFocusChange(View v, boolean hasFocus) {
-            AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "OnFocusChanged");
-            if (hasFocus) {
-                searchResultView.setVisibility(View.VISIBLE);
-            } else {
-                searchResultView.setVisibility(View.GONE);
-            }
-        }
-    });
-
-        MenuItemCompat.setOnActionExpandListener(itemSearch,
-                new MenuItemCompat.OnActionExpandListener() {
-                    @Override
-                    public boolean onMenuItemActionExpand(MenuItem menuItem) {
-                        // Return true to allow the action view to expand
-                        searchResultView.setVisibility(View.VISIBLE);
-                        return true;
-                    }
-
-                    @Override
-                    public boolean onMenuItemActionCollapse(MenuItem menuItem) {
-                        // When the action view is collapsed, reset the query
-                        searchResultView.setVisibility(View.GONE);
-                        // Return true to allow the action view to collapse
-                        return true;
-                    }
-                });
         return true;
     }
 
