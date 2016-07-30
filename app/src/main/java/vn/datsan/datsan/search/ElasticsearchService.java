@@ -1,12 +1,19 @@
 package vn.datsan.datsan.search;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.firebase.database.DataSnapshot;
+
+import vn.datsan.datsan.search.interfaces.Searchable;
 import vn.datsan.datsan.serverdata.CallBack;
+import vn.datsan.datsan.utils.AppLog;
 import vn.datsan.datsan.utils.Constants;
 
 /**
  * Created by yennguyen on 7/29/16.
  */
 public class ElasticsearchService {
+
+    private static final String TAG = ElasticsearchService.class.getName();
 
     private static ElasticsearchService instance = null;
 
@@ -35,4 +42,35 @@ public class ElasticsearchService {
         new Elasticsearch().execute(param);
     }
 
+    public void add(DataSnapshot dataSnapshot, Class eventClazz) {
+        build(ElasticsearchEvent.ADD, dataSnapshot, eventClazz);
+    }
+
+    public void update(DataSnapshot dataSnapshot, Class eventClazz) {
+        build(ElasticsearchEvent.UPDATE, dataSnapshot, eventClazz);
+    }
+
+    public void delete(DataSnapshot dataSnapshot, Class eventClazz) {
+        build(ElasticsearchEvent.DELETE, dataSnapshot, eventClazz);
+    }
+
+    private void build(ElasticsearchEvent eventType, DataSnapshot dataSnapshot, Class eventClazz) {
+        AppLog.log(AppLog.LogType.LOG_DEBUG, TAG,
+                eventType.toString() + " a document type " + eventClazz.getName());
+
+        ElasticsearchParam param = new ElasticsearchParam();
+        param.setEventType(eventType);
+        param.setIndexName(Constants.ELASTICSEARCH_INDEX);
+        param.setIndexType(eventClazz.getName());
+
+        final ObjectMapper mapper = new ObjectMapper(); // jackson's objectmapper
+        Object object = mapper.convertValue(dataSnapshot.getValue(), eventClazz);
+
+        if (object != null && object instanceof Searchable) {
+            param.setSource((Searchable) object);
+            new Elasticsearch().execute(param);
+        } else {
+            AppLog.log(AppLog.LogType.LOG_ERROR, "Elasticsearch", "Unknown object for indexing");
+        }
+    }
 }

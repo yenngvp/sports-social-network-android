@@ -5,6 +5,7 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 
+import vn.datsan.datsan.search.ElasticsearchService;
 import vn.datsan.datsan.utils.AppLog;
 import vn.datsan.datsan.utils.Constants;
 import vn.datsan.datsan.search.Elasticsearch;
@@ -18,21 +19,30 @@ import vn.datsan.datsan.search.interfaces.Searchable;
 public class FirebaseChildEventListener implements ChildEventListener {
 
     private static final String TAG = FirebaseChildEventListener.class.getName();
-    private Class indexedClazz;
+    private Class eventClazz;
+
+    public FirebaseChildEventListener() {
+        super();
+    }
+
+    public FirebaseChildEventListener(Class eventClazz) {
+        this.eventClazz = eventClazz;
+    }
+
 
     @Override
     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-        buildElasticsearch(ElasticsearchEvent.ADD, dataSnapshot);
+        ElasticsearchService.getInstance().add(dataSnapshot, eventClazz);
     }
 
     @Override
     public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-        buildElasticsearch(ElasticsearchEvent.UPDATE, dataSnapshot);
+        ElasticsearchService.getInstance().update(dataSnapshot, eventClazz);
     }
 
     @Override
     public void onChildRemoved(DataSnapshot dataSnapshot) {
-        buildElasticsearch(ElasticsearchEvent.DELETE, dataSnapshot);
+        ElasticsearchService.getInstance().delete(dataSnapshot, eventClazz);
     }
 
     @Override
@@ -45,31 +55,11 @@ public class FirebaseChildEventListener implements ChildEventListener {
 
     }
 
-    private void buildElasticsearch(ElasticsearchEvent eventType, DataSnapshot dataSnapshot) {
-        AppLog.log(AppLog.LogType.LOG_DEBUG, TAG,
-                eventType.toString() + " a document type" + indexedClazz.getName());
-
-        ElasticsearchParam param = new ElasticsearchParam();
-        param.setEventType(eventType);
-        param.setIndexName(Constants.ELASTICSEARCH_INDEX);
-        param.setIndexType(indexedClazz.getName());
-
-        final ObjectMapper mapper = new ObjectMapper(); // jackson's objectmapper
-        Object object = mapper.convertValue(dataSnapshot.getValue(), getIndexedClazz());
-
-        if (object != null && object instanceof Searchable) {
-            param.setSource((Searchable) object);
-            new Elasticsearch().execute(param);
-        } else {
-            AppLog.log(AppLog.LogType.LOG_ERROR, "Elasticsearch", "Unknown object for indexing");
-        }
-    }
-
-    public Class getIndexedClazz() {
-        return indexedClazz;
+    public Class getEventClazz() {
+        return eventClazz;
     }
 
     public void setEventClazz(Class indexedClazz) {
-        this.indexedClazz = indexedClazz;
+        this.eventClazz = indexedClazz;
     }
 }

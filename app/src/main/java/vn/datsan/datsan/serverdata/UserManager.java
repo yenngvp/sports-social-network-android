@@ -24,9 +24,7 @@ public class UserManager {
         userDatabaseRef = FirebaseDatabase.getInstance().getReference("app/users");
 
         // Listening on user object change
-        FirebaseChildEventListener listener = new FirebaseChildEventListener();
-        listener.setEventClazz(User.class);
-        userDatabaseRef.addChildEventListener(listener);
+        userDatabaseRef.addChildEventListener(new FirebaseChildEventListener(User.class));
     }
 
     public static UserManager getInstance() {

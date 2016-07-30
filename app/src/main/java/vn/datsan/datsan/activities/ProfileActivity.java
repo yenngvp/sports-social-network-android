@@ -59,7 +59,7 @@ public class ProfileActivity extends AppCompatActivity {
         /*
          * Search a text
          */
-        final String keyword = "68";
+        final String keyword = "946 280 281";
         List<String> searchTypes = new ArrayList<>();
         searchTypes.add("users");
         searchTypes.add("fields");
@@ -72,7 +72,7 @@ public class ProfileActivity extends AppCompatActivity {
                     return;
                 }
 
-                AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "Callback returns " + searchResult.getTotal());
+                AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "Search result callback returns: " + searchResult.getTotal());
 
                 // Get search result type fields
                 List<SearchResult.Hit<Field, Void>> fieldHits = searchResult.getHits(Field.class);

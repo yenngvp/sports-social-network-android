@@ -33,9 +33,7 @@ public class FieldDataManager {
         fieldDatabaseRef = FirebaseDatabase.getInstance().getReference("app/fields");
 
         // Listening on the field object change
-        FirebaseChildEventListener listener = new FirebaseChildEventListener();
-        listener.setEventClazz(Field.class);
-        fieldDatabaseRef.addChildEventListener(listener);
+        fieldDatabaseRef.addChildEventListener(new FirebaseChildEventListener(Field.class));
     }
 
     public static FieldDataManager getInstance() {

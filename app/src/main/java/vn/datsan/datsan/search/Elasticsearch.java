@@ -193,7 +193,7 @@ public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, Void> {
                     "        \"filtered\" : {\n" +
                     "            \"query\" : {\n" +
                     "                \"query_string\" : {\n" +
-                    "                    \"query\" : " + searchOption.getKeyword()  + "\n" +
+                    "                    \"query\" : \"" + searchOption.getKeyword()  + "\"\n" +
                     "                }\n" +
                     "            },\n" +
                     "            \"filter\" : {\n" +
