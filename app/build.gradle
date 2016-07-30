@@ -84,9 +84,6 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.5.3'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.5.3'
 
-    // Apache Commons Lang
-//    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
-
 }
 
 apply plugin: 'com.google.gms.google-services'
