@@ -56,12 +56,12 @@ public class ElasticsearchService {
 
     private void build(ElasticsearchEvent eventType, DataSnapshot dataSnapshot, Class eventClazz) {
         AppLog.log(AppLog.LogType.LOG_DEBUG, TAG,
-                eventType.toString() + " a document type " + eventClazz.getName());
+                eventType.toString() + " a document type " + eventClazz.getSimpleName());
 
         ElasticsearchParam param = new ElasticsearchParam();
         param.setEventType(eventType);
         param.setIndexName(Constants.ELASTICSEARCH_INDEX);
-        param.setIndexType(eventClazz.getName());
+        param.setIndexType(eventClazz.getSimpleName());
 
         final ObjectMapper mapper = new ObjectMapper(); // jackson's objectmapper
         Object object = mapper.convertValue(dataSnapshot.getValue(), eventClazz);

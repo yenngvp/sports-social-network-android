@@ -13,8 +13,6 @@ public class ElasticsearchParam {
     private ElasticsearchEvent type;
     private String indexName;
     private String indexType;
-    private Object sourceObj;
-    private Map sourceMap;
     private Searchable source;
     private SearchOption searchOption;
     private CallBack.OnSearchResultListener searchResultListener;
@@ -41,22 +39,6 @@ public class ElasticsearchParam {
 
     public void setIndexType(String indexType) {
         this.indexType = indexType;
-    }
-
-    public Object getSourceObj() {
-        return sourceObj;
-    }
-
-    public void setSourceObj(Object sourceObj) {
-        this.sourceObj = sourceObj;
-    }
-
-    public Map getSourceMap() {
-        return sourceMap;
-    }
-
-    public void setSourceMap(Map sourceMap) {
-        this.sourceMap = sourceMap;
     }
 
     public Searchable getSource() {

@@ -61,8 +61,8 @@ public class ProfileActivity extends AppCompatActivity {
          */
         final String keyword = "946 280 281";
         List<String> searchTypes = new ArrayList<>();
-        searchTypes.add("users");
-        searchTypes.add("fields");
+        searchTypes.add(User.class.getSimpleName());
+        searchTypes.add(Field.class.getSimpleName());
         SearchOption searchOption = new SearchOption(keyword, searchTypes);
         ElasticsearchService.getInstance().search(searchOption, new CallBack.OnSearchResultListener() {
             @Override

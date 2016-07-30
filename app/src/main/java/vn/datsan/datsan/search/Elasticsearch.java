@@ -64,12 +64,7 @@ public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, Void> {
                     deleteIndex(param.getIndexName());
                     break;
                 case ADD:
-                    createIndexIfNotExists(param.getIndexName());
-                    if (param.getSourceObj() != null) {
-                        add(param.getIndexName(), param.getIndexType(), param.getSource());
-                    } else if (param.getSourceMap() != null) {
-                        add(param.getIndexName(), param.getIndexType(), param.getSourceMap());
-                    }
+                    add(param.getIndexName(), param.getIndexType(), param.getSource());
                     break;
                 case UPDATE:
                     update(param.getIndexName(), param.getIndexType(), param.getSource());

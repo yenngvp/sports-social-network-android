@@ -13,6 +13,8 @@ public class VietnameseUnsignedTranslatorTest {
 
     @Test
     public void testGetTranslation() throws Exception {
+
+        // Assert equally
         assertEquals("Translation result is wrong 1",
                 "San Bong Da",
                 VietnameseUnsignedTranslator.getInstance().getTranslation("Sân Bóng Đá"));
@@ -28,6 +30,8 @@ public class VietnameseUnsignedTranslatorTest {
         assertEquals("Translation result is wrong 5",
                 "San Bong Da Tao Dan",
                 VietnameseUnsignedTranslator.getInstance().getTranslation("San Bong Da Tao Dan"));
+
+        // Assert not equally
         assertNotEquals("Translation result is wrong 6",
                 "72A Nguyễn Văn Yến, P.Tân Thới Hòa, Q.Tân Phú",
                 VietnameseUnsignedTranslator.getInstance().getTranslation("72A Nguyễn Văn Yến, P.Tân Thới Hòa, Q.Tân Phú"));
