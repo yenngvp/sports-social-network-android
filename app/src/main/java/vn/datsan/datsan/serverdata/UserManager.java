@@ -8,6 +8,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import vn.datsan.datsan.models.User;
+import vn.datsan.datsan.search.ElasticsearchService;
+import vn.datsan.datsan.search.interfaces.Searchable;
 import vn.datsan.datsan.utils.AppLog;
 import vn.datsan.datsan.utils.listeners.FirebaseChildEventListener;
 
@@ -20,11 +22,26 @@ public class UserManager {
     private DatabaseReference userDatabaseRef;
     private User userInfo;
 
+    private FirebaseChildEventListener firebaseChildEventListener;
+
     private  UserManager() {
         userDatabaseRef = FirebaseDatabase.getInstance().getReference("app/users");
 
+        // Enable 'Searchable' put mapping for the managed underline User
+        ElasticsearchService.getInstance().putMapping(User.getPutMapping(), User.class);
         // Listening on user object change
-        userDatabaseRef.addChildEventListener(new FirebaseChildEventListener(User.class));
+        firebaseChildEventListener = new FirebaseChildEventListener(User.class);
+        userDatabaseRef.addChildEventListener(firebaseChildEventListener);
+    }
+
+    @Override
+    public void finalize() throws Throwable {
+
+        AppLog.i(TAG, "Going finalize(). Detaching firebaseChildEventListener");
+        // Detach the FirebaseChildEventListener when the database reference detached
+        userDatabaseRef.removeEventListener(firebaseChildEventListener);
+
+        super.finalize();
     }
 
     public static UserManager getInstance() {

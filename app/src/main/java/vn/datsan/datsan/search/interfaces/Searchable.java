@@ -8,5 +8,7 @@ import java.util.Map;
 public interface Searchable {
 
     String getDocumentId();
+
     Map<String, String> getSearchableSource();
+
 }

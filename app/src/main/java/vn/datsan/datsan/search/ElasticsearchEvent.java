@@ -6,6 +6,7 @@ package vn.datsan.datsan.search;
 public enum ElasticsearchEvent {
     CREATE_INDEX,
     DELETE_INDEX,
+    PUT_MAPPING,
     ADD,
     UPDATE,
     DELETE,

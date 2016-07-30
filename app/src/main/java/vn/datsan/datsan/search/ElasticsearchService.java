@@ -33,6 +33,15 @@ public class ElasticsearchService {
         new Elasticsearch().execute(param);
     }
 
+    public void putMapping(String putMapping, Class eventClazz) {
+        ElasticsearchParam param = new ElasticsearchParam();
+        param.setEventType(ElasticsearchEvent.PUT_MAPPING);
+        param.setIndexName(Constants.ELASTICSEARCH_INDEX);
+        param.setIndexType(eventClazz.getSimpleName());
+        param.setPutMapping(putMapping);
+        new Elasticsearch().execute(param);
+    }
+
     public void search(SearchOption searchOption, CallBack.OnSearchResultListener searchResultListener) {
         ElasticsearchParam param = new ElasticsearchParam();
         param.setEventType(ElasticsearchEvent.SEARCH);

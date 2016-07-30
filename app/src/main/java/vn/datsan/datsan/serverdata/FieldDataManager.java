@@ -16,6 +16,7 @@ import java.util.List;
 import vn.datsan.datsan.R;
 import vn.datsan.datsan.models.FakeStadium;
 import vn.datsan.datsan.models.Field;
+import vn.datsan.datsan.search.ElasticsearchService;
 import vn.datsan.datsan.utils.RawIO;
 import vn.datsan.datsan.utils.AppLog;
 import vn.datsan.datsan.utils.listeners.FirebaseChildEventListener;
@@ -29,11 +30,26 @@ public class FieldDataManager {
     private DatabaseReference fieldDatabaseRef;
     private List<Field> fields;
 
+    private FirebaseChildEventListener firebaseChildEventListener;
+
     private FieldDataManager() {
         fieldDatabaseRef = FirebaseDatabase.getInstance().getReference("app/fields");
 
+        // Enable 'Searchable' put mapping for the managed underline User
+        ElasticsearchService.getInstance().putMapping(Field.getPutMapping(), Field.class);
         // Listening on the field object change
-        fieldDatabaseRef.addChildEventListener(new FirebaseChildEventListener(Field.class));
+        firebaseChildEventListener = new FirebaseChildEventListener(Field.class);
+        fieldDatabaseRef.addChildEventListener(firebaseChildEventListener);
+    }
+
+    @Override
+    public void finalize() throws Throwable {
+
+        AppLog.i(TAG, "Going finalize(). Detaching firebaseChildEventListener");
+        // Detach the FirebaseChildEventListener when the database reference detached
+        fieldDatabaseRef.removeEventListener(firebaseChildEventListener);
+
+        super.finalize();
     }
 
     public static FieldDataManager getInstance() {

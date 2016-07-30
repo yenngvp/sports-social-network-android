@@ -34,6 +34,14 @@ public class User implements Searchable {
         this.location = location;
     }
 
+    /**
+     * Get JSON string as put mapping for Searchable object
+     * @return JSON String
+     */
+    public static String getPutMapping() {
+        return "{ \"" + User.class.getSimpleName() + "\" : { \"properties\" : { \"location\" : {\"type\" : \"geo_point\", \"store\" : \"yes\"} } } }";
+    }
+
     @Override
     public String getDocumentId() {
         return getId();

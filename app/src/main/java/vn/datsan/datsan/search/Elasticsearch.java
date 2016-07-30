@@ -16,6 +16,7 @@ import io.searchbox.core.Update;
 import io.searchbox.indices.CreateIndex;
 import io.searchbox.indices.DeleteIndex;
 import io.searchbox.indices.IndicesExists;
+import io.searchbox.indices.mapping.PutMapping;
 import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.utils.AppLog;
 import vn.datsan.datsan.utils.Constants;
@@ -63,6 +64,9 @@ public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, Void> {
                 case DELETE_INDEX:
                     deleteIndex(param.getIndexName());
                     break;
+                case PUT_MAPPING:
+                    putMapping(param.getIndexName(), param.getIndexType(), param.getPutMapping());
+                    break;
                 case ADD:
                     add(param.getIndexName(), param.getIndexType(), param.getSource());
                     break;
@@ -106,6 +110,22 @@ public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, Void> {
             if (indexExists) {
                 jestClient.execute(new DeleteIndex.Builder(index).build());
             }
+        } catch (Exception e) {
+            AppLog.log(e);
+        }
+    }
+
+    /**
+     * Put mapping type
+     */
+    private void putMapping(String indexName, String indexType, String mapping) {
+        try {
+            PutMapping putMapping = new PutMapping.Builder(
+                    indexName,
+                    indexType,
+                    mapping
+            ).build();
+            jestClient.execute(putMapping);
         } catch (Exception e) {
             AppLog.log(e);
         }

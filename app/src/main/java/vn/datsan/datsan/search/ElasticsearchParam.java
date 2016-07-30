@@ -16,6 +16,7 @@ public class ElasticsearchParam {
     private Searchable source;
     private SearchOption searchOption;
     private CallBack.OnSearchResultListener searchResultListener;
+    private String putMapping;
 
     public ElasticsearchEvent getType() {
         return type;
@@ -67,5 +68,13 @@ public class ElasticsearchParam {
 
     public void setSearchResultListener(CallBack.OnSearchResultListener searchResultListener) {
         this.searchResultListener = searchResultListener;
+    }
+
+    public String getPutMapping() {
+        return putMapping;
+    }
+
+    public void setPutMapping(String putMapping) {
+        this.putMapping = putMapping;
     }
 }

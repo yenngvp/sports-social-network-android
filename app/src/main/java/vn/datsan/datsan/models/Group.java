@@ -33,6 +33,14 @@ public class Group implements Searchable {
         this.createDate = Utils.SIMPLE_DATE_FORMAT.format(new Date());
     }
 
+    /**
+     * Get JSON string as put mapping for Searchable object
+     * @return JSON String
+     */
+    public static String getPutMapping() {
+        return null;
+    }
+
     @Override
     public String getDocumentId() {
         return getId();
