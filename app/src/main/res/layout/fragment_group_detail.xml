@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="5dp"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/fc_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:gravity="center_horizontal"
+        android:textSize="22sp"
+        android:textColor="@color/red"
+        android:text="FC Những người bạn"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:minWidth="90dp"
+            android:textSize="17dp"
+            android:textColor="@android:color/black"
+            android:text="@string/level"/>
+
+        <RatingBar
+            android:id="@+id/ratingbar_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            android:rating="4"
+            android:stepSize="0.5"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:minWidth="90dp"
+            android:textSize="17dp"
+            android:textColor="@android:color/black"
+            android:text="@string/member_number"/>
+
+        <TextView
+            android:id="@+id/member_number"
+            android:text="10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:minWidth="90dp"
+            android:textSize="17dp"
+            android:textColor="@android:color/black"
+            android:text="@string/favourite_location"/>
+
+        <TextView
+            android:id="@+id/favourite_location"
+            android:text="Cộng Hoà, Lăng Cha Cả, Quang Trung"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:minWidth="90dp"
+            android:textSize="17dp"
+            android:textColor="@android:color/black"
+            android:text="@string/found_date"/>
+
+        <TextView
+            android:id="@+id/found_date"
+            android:text="25-02-2016"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:minWidth="90dp"
+            android:textSize="17dp"
+            android:textColor="@android:color/black"
+            android:text="@string/contact"/>
+
+        <TextView
+            android:id="@+id/contact"
+            android:text="098363497"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:minWidth="90dp"
+            android:textSize="17dp"
+            android:textColor="@android:color/black"
+            android:text="@string/intro"/>
+
+        <TextView
+            android:id="@+id/intro"
+            android:text="Đội bóng được thành lập bởi các cựu ngôi sao futsal Việt Nam, mục tiêu tìm kiếm danh hiệu nghiệp dư"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+    </LinearLayout>
+</LinearLayout>

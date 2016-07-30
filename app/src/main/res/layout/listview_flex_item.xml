@@ -6,7 +6,11 @@
     <ImageView
         android:id="@+id/row_img"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:minWidth="70dp"
+        android:padding="5dp"
+        android:src="@android:drawable/ic_menu_camera">
+        </ImageView>
 
     <LinearLayout
         android:layout_width="0dp"
@@ -19,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@android:color/black"
-            android:textSize="18sp"/>
+            android:textSize="20sp"/>
         <TextView
             android:id="@+id/row_sub_content"
             android:layout_width="wrap_content"

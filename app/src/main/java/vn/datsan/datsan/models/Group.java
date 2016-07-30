@@ -21,6 +21,9 @@ public class Group implements Searchable {
     private List<String> admins;
     private List<String> favouriteFields;
 
+    public Group() {
+    }
+
     public Group(List<String> admins, String city, String name, List<String> members) {
         this.admins = admins;
         this.city = city;

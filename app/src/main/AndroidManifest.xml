@@ -85,7 +85,11 @@
             android:label="@string/title_activity_location_search"
             android:theme="@style/AppTheme" />
         <activity android:name=".activities.SimpleActivity" />
-        <activity android:name=".activities.InviteMemberActivity"></activity>
+        <activity android:name=".activities.InviteMemberActivity" />
+        <activity
+            android:name=".activities.GroupDetailActivity"
+            android:label="@string/title_activity_group_detail"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

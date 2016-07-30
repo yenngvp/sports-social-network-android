@@ -78,12 +78,12 @@ public class HomeActivity extends AppCompatActivity implements
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //String name = CloudDataStorage.getInstance().genUniqFileName();
-                //AppLog.log(AppLog.LogType.LOG_ERROR, TAG, name);
-//                Intent intent = new Intent(HomeActivity.this, FieldSearchActivity.class);
-//                startActivity(intent);
-                NewFCPopup popup = new NewFCPopup(HomeActivity.this);
-                popup.show();
+//                String name = CloudDataStorage.getInstance().genUniqFileName();
+//                AppLog.log(AppLog.LogType.LOG_ERROR, TAG, name);
+                Intent intent = new Intent(HomeActivity.this, GroupDetailActivity.class);
+                startActivity(intent);
+//                NewFCPopup popup = new NewFCPopup(HomeActivity.this);
+//                popup.show();
 
             }
         });
