@@ -12,6 +12,11 @@ public class SearchOption {
     private String keyword;
     private List<String> indices = new ArrayList<>();
     private List<String> types;
+    // Geo distance for filtered search results
+    // It is a string like "1km", "100m", "200cm", so on
+    private String filteredDistance;
+    private String lat;
+    private String lon;
 
     public SearchOption() {
 
@@ -58,5 +63,34 @@ public class SearchOption {
 
     public void setTypes(List<String> types) {
         this.types = types;
+    }
+
+    public String getFilteredDistance() {
+        return filteredDistance;
+    }
+
+    public void setFilteredDistance(String filteredDistance) {
+        this.filteredDistance = filteredDistance;
+    }
+
+    public String getLat() {
+        return lat;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
+    }
+
+    public String getLon() {
+        return lon;
+    }
+
+    public void setLon(String lon) {
+        this.lon = lon;
+    }
+
+    public void setLatLon(String lat, String lon) {
+        this.lat = lat;
+        this.lon = lon;
     }
 }

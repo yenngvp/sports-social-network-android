@@ -10,9 +10,6 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +21,6 @@ import vn.datsan.datsan.models.Field;
 import vn.datsan.datsan.models.User;
 import vn.datsan.datsan.search.ElasticsearchService;
 import vn.datsan.datsan.search.SearchOption;
-import vn.datsan.datsan.search.interfaces.Searchable;
 import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.serverdata.UserManager;
 import vn.datsan.datsan.ui.customwidgets.SimpleProgress;
@@ -56,14 +52,12 @@ public class ProfileActivity extends AppCompatActivity {
         SimpleProgress.show(ProfileActivity.this);
         UserManager.getInstance().getCurrentUserInfo(profileFetchCallBack);
 
-        /*
-         * Search a text
-         */
-        final String keyword = "946 280 281";
+        String keyword = "san bong da";
         List<String> searchTypes = new ArrayList<>();
-        searchTypes.add(User.class.getSimpleName());
         searchTypes.add(Field.class.getSimpleName());
         SearchOption searchOption = new SearchOption(keyword, searchTypes);
+        searchOption.setFilteredDistance("1km");
+        searchOption.setLatLon("10.77533", "106.69453");
         ElasticsearchService.getInstance().search(searchOption, new CallBack.OnSearchResultListener() {
             @Override
             public void onSearchResult(SearchResult searchResult) {

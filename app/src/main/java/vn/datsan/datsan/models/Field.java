@@ -28,7 +28,7 @@ public class Field implements Searchable {
      * @return JSON String
      */
     public static String getPutMapping() {
-        return "{ \"" + Field.class.getSimpleName() + "\" : { \"properties\" : { \"location\" : {\"type\" : \"geo_point\", \"store\" : \"yes\"} } } }";
+        return "{ \"" + Field.class.getSimpleName() + "\" : { \"properties\" : { \"location\" : {\"type\" : \"geo_point\"} } } }";
     }
 
     @Override

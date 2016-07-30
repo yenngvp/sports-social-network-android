@@ -39,7 +39,7 @@ public class User implements Searchable {
      * @return JSON String
      */
     public static String getPutMapping() {
-        return "{ \"" + User.class.getSimpleName() + "\" : { \"properties\" : { \"location\" : {\"type\" : \"geo_point\", \"store\" : \"yes\"} } } }";
+        return "{ \"" + User.class.getSimpleName() + "\" : { \"properties\" : { \"location\" : {\"type\" : \"geo_point\"} } } }";
     }
 
     @Override

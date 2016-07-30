@@ -203,19 +203,46 @@ public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, Void> {
     private void search(SearchOption searchOption, CallBack.OnSearchResultListener searchResultListener) {
 
         try {
-            String query = "{\n" +
-                    "    \"query\": {\n" +
-                    "        \"filtered\" : {\n" +
-                    "            \"query\" : {\n" +
-                    "                \"query_string\" : {\n" +
-                    "                    \"query\" : \"" + searchOption.getKeyword()  + "\"\n" +
-                    "                }\n" +
-                    "            },\n" +
-                    "            \"filter\" : {\n" +
-                    "            }\n" +
-                    "        }\n" +
-                    "    }\n" +
-                    "}";
+            String query;
+            if (searchOption.getFilteredDistance() != null) {
+                // Searching with geolocation awareness
+                // Basically, the query means "Find me the content matched with 'the keyword' and around 'filtedDistance' from a point (lat,lon)"
+                query = "{\n" +
+                        "    \"query\": {\n" +
+                        "        \"filtered\" : {\n" +
+                        "            \"query\" : {\n" +
+                        "                \"query_string\" : {\n" +
+                        "                    \"query\" : \"" + searchOption.getKeyword()  + "\"\n" +
+                        "                }\n" +
+                        "            },\n" +
+                        "            \"filter\" : {\n" +
+                        "                \"geo_distance\" : {\n" +
+                        "                      \"distance\": \"" + searchOption.getFilteredDistance() + "\",\n" +
+                        "                      \"location\": { \n" +
+                        "                           \"lat\": \"" + searchOption.getLat() + "\",\n" +
+                        "                           \"lon\": \"" + searchOption.getLon() + "\"\n" +
+                        "                      }\n" +
+                        "                 }\n" +
+                        "            }\n" +
+                        "        }\n" +
+                        "    }\n" +
+                        "}";
+            } else {
+                // Basically, the query means "Find me the content matched with 'the keyword', NO location awareness
+                query = "{\n" +
+                        "    \"query\": {\n" +
+                        "        \"filtered\" : {\n" +
+                        "            \"query\" : {\n" +
+                        "                \"query_string\" : {\n" +
+                        "                    \"query\" : \"" + searchOption.getKeyword()  + "\"\n" +
+                        "                }\n" +
+                        "            },\n" +
+                        "            \"filter\" : {\n" +
+                        "            }\n" +
+                        "        }\n" +
+                        "    }\n" +
+                        "}";
+            }
             AppLog.d(TAG, "Query string: " + query);
 
             Search search = new Search.Builder(query)
