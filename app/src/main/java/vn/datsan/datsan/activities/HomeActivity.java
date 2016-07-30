@@ -103,11 +103,6 @@ public class HomeActivity extends AppCompatActivity implements
 
         loginPopup = new LoginPopup(HomeActivity.this);
 
-        /*
-         * Create elasticsearch index if it not exists
-         */
-        ElasticsearchService.getInstance().createIndex();
-
     }
 
     // Add Fragments to Tabs

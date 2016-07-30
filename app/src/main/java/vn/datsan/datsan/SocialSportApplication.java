@@ -7,6 +7,7 @@ import android.support.multidex.MultiDex;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 
+import vn.datsan.datsan.search.ElasticsearchService;
 import vn.datsan.datsan.utils.AppLog;
 
 /**
@@ -25,7 +26,10 @@ public class SocialSportApplication extends android.app.Application {
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
 
-
+        /*
+         * Create elasticsearch index if it not exists
+         */
+        ElasticsearchService.getInstance().createIndex();
     }
 
     @Override
