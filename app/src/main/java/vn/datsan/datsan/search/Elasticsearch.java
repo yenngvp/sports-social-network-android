@@ -225,7 +225,19 @@ public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, Void> {
                         "                 }\n" +
                         "            }\n" +
                         "        }\n" +
-                        "    }\n" +
+                        "    },\n" +
+                        "    \"sort\": [\n" +
+                        "        {\n" +
+                        "            \"_geo_distance\": {\n" +
+                        "                   \"location\": {\n" +
+                        "                       \"lat\":  \"" + searchOption.getLat() + "\",\n" +
+                        "                       \"lon\":  \"" + searchOption.getLon() + "\"\n" +
+                        "                   },\n" +
+                        "                   \"order\": \"asc\",\n" +
+                        "                   \"unit\":  \"" + searchOption.getDistanceUnit() + "\"\n" +
+                        "             }\n" +
+                        "        }\n" +
+                        "     ]\n" +
                         "}";
             } else {
                 // Basically, the query means "Find me the content matched with 'the keyword', NO location awareness
@@ -258,7 +270,7 @@ public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, Void> {
                     searchResultListener.onSearchResult(result);
                 }
             } else {
-                AppLog.d(TAG, "Search result for keyword \"" + searchOption.getKeyword() + "\"" + " error: " + result.getErrorMessage());
+                AppLog.e(TAG, "Search result for keyword \"" + searchOption.getKeyword() + "\"" + " error: " + result.getErrorMessage());
 
                 if (searchResultListener != null) {
                     searchResultListener.onSearchResult(null);

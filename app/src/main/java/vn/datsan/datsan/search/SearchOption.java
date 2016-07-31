@@ -17,6 +17,7 @@ public class SearchOption {
     private String filteredDistance;
     private String lat;
     private String lon;
+    private String distanceUnit = "km";
 
     public SearchOption() {
 
@@ -92,5 +93,13 @@ public class SearchOption {
     public void setLatLon(String lat, String lon) {
         this.lat = lat;
         this.lon = lon;
+    }
+
+    public String getDistanceUnit() {
+        return distanceUnit;
+    }
+
+    public void setDistanceUnit(String distanceUnit) {
+        this.distanceUnit = distanceUnit;
     }
 }
