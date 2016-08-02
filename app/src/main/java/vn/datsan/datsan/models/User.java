@@ -1,6 +1,8 @@
 package vn.datsan.datsan.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.google.firebase.database.Exclude;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,39 +16,48 @@ import vn.datsan.datsan.utils.localization.VietnameseUnsignedTranslator;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class User implements Searchable {
 
+    public static final int ROLE_MEMBER = 0;
+    public static final int ROLE_GROUP_ADMIN = 1;
+    public static final int ROLE_FIELD_OWNER = 2;
+
     private String id;
     private String name;
     private String email;
     private String phone;
     private String address;
-    private String groups;
+    private Group groups;
     private String location;
     private String avatar;
+    private int role;
 
     public User() {}
 
-    public User(String name, String email, String phone, String address, String groups, String location) {
+    public User(String name, String email, String phone, String address, Group groups, String location) {
         this.name = name;
         this.email = email;
         this.phone = phone;
         this.address = address;
         this.groups = groups;
         this.location = location;
+        this.role = ROLE_MEMBER;
     }
 
     /**
      * Get JSON string as put mapping for Searchable object
      * @return JSON String
      */
+    @Exclude
     public static String getPutMapping() {
         return "{ \"" + User.class.getSimpleName() + "\" : { \"properties\" : { \"location\" : {\"type\" : \"geo_point\"} } } }";
     }
 
+    @Exclude
     @Override
     public String getDocumentId() {
         return getId();
     }
 
+    @Exclude
     @Override
     public Map<String, String> getSearchableSource() {
         Map<String, String> source = new HashMap<>();
@@ -102,11 +113,11 @@ public class User implements Searchable {
         this.address = address;
     }
 
-    public String getGroups() {
+    public Group getGroups() {
         return groups;
     }
 
-    public void setGroups(String groups) {
+    public void setGroups(Group groups) {
         this.groups = groups;
     }
 
@@ -124,5 +135,13 @@ public class User implements Searchable {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public int getRole() {
+        return role;
+    }
+
+    public void setRole(int role) {
+        this.role = role;
     }
 }

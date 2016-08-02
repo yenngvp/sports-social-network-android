@@ -17,7 +17,7 @@ import java.util.List;
 import vn.datsan.datsan.R;
 import vn.datsan.datsan.activities.FieldDetailActivity;
 import vn.datsan.datsan.models.Field;
-import vn.datsan.datsan.serverdata.FieldDataManager;
+import vn.datsan.datsan.serverdata.FieldManager;
 import vn.datsan.datsan.ui.adapters.DividerItemDecoration;
 import vn.datsan.datsan.ui.adapters.FlexListAdapter;
 import vn.datsan.datsan.ui.adapters.RecyclerTouchListener;
@@ -82,7 +82,7 @@ public class FieldSearchFragment extends Fragment {
     }
 
     private void populateData() {
-        List<Field> fieldList = FieldDataManager.getInstance().getFields(null);
+        List<Field> fieldList = FieldManager.getInstance().getFields(null);
         AppLog.log(AppLog.LogType.LOG_ERROR, "SearchFrag", "Size " + fieldList.size());
         if (fieldList != null) {
             List<FlexListAdapter.FlexItem> list = new ArrayList<>();

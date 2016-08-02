@@ -1,6 +1,8 @@
 package vn.datsan.datsan.models;
 
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.firebase.database.Exclude;
+
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -12,10 +14,13 @@ import vn.datsan.datsan.utils.localization.VietnameseUnsignedTranslator;
 /**
  * Created by xuanpham on 6/20/16.
  */
-public class Group implements Searchable {
-    private String id;
+public class Group extends FirebaseObject implements Searchable {
+
+    public static final int TYPE_DEFAULT = 0;
+    public static final int TYPE_CLUB = 1;
+    public static final int TYPE_CHAT = 2;
+
     private int type;
-    private String createDate;
     private List<String> members;
     private String name;
     private String city;
@@ -23,29 +28,33 @@ public class Group implements Searchable {
     private List<String> favouriteFields;
 
     public Group() {
+        super();
     }
 
     public Group(List<String> admins, String city, String name, List<String> members) {
         this.admins = admins;
-        this.city = city;
         this.name = name;
+        this.city = city;
         this.members = members;
-        this.createDate = Utils.SIMPLE_DATE_FORMAT.format(new Date());
+        this.type = TYPE_DEFAULT;
     }
 
     /**
      * Get JSON string as put mapping for Searchable object
      * @return JSON String
      */
+    @Exclude
     public static String getPutMapping() {
         return null;
     }
 
+    @Exclude
     @Override
     public String getDocumentId() {
         return getId();
     }
 
+    @Exclude
     @Override
     public Map<String, String> getSearchableSource() {
         Map<String, String> source = new HashMap<>();
@@ -64,28 +73,12 @@ public class Group implements Searchable {
         this.admins = admins;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public int getType() {
         return type;
     }
 
     public void setType(int type) {
         this.type = type;
-    }
-
-    public String getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(String createDate) {
-        this.createDate = createDate;
     }
 
     public List<String> getMembers() {

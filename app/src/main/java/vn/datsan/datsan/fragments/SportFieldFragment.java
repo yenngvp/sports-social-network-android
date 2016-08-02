@@ -20,7 +20,7 @@ import java.util.List;
 import vn.datsan.datsan.R;
 import vn.datsan.datsan.models.Field;
 import vn.datsan.datsan.serverdata.CallBack;
-import vn.datsan.datsan.serverdata.FieldDataManager;
+import vn.datsan.datsan.serverdata.FieldManager;
 
 /**
  * Created by xuanpham on 7/25/16.
@@ -68,7 +68,7 @@ public class SportFieldFragment extends Fragment implements OnMapReadyCallback {
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        FieldDataManager.getInstance().getFields(new CallBack.OnResultReceivedListener() {
+        FieldManager.getInstance().getFields(new CallBack.OnResultReceivedListener() {
             @Override
             public void onResultReceived(Object result) {
                 if (result != null) {

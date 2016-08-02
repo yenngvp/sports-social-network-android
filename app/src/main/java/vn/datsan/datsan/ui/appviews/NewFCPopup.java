@@ -5,7 +5,6 @@ import android.content.Context;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -13,12 +12,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import vn.datsan.datsan.R;
 import vn.datsan.datsan.models.Group;
-import vn.datsan.datsan.serverdata.UserGroupDataManager;
-import vn.datsan.datsan.serverdata.UserManager;
+import vn.datsan.datsan.serverdata.GroupManager;
 
 /**
  * Created by xuanpham on 7/29/16.
@@ -42,7 +38,7 @@ public class NewFCPopup extends BasePopup {
             public void onClick(View view) {
                 Group group = createGroup();
                 if (group != null)
-                    UserGroupDataManager.getInstance().addGroup(group);
+                    GroupManager.getInstance().addGroup(group);
             }
         });
     }

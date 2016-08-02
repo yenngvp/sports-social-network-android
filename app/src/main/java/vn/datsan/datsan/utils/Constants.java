@@ -18,9 +18,10 @@ public class Constants {
      * Firebase objects
      */
     public static final String FIREBASE_APP_ROOT = "app";
-    public static final String FIREBASE_USERS = "users";
-    public static final String FIREBASE_GROUPS = "groups";
-    public static final String FIREBASE_FIELDS = "fields";
+    public static final String FIREBASE_USERS = "app/users";
+    public static final String FIREBASE_GROUPS = "app/groups";
+    public static final String FIREBASE_FIELDS = "app/fields";
+    public static final String FIREBASE_CHATS = "app/chats";
 
     /*
      * Indexed objects used for searching

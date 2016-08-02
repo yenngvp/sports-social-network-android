@@ -1,6 +1,7 @@
 package vn.datsan.datsan.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.google.firebase.database.Exclude;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,15 +28,18 @@ public class Field implements Searchable {
      * Get JSON string as put mapping for Searchable object
      * @return JSON String
      */
+    @Exclude
     public static String getPutMapping() {
         return "{ \"" + Field.class.getSimpleName() + "\" : { \"properties\" : { \"location\" : {\"type\" : \"geo_point\"} } } }";
     }
 
+    @Exclude
     @Override
     public String getDocumentId() {
         return getId();
     }
 
+    @Exclude
     @Override
     public Map<String, String> getSearchableSource() {
         Map<String, String> source = new HashMap<>();

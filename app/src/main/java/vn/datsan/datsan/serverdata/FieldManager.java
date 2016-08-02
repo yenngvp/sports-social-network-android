@@ -17,6 +17,7 @@ import vn.datsan.datsan.R;
 import vn.datsan.datsan.models.FakeStadium;
 import vn.datsan.datsan.models.Field;
 import vn.datsan.datsan.search.ElasticsearchService;
+import vn.datsan.datsan.utils.Constants;
 import vn.datsan.datsan.utils.RawIO;
 import vn.datsan.datsan.utils.AppLog;
 import vn.datsan.datsan.utils.listeners.FirebaseChildEventListener;
@@ -24,16 +25,16 @@ import vn.datsan.datsan.utils.listeners.FirebaseChildEventListener;
 /**
  * Created by xuanpham on 6/20/16.
  */
-public class FieldDataManager {
-    private static final String TAG = FieldDataManager.class.getName();
-    private static FieldDataManager instance;
+public class FieldManager {
+    private static final String TAG = FieldManager.class.getName();
+    private static FieldManager instance;
     private DatabaseReference fieldDatabaseRef;
     private List<Field> fields;
 
     private FirebaseChildEventListener firebaseChildEventListener;
 
-    private FieldDataManager() {
-        fieldDatabaseRef = FirebaseDatabase.getInstance().getReference("app/fields");
+    private FieldManager() {
+        fieldDatabaseRef = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_FIELDS);
 
         // Enable 'Searchable' put mapping for the managed underline User
         ElasticsearchService.getInstance().putMapping(Field.getPutMapping(), Field.class);
@@ -52,9 +53,9 @@ public class FieldDataManager {
         super.finalize();
     }
 
-    public static FieldDataManager getInstance() {
+    public static FieldManager getInstance() {
         if (instance == null) {
-            instance = new FieldDataManager();
+            instance = new FieldManager();
         }
         return instance;
     }

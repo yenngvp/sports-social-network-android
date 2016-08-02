@@ -17,18 +17,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vn.datsan.datsan.R;
-import vn.datsan.datsan.activities.FieldDetailActivity;
 import vn.datsan.datsan.activities.GroupDetailActivity;
-import vn.datsan.datsan.models.Field;
 import vn.datsan.datsan.models.Group;
 import vn.datsan.datsan.serverdata.CallBack;
-import vn.datsan.datsan.serverdata.FieldDataManager;
-import vn.datsan.datsan.serverdata.UserGroupDataManager;
+import vn.datsan.datsan.serverdata.GroupManager;
 import vn.datsan.datsan.ui.adapters.DividerItemDecoration;
 import vn.datsan.datsan.ui.adapters.FlexListAdapter;
 import vn.datsan.datsan.ui.adapters.RecyclerTouchListener;
 import vn.datsan.datsan.ui.appviews.NewFCPopup;
-import vn.datsan.datsan.utils.AppLog;
 
 /**
  * Created by xuanpham on 7/25/16.
@@ -123,7 +119,7 @@ public class SportClubFragment extends Fragment {
     }
 
     private void populateData() {
-        UserGroupDataManager.getInstance().getUserGroups(new CallBack.OnResultReceivedListener() {
+        GroupManager.getInstance().getUserGroups(new CallBack.OnResultReceivedListener() {
             @Override
             public void onResultReceived(Object result) {
                 List<Group> groupList = (List<Group> )  result;

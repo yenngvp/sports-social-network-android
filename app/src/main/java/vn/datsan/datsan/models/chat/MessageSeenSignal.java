@@ -1,0 +1,7 @@
+package vn.datsan.datsan.models.chat;
+
+/**
+ * Created by yennguyen on 7/31/16.
+ */
+public class MessageSeenSignal extends AbstractMessage {
+}

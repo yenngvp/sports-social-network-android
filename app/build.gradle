@@ -83,6 +83,8 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-core:2.5.3'
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.5.3'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.5.3'
+    // Joda-android
+    compile 'net.danlew:android.joda:2.9.4.1'
 
 }
 
