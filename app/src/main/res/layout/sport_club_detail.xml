@@ -17,6 +17,7 @@
                 android:layout_height="200dp" />
 
             <TextView
+                android:id="@+id/field_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="22sp"
@@ -49,6 +50,7 @@
                 </LinearLayout>
 
                 <Button
+                    android:id="@+id/call_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -75,6 +77,7 @@
                             android:tint="@color/gray_light"
                             android:src="@android:drawable/ic_menu_myplaces"/>
                         <TextView
+                            android:id="@+id/field_address"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@android:color/black"
@@ -91,6 +94,7 @@
                             android:backgroundTint="@android:color/background_light"
                             android:src="@android:drawable/ic_menu_info_details"/>
                         <TextView
+                            android:id="@+id/field_cost"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@android:color/black"

@@ -1,6 +1,7 @@
 package vn.datsan.datsan.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,6 +20,7 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.List;
 
 import vn.datsan.datsan.R;
+import vn.datsan.datsan.activities.FieldDetailActivity;
 import vn.datsan.datsan.models.Field;
 import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.serverdata.FieldManager;
@@ -68,17 +70,7 @@ public class SportFieldFragment extends Fragment implements GoogleMap.OnInfoWind
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.map);
-        //mapFragment.getMapAsync()
-
-        FieldManager.getInstance().getFields(new CallBack.OnResultReceivedListener() {
-            @Override
-            public void onResultReceived(Object result) {
-                if (result != null) {
-                    List<Field> fieldList = (List<Field>) result;
-                    addMarkers(fieldList);
-                }
-            }
-        });
+        mapFragment.getExtendedMapAsync(this);
 
         return view;
     }
@@ -115,9 +107,20 @@ public class SportFieldFragment extends Fragment implements GoogleMap.OnInfoWind
                 marker.position(new LatLng(Double.parseDouble(arr[0]), Double.parseDouble(arr[1])));
                 marker.title(field.getName());
                 marker.snippet(field.getAddress());
+                marker.data(field);
                 //marker.
                 mMap.addMarker(marker);
             }
+        }
+    }
+
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        if (marker.getData() != null && marker.getData() instanceof Field) {
+            Intent intent = new Intent(getActivity(), FieldDetailActivity.class);
+            intent.putExtra("data", (Field) marker.getData());
+            startActivity(intent);
         }
     }
 
@@ -129,12 +132,17 @@ public class SportFieldFragment extends Fragment implements GoogleMap.OnInfoWind
         LatLng sydney = new LatLng(10.777098, 106.695487);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Quan 1, tp.HCM"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-    }
+        mMap.setOnInfoWindowClickListener(this);
 
-
-    @Override
-    public void onInfoWindowClick(Marker marker) {
-
+        FieldManager.getInstance().getFields(new CallBack.OnResultReceivedListener() {
+            @Override
+            public void onResultReceived(Object result) {
+                if (result != null) {
+                    List<Field> fieldList = (List<Field>) result;
+                    addMarkers(fieldList);
+                }
+            }
+        });
     }
 
     public interface OnFragmentInteractionListener {

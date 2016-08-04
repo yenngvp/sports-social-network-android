@@ -1,5 +1,8 @@
 package vn.datsan.datsan.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.firebase.database.Exclude;
 
@@ -13,7 +16,7 @@ import vn.datsan.datsan.utils.localization.VietnameseUnsignedTranslator;
  * Created by xuanpham on 6/20/16.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Field implements Searchable {
+public class Field implements Searchable, Parcelable {
     private String id;
     private String name;
     private String address;
@@ -23,6 +26,34 @@ public class Field implements Searchable {
     private String district;
     private String details;
     private String type;
+
+    public Field() {
+
+    }
+
+    public Field(Parcel in) {
+        id = in.readString();
+        name = in.readString();
+        address = in.readString();
+        phone = in.readString();
+        contactName = in.readString();
+        location = in.readString();
+        district = in.readString();
+        details = in.readString();
+        type = in.readString();
+    }
+
+    public static final Creator<Field> CREATOR = new Creator<Field>() {
+        @Override
+        public Field createFromParcel(Parcel in) {
+            return new Field(in);
+        }
+
+        @Override
+        public Field[] newArray(int size) {
+            return new Field[size];
+        }
+    };
 
     /**
      * Get JSON string as put mapping for Searchable object
@@ -131,5 +162,23 @@ public class Field implements Searchable {
     @Override
     public String toString() {
         return String.format("Field (%s, %s, %s)", getName(), getAddress(), getPhone());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(id);
+        parcel.writeString(name);
+        parcel.writeString(address);
+        parcel.writeString(phone);
+        parcel.writeString(contactName);
+        parcel.writeString(location);
+        parcel.writeString(district);
+        parcel.writeString(details);
+        parcel.writeString(type);
     }
 }

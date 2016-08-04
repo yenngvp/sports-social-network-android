@@ -2,6 +2,7 @@ package vn.datsan.datsan.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
@@ -12,18 +13,29 @@ import java.util.HashMap;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import vn.datsan.datsan.R;
+import vn.datsan.datsan.models.Field;
 
 public class FieldDetailActivity extends AppCompatActivity {
 
     @BindView(R.id.slider)
     SliderLayout photoSlider;
+    @BindView(R.id.field_name)
+    TextView fieldName;
+    @BindView(R.id.field_address)
+    TextView fieldAdress;
+
+    Field data;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sport_club_detail);
         ButterKnife.bind(this);
 
-        HashMap<String,String> url_maps = new HashMap<String, String>();
+        data = getIntent().getParcelableExtra("data");
+        populateData(data);
+
+        HashMap<String,String> url_maps = new HashMap<>();
         url_maps.put("Hannibal", "http://static2.hypable.com/wp-content/uploads/2013/12/hannibal-season-2-release-date.jpg");
         url_maps.put("Big Bang Theory", "http://tvfiles.alphacoders.com/100/hdclearart-10.png");
         url_maps.put("House of Cards", "http://cdn3.nflximg.net/images/3093/2043093.jpg");
@@ -45,5 +57,12 @@ public class FieldDetailActivity extends AppCompatActivity {
 
             photoSlider.addSlider(textSliderView);
         }
+    }
+
+    private void populateData(Field field) {
+        if (field == null)
+            return;
+        fieldName.setText(field.getName() + " ");
+        fieldAdress.setText(field.getAddress() + " ");
     }
 }
