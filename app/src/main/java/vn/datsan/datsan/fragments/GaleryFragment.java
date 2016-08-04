@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import vn.datsan.datsan.R;
+import vn.datsan.datsan.activities.GalleryDetailActivity;
 import vn.datsan.datsan.serverdata.DummyData;
 import vn.datsan.datsan.ui.adapters.GalleryAdapter;
 import vn.datsan.datsan.ui.adapters.RecyclerTouchListener;
@@ -65,9 +66,12 @@ public class GaleryFragment extends Fragment {
 
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), recyclerView,
                 new RecyclerTouchListener.ClickListener() {
-
                     @Override
                     public void onClick(View view, int position) {
+                        Intent intent = new Intent(getActivity(), GalleryDetailActivity.class);
+                        intent.putParcelableArrayListExtra("data", DummyData.getImageModels());
+                        intent.putExtra("pos", position);
+                        startActivity(intent);
 
                     }
 

@@ -20,6 +20,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -28,6 +29,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,11 +55,14 @@ public class HomeActivity extends AppCompatActivity implements
     private TextView userName;
     private Button loginLogout;
     LoginPopup loginPopup;
+    MaterialSearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
 //        ButterKnife.bind(this);
         FirebaseAuth.getInstance().addAuthStateListener(this);
         FacebookSdk.sdkInitialize(this.getApplicationContext());
@@ -97,18 +102,44 @@ public class HomeActivity extends AppCompatActivity implements
         loginLogout = (Button) headerview.findViewById(R.id.loginLogout);
         loginLogout.setOnClickListener(onLoginLogoutBtnClicked);
         userName = (TextView) headerview.findViewById(R.id.userName);
-//
-//        reloadView();
-
 
         loginPopup = new LoginPopup(HomeActivity.this);
 
+        searchView = (MaterialSearchView) findViewById(R.id.search_view);
+        searchView.setVoiceSearch(false);
+        searchView.setCursorDrawable(R.drawable.custom_cursor);
+        searchView.setEllipsize(true);
+        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                //Do some magic
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                //Do some magic
+                return false;
+            }
+        });
+
+        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
+            @Override
+            public void onSearchViewShown() {
+                //Do some magic
+            }
+
+            @Override
+            public void onSearchViewClosed() {
+                //Do some magic
+            }
+        });
     }
 
     // Add Fragments to Tabs
     private void setupViewPager(ViewPager viewPager) {
         Adapter adapter = new Adapter(getSupportFragmentManager());
-        adapter.addFragment( SportFieldFragment.newInstance("",""), getString(R.string.sport_field));
+        adapter.addFragment(SportFieldFragment.newInstance("", ""), getString(R.string.sport_field));
         adapter.addFragment(FriendlyMatchFragment.newInstance("", ""), getString(R.string.friendly_match));
         adapter.addFragment(SportClubFragment.newInstance("", ""), getString(R.string.sport_club));
         viewPager.setAdapter(adapter);
@@ -174,38 +205,9 @@ public class HomeActivity extends AppCompatActivity implements
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_screen, menu);
         AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "onCreateOptionMenu");
-        MenuItem itemSearch = menu.findItem(R.id.mapview_menu_search);
 
-    final SearchView searchView = (SearchView) MenuItemCompat.getActionView(itemSearch);
-    EditText searchEdit = ((EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text));
-    searchEdit.setFocusable(true);
-    searchEdit.setFocusableInTouchMode(true);
-    searchEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-        @Override
-        public void onFocusChange(View v, boolean hasFocus) {
-        }
-    });
-
-    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-        @Override
-        public boolean onQueryTextSubmit(String query) {
-            AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, query);
-            return false;
-        }
-
-        @Override
-        public boolean onQueryTextChange(String newText) {
-            AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, newText);
-            return false;
-        }
-    });
-
-    searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
-        @Override
-        public void onFocusChange(View v, boolean hasFocus) {
-            AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "OnQueryTextFocusChange");
-        }
-    });
+        MenuItem item = menu.findItem(R.id.action_search);
+        searchView.setMenuItem(item);
         return true;
     }
 

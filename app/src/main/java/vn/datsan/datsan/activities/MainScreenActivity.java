@@ -72,7 +72,7 @@ public class MainScreenActivity extends AppCompatActivity
         getMenuInflater().inflate(R.menu.main_screen, menu);
 
         AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "onCreateOptionMenu");
-        MenuItem itemSearch = menu.findItem(R.id.mapview_menu_search);
+        MenuItem itemSearch = menu.findItem(R.id.action_search);
         itemSearch.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {

@@ -45,9 +45,9 @@ public class DummyData {
         return url_maps;
     }
 
-    public static List<ImageModel> getImageModels() {
+    public static ArrayList<ImageModel> getImageModels() {
         Map<String, String> images = getImages();
-        List<ImageModel> imageModels = new ArrayList<>();
+        ArrayList<ImageModel> imageModels = new ArrayList<>();
         for (String key : images.keySet()) {
             ImageModel imageModel = new ImageModel(images.get(key), key);
             imageModels.add(imageModel);
