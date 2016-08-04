@@ -15,7 +15,8 @@
         <FrameLayout
             android:id="@+id/toolbar_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -24,7 +25,7 @@
                 android:background="?attr/colorPrimary"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-            <com.miguelcatalan.materialsearchview.MaterialSearchView
+            <vn.datsan.datsan.ui.appviews.MaterialSearchView
                 android:id="@+id/search_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -32,6 +33,8 @@
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:tabMode="scrollable"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

@@ -85,8 +85,6 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-databind:2.5.3'
     // Joda-android
     compile 'net.danlew:android.joda:2.9.4.1'
-
-    compile 'com.miguelcatalan:materialsearchview:1.4.0'
     compile 'com.androidmapsextensions:android-maps-extensions:2.2.1'
 }
 

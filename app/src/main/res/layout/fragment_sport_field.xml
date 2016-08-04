@@ -14,9 +14,8 @@
         <LinearLayout
             android:id="@+id/searchResultView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/lightpink"
-            android:visibility="gone"
+            android:layout_height="100dp"
+            android:background="@color/search_layover_bg"
             android:orientation="vertical">
 
         </LinearLayout>

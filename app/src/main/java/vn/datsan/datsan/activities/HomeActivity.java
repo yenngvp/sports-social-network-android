@@ -29,7 +29,6 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +42,7 @@ import vn.datsan.datsan.fragments.SportFieldFragment;
 import vn.datsan.datsan.search.SearchOption;
 import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.ui.appviews.LoginPopup;
+import vn.datsan.datsan.ui.appviews.MaterialSearchView;
 import vn.datsan.datsan.ui.appviews.NewFCPopup;
 import vn.datsan.datsan.utils.AppLog;
 import vn.datsan.datsan.search.ElasticsearchService;
@@ -56,6 +56,7 @@ public class HomeActivity extends AppCompatActivity implements
     private Button loginLogout;
     LoginPopup loginPopup;
     MaterialSearchView searchView;
+    TabLayout tabs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +75,7 @@ public class HomeActivity extends AppCompatActivity implements
         setupViewPager(viewPager);
         viewPager.setOffscreenPageLimit(3);
         // Set Tabs inside Toolbar
-        TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
+        tabs = (TabLayout) findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -127,11 +128,13 @@ public class HomeActivity extends AppCompatActivity implements
             @Override
             public void onSearchViewShown() {
                 //Do some magic
+                tabs.setVisibility(View.GONE);
             }
 
             @Override
             public void onSearchViewClosed() {
                 //Do some magic
+                tabs.setVisibility(View.VISIBLE);
             }
         });
     }
