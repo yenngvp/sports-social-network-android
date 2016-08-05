@@ -36,17 +36,30 @@ public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, Void> {
 
         // JestClient is designed to be singleton, don't construct it for each request!
         // See https://github.com/searchbox-io/Jest/tree/master/jest
-        //  .defaultCredentials(Constants.ELASTICSEARCH_USERNAME,
-        //        Constants.ELASTICSEARCH_PASSWORD)
         if (jestClient == null) {
-            // Build connection factory to the Elasticsearch server
-            JestClientFactory factory = new JestClientFactory();
-            factory.setDroidClientConfig(
-                    new DroidClientConfig
-                            .Builder(Constants.ELASTICSEARCH_SERVER_URL)
-                            .multiThreaded(true)
-                            .build());
-            jestClient = factory.getObject();
+
+            if (Constants.ELASTICSEARCH_USERNAME == null || "".equals(Constants.ELASTICSEARCH_USERNAME)) {
+                // Not required authorisation
+                // Build connection factory to the Elasticsearch server
+                JestClientFactory factory = new JestClientFactory();
+                factory.setDroidClientConfig(
+                        new DroidClientConfig
+                                .Builder(Constants.ELASTICSEARCH_SERVER_URL)
+                                .multiThreaded(true)
+                                .build());
+                jestClient = factory.getObject();
+            } else {
+                // Build connection factory to the Elasticsearch server
+                JestClientFactory factory = new JestClientFactory();
+                factory.setDroidClientConfig(
+                        new DroidClientConfig
+                                .Builder(Constants.ELASTICSEARCH_SERVER_URL)
+                                .defaultCredentials(Constants.ELASTICSEARCH_USERNAME,
+                                        Constants.ELASTICSEARCH_PASSWORD)
+                                .multiThreaded(true)
+                                .build());
+                jestClient = factory.getObject();
+            }
         }
 
     }
