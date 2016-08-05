@@ -2,6 +2,7 @@
     <string name="app_name">Sport Network</string>
     <string name="title_activity_home">Sân thi đấu</string>
     <string name="title_activity_login">Đăng Nhập</string>
+    <string name="title_activity_chat">Chat</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>

@@ -14,7 +14,7 @@ public class ChatManager {
 
     private static final String TAG = ChatManager.class.getName();
 
-    private DatabaseReference userDatabaseRef = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_CHATS);
+    private DatabaseReference chatDatabaseRef = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_CHATS);
     private static ChatManager instance = new ChatManager();
 
     private ChatManager() {}

@@ -90,6 +90,15 @@ public class HomeActivity extends AppCompatActivity implements
             }
         });
 
+        FloatingActionButton chatFab = (FloatingActionButton) findViewById(R.id.chatFab);
+        chatFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(HomeActivity.this, ChatActivity.class));
+            }
+        });
+
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);

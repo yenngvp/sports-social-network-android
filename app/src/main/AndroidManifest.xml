@@ -71,6 +71,9 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activities.ChatActivity"
+            android:label="@string/title_activity_chat" />
 
         <!-- HockeyApp integration -->
         <meta-data
