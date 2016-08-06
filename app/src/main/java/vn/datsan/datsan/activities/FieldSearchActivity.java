@@ -22,7 +22,7 @@ import android.widget.TextView;
 import vn.datsan.datsan.R;
 import vn.datsan.datsan.fragments.FieldSearchFragment;
 
-public class FieldSearchActivity extends AppCompatActivity {
+public class FieldSearchActivity extends SimpleActivity {
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
     /**
@@ -35,8 +35,7 @@ public class FieldSearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_location_search);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        super.initToolBar();
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());

@@ -13,8 +13,8 @@ import vn.datsan.datsan.utils.AppLog;
  */
 public class AppSearch {
 
-    public static void searchField(String keyword, String distance, float lati, float longi, CallBack.OnSearchResultListener callback) {
-        keyword = "san bong da";
+    public static void searchField(String keyword, String distance, float lati, float longi, final CallBack.OnResultReceivedListener callback) {
+
         List<String> searchTypes = new ArrayList<>();
         searchTypes.add(Field.class.getSimpleName());
         SearchOption searchOption = new SearchOption(keyword, searchTypes);
@@ -26,6 +26,8 @@ public class AppSearch {
             public void onSearchResult(SearchResult searchResult) {
                 if (searchResult == null) {
                     // No search result found
+                    if (callback != null)
+                        callback.onResultReceived(null);
                     return;
                 }
 
@@ -33,12 +35,17 @@ public class AppSearch {
 
                 // Get search result type fields
                 List<SearchResult.Hit<Field, Void>> fieldHits = searchResult.getHits(Field.class);
+                List<Field> fields = new ArrayList<>();
                 for (SearchResult.Hit hit : fieldHits) {
                     String type = hit.type;
                     Object source = hit.source;
+                    fields.add((Field) source);
 
                     AppLog.log(AppLog.LogType.LOG_INFO, "TAG", "Found a " + type + " : " + source);
                 }
+
+                if (callback != null)
+                    callback.onResultReceived(fields);
             }
         });
     }

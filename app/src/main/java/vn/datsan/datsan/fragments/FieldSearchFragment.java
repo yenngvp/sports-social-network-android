@@ -83,7 +83,6 @@ public class FieldSearchFragment extends Fragment {
 
     private void populateData() {
         List<Field> fieldList = FieldManager.getInstance().getFields(null);
-        AppLog.log(AppLog.LogType.LOG_ERROR, "SearchFrag", "Size " + fieldList.size());
         if (fieldList != null) {
             List<FlexListAdapter.FlexItem> list = new ArrayList<>();
             for (Field field : fieldList) {

@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,7 @@ import com.androidmapsextensions.SupportMapFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import vn.datsan.datsan.R;
@@ -24,6 +27,8 @@ import vn.datsan.datsan.activities.FieldDetailActivity;
 import vn.datsan.datsan.models.Field;
 import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.serverdata.FieldManager;
+import vn.datsan.datsan.ui.adapters.DividerItemDecoration;
+import vn.datsan.datsan.ui.adapters.FlexListAdapter;
 
 /**
  * Created by xuanpham on 7/25/16.
@@ -35,6 +40,8 @@ public class SportFieldFragment extends Fragment implements GoogleMap.OnInfoWind
     private String mParam1;
     private String mParam2;
     private GoogleMap mMap;
+    FlexListAdapter adapter;
+    private View searchResultView;
 
     private OnFragmentInteractionListener mListener;
 
@@ -66,12 +73,17 @@ public class SportFieldFragment extends Fragment implements GoogleMap.OnInfoWind
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_sport_field, null);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-
+        searchResultView = view.findViewById(R.id.searchResultView);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getExtendedMapAsync(this);
 
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        adapter = new FlexListAdapter();
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+        recyclerView.setAdapter(adapter);
         return view;
     }
 
@@ -147,5 +159,23 @@ public class SportFieldFragment extends Fragment implements GoogleMap.OnInfoWind
 
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
+    }
+
+    public void showSearchResultView(boolean open) {
+        if (open)
+            searchResultView.setVisibility(View.VISIBLE);
+        else
+            searchResultView.setVisibility(View.GONE);
+    }
+
+    public void showSearchResult(Object object) {
+        searchResultView.setVisibility(View.VISIBLE);
+        List<Field> fields = (List<Field>) object;
+        List<FlexListAdapter.FlexItem> list = new ArrayList<>();
+        for (Field field : fields) {
+            FlexListAdapter.FlexItem item = adapter.createItem(null, field.getName(), field.getAddress(), null);
+            list.add(item);
+        }
+        adapter.update(list);
     }
 }

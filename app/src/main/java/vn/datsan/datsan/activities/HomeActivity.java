@@ -39,6 +39,7 @@ import vn.datsan.datsan.R;
 import vn.datsan.datsan.fragments.SportClubFragment;
 import vn.datsan.datsan.fragments.FriendlyMatchFragment;
 import vn.datsan.datsan.fragments.SportFieldFragment;
+import vn.datsan.datsan.models.Field;
 import vn.datsan.datsan.search.AppSearch;
 import vn.datsan.datsan.search.SearchOption;
 import vn.datsan.datsan.serverdata.CallBack;
@@ -58,6 +59,8 @@ public class HomeActivity extends AppCompatActivity implements
     LoginPopup loginPopup;
     MaterialSearchView searchView;
     TabLayout tabs;
+    ViewPager viewPager;
+    SportFieldFragment sportFieldFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +75,7 @@ public class HomeActivity extends AppCompatActivity implements
         setSupportActionBar(toolbar);
 
         // Setting ViewPager for each Tabs
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
         viewPager.setOffscreenPageLimit(3);
         // Set Tabs inside Toolbar
@@ -82,9 +85,6 @@ public class HomeActivity extends AppCompatActivity implements
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                String name = CloudDataStorage.getInstance().genUniqFileName();
-//                AppLog.log(AppLog.LogType.LOG_ERROR, TAG, name);
-
                 NewFCPopup popup = new NewFCPopup(HomeActivity.this);
                 popup.show();
 
@@ -123,7 +123,7 @@ public class HomeActivity extends AppCompatActivity implements
         searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                AppSearch.searchField(query, "10km", 1,1, null);
+                navigateSearch(query);
                 return false;
             }
 
@@ -139,6 +139,10 @@ public class HomeActivity extends AppCompatActivity implements
             public void onSearchViewShown() {
                 //Do some magic
                 tabs.setVisibility(View.GONE);
+
+                if (viewPager.getCurrentItem() == 0)
+                    sportFieldFragment.showSearchResultView(true);
+
             }
 
             @Override
@@ -149,10 +153,23 @@ public class HomeActivity extends AppCompatActivity implements
         });
     }
 
+    private void navigateSearch(String text) {
+        switch (viewPager.getCurrentItem()) {
+            case 0:
+                searchLocation(text);
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+        }
+    }
+
     // Add Fragments to Tabs
     private void setupViewPager(ViewPager viewPager) {
         Adapter adapter = new Adapter(getSupportFragmentManager());
-        adapter.addFragment(SportFieldFragment.newInstance("", ""), getString(R.string.sport_field));
+        sportFieldFragment = SportFieldFragment.newInstance("", "");
+        adapter.addFragment(sportFieldFragment, getString(R.string.sport_field));
         adapter.addFragment(FriendlyMatchFragment.newInstance("", ""), getString(R.string.friendly_match));
         adapter.addFragment(SportClubFragment.newInstance("", ""), getString(R.string.sport_club));
         viewPager.setAdapter(adapter);
@@ -220,12 +237,28 @@ public class HomeActivity extends AppCompatActivity implements
         AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "onCreateOptionMenu");
 
         MenuItem item = menu.findItem(R.id.action_search);
+
         searchView.setMenuItem(item);
+//
+//        item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+//            @Override
+//            public boolean onMenuItemClick(MenuItem menuItem) {
+//                AppLog.log(AppLog.LogType.LOG_ERROR, "TAG", "option selected");
+//                if (viewPager.getCurrentItem() == 0) {
+//                    startActivity(new Intent(getBaseContext(), FieldSearchActivity.class));
+//                } else {
+//                    searchView.showSearch();
+//                }
+//                return false;
+//            }
+//        });
+
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             return true;
@@ -278,5 +311,16 @@ public class HomeActivity extends AppCompatActivity implements
     public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
         AppLog.log(AppLog.LogType.LOG_ERROR, TAG, "AuthChanged");
         reloadView();
+    }
+
+    private void searchLocation(String searchText) {
+        AppSearch.searchField(searchText, "40km", 1, 1, new CallBack.OnResultReceivedListener() {
+            @Override
+            public void onResultReceived(Object result) {
+                sportFieldFragment.showSearchResult(result
+
+                );
+            }
+        });
     }
 }
