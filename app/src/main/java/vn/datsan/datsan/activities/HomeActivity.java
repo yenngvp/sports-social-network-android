@@ -39,6 +39,7 @@ import vn.datsan.datsan.R;
 import vn.datsan.datsan.fragments.SportClubFragment;
 import vn.datsan.datsan.fragments.FriendlyMatchFragment;
 import vn.datsan.datsan.fragments.SportFieldFragment;
+import vn.datsan.datsan.search.AppSearch;
 import vn.datsan.datsan.search.SearchOption;
 import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.ui.appviews.LoginPopup;
@@ -122,7 +123,7 @@ public class HomeActivity extends AppCompatActivity implements
         searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                //Do some magic
+                AppSearch.searchField(query, "10km", 1,1, null);
                 return false;
             }
 
