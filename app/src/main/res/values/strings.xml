@@ -87,7 +87,7 @@
         <item>Không yêu cầu</item>
         <item>Biết đá</item>
         <item>Trung bình</item>
-        <item>Trung bình khá</item>
+        <item>Trung bình khá</item>zzzz
         <item>Khá</item>
         <item>Giỏi</item>
         <item>Chuyên nghiệp</item>
@@ -95,4 +95,7 @@
     <string name="title_activity_group_detail">GroupDetailActivity</string>
 
     <string name="search_hint">Search</string>
+    <string name="search_field_hint">Tìm sân</string>
+    <string name="search_club_hint">Tìm nhóm</string>
+    <string name="search_match_hint">Tìm kèo</string>
 </resources>

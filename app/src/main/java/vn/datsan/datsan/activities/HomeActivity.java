@@ -1,5 +1,6 @@
 package vn.datsan.datsan.activities;
 
+import android.app.SearchManager;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -116,41 +117,19 @@ public class HomeActivity extends AppCompatActivity implements
 
         loginPopup = new LoginPopup(HomeActivity.this);
 
-        searchView = (MaterialSearchView) findViewById(R.id.search_view);
-        searchView.setVoiceSearch(false);
-        searchView.setCursorDrawable(R.drawable.custom_cursor);
-        searchView.setEllipsize(true);
-        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                navigateSearch(query);
-                return false;
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
             }
-
             @Override
-            public boolean onQueryTextChange(String newText) {
-                //Do some magic
-                return false;
+            public void onPageSelected(int position) {
+                MenuItemCompat.collapseActionView(appBarMenu.findItem(R.id.action_search));
+            }
+            @Override
+            public void onPageScrollStateChanged(int state) {
             }
         });
 
-        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
-            @Override
-            public void onSearchViewShown() {
-                //Do some magic
-                tabs.setVisibility(View.GONE);
-
-                if (viewPager.getCurrentItem() == 0)
-                    sportFieldFragment.showSearchResultView(true);
-
-            }
-
-            @Override
-            public void onSearchViewClosed() {
-                //Do some magic
-                tabs.setVisibility(View.VISIBLE);
-            }
-        });
     }
 
     private void navigateSearch(String text) {
@@ -230,38 +209,50 @@ public class HomeActivity extends AppCompatActivity implements
         }
     }
 
+     Menu appBarMenu;
+
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_screen, menu);
-        AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "onCreateOptionMenu");
+        appBarMenu = menu;
 
-        MenuItem item = menu.findItem(R.id.action_search);
-
-        searchView.setMenuItem(item);
-//
-//        item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-//            @Override
-//            public boolean onMenuItemClick(MenuItem menuItem) {
-//                AppLog.log(AppLog.LogType.LOG_ERROR, "TAG", "option selected");
-//                if (viewPager.getCurrentItem() == 0) {
-//                    startActivity(new Intent(getBaseContext(), FieldSearchActivity.class));
-//                } else {
-//                    searchView.showSearch();
-//                }
-//                return false;
-//            }
-//        });
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+//        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+//        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setOnSearchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switch (viewPager.getCurrentItem()){
+                    case 0:
+                        searchView.setQueryHint(getString(R.string.search_field_hint));
+                        break;
+                    case 1:
+                        searchView.setQueryHint(getString(R.string.search_match_hint));
+                        break;
+                    case 2:
+                        searchView.setQueryHint(getString(R.string.search_club_hint));
+                        break;
+                }
+            }
+        });
 
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
+        AppLog.log(AppLog.LogType.LOG_ERROR, "Tag", "Click");
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == R.id.action_search) {
+            if (viewPager.getCurrentItem() == 0) {
+//                startActivity(new Intent(getBaseContext(), FieldSearchActivity.class));
+//                return false;
+            } else {
+                //searchView.showSearch();
+            }
         }
 
         return super.onOptionsItemSelected(item);
