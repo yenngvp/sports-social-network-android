@@ -20,6 +20,7 @@ public class AppSearch {
         SearchOption searchOption = new SearchOption(keyword, searchTypes);
         searchOption.setFilteredDistance("1km");
         searchOption.setLatLon("10.77533", "106.69453");
+        searchOption.setFrom(0);
 //        ElasticsearchService.getInstance().search(searchOption, callback);
         ElasticsearchService.getInstance().search(searchOption, new CallBack.OnSearchResultListener() {
             @Override

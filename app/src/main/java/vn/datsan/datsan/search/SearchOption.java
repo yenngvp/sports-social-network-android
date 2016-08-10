@@ -18,6 +18,9 @@ public class SearchOption {
     private String lat;
     private String lon;
     private String distanceUnit = "km";
+    // Pagination paramters
+    private int from = 0;
+    private int size = Constants.ELASTICSEARCH_PAGINATION_SIZE_DEFAULT;
 
     public SearchOption() {
 
@@ -101,5 +104,21 @@ public class SearchOption {
 
     public void setDistanceUnit(String distanceUnit) {
         this.distanceUnit = distanceUnit;
+    }
+
+    public int getFrom() {
+        return from;
+    }
+
+    public void setFrom(int from) {
+        this.from = from;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
     }
 }

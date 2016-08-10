@@ -233,6 +233,8 @@ public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, Object> {
                 // Searching with geolocation awareness
                 // Basically, the query means "Find me the content matched with 'the keyword' and around 'filtedDistance' from a point (lat,lon)"
                 query = "{\n" +
+                        "    \"from\": \"" + searchOption.getFrom() + "\",\n" +
+                        "    \"size\": \"" + searchOption.getSize() + "\",\n" +
                         "    \"query\": {\n" +
                         "        \"filtered\" : {\n" +
                         "            \"query\" : {\n" +
@@ -267,6 +269,8 @@ public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, Object> {
             } else {
                 // Basically, the query means "Find me the content matched with 'the keyword', NO location awareness
                 query = "{\n" +
+                        "    \"from\": \"" + searchOption.getFrom() + "\",\n" +
+                        "    \"size\": \"" + searchOption.getSize() + "\",\n" +
                         "    \"query\": {\n" +
                         "        \"filtered\" : {\n" +
                         "            \"query\" : {\n" +
@@ -288,20 +292,20 @@ public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, Object> {
                     .build();
 
             SearchResult result = jestClient.execute(search);
-            return result;
-//            if (result.isSucceeded()) {
-//                AppLog.d(TAG, "Search result for keyword \"" + searchOption.getKeyword() + "\"" + " found " + result.getTotal());
-//
-//                if (searchResultListener != null) {
-//                    searchResultListener.onSearchResult(result);
-//                }
-//            } else {
-//                AppLog.e(TAG, "Search result for keyword \"" + searchOption.getKeyword() + "\"" + " error: " + result.getErrorMessage());
-//
-//                if (searchResultListener != null) {
-//                    searchResultListener.onSearchResult(null);
-//                }
-//            }
+//            return result;
+            if (result.isSucceeded()) {
+                AppLog.d(TAG, "Search result for keyword \"" + searchOption.getKeyword() + "\"" + " found " + result.getTotal());
+
+                if (searchResultListener != null) {
+                    searchResultListener.onSearchResult(result);
+                }
+            } else {
+                AppLog.e(TAG, "Search result for keyword \"" + searchOption.getKeyword() + "\"" + " error: " + result.getErrorMessage());
+
+                if (searchResultListener != null) {
+                    searchResultListener.onSearchResult(null);
+                }
+            }
 
         } catch (Exception e) {
             AppLog.log(e);
