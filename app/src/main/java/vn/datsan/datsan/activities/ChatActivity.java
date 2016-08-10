@@ -1,7 +1,8 @@
 package vn.datsan.datsan.activities;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,16 +17,30 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import vn.datsan.datsan.R;
 import vn.datsan.datsan.models.chat.ChatMessage;
 import vn.datsan.datsan.ui.adapters.ChatAdapter;
 
 
-public class ChatActivity extends ActionBarActivity {
+public class ChatActivity extends AppCompatActivity {
 
-    private EditText messageET;
-    private ListView messagesContainer;
-    private Button sendBtn;
+    @BindView(R.id.messageEdit)
+    EditText messageET;
+    @BindView(R.id.messagesContainer)
+    ListView messagesContainer;
+    @BindView(R.id.chatSendButton)
+    Button sendBtn;
+
+    @BindView(R.id.meLbl)
+    TextView meLabel;
+    @BindView(R.id.friendLabel)
+    TextView companionLabel;
+    @BindView(R.id.container)
+    RelativeLayout container;
+
     private ChatAdapter adapter;
     private ArrayList<ChatMessage> chatHistory;
 
@@ -33,7 +48,18 @@ public class ChatActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        initControls();
+        ButterKnife.bind(this);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setHomeButtonEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
+        companionLabel.setText("My Buddy");
+        loadDummyHistory();
     }
 
     @Override
@@ -58,39 +84,22 @@ public class ChatActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void initControls() {
-        messagesContainer = (ListView) findViewById(R.id.messagesContainer);
-        messageET = (EditText) findViewById(R.id.messageEdit);
-        sendBtn = (Button) findViewById(R.id.chatSendButton);
+    @OnClick(R.id.chatSendButton)
+    public void sendMessage() {
+        String messageText = messageET.getText().toString();
+        if (TextUtils.isEmpty(messageText)) {
+            return;
+        }
 
-        TextView meLabel = (TextView) findViewById(R.id.meLbl);
-        TextView companionLabel = (TextView) findViewById(R.id.friendLabel);
-        RelativeLayout container = (RelativeLayout) findViewById(R.id.container);
-        companionLabel.setText("My Buddy");
+        ChatMessage chatMessage = new ChatMessage();
+        chatMessage.setId(122);//dummy
+        chatMessage.setMessage(messageText);
+        chatMessage.setDate(DateFormat.getDateTimeInstance().format(new Date()));
+        chatMessage.setMe(true);
 
-        loadDummyHistory();
+        messageET.setText("");
 
-        sendBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String messageText = messageET.getText().toString();
-                if (TextUtils.isEmpty(messageText)) {
-                    return;
-                }
-
-                ChatMessage chatMessage = new ChatMessage();
-                chatMessage.setId(122);//dummy
-                chatMessage.setMessage(messageText);
-                chatMessage.setDate(DateFormat.getDateTimeInstance().format(new Date()));
-                chatMessage.setMe(true);
-
-                messageET.setText("");
-
-                displayMessage(chatMessage);
-            }
-        });
-
-
+        displayMessage(chatMessage);
     }
 
     public void displayMessage(ChatMessage message) {
@@ -123,10 +132,10 @@ public class ChatActivity extends ActionBarActivity {
         adapter = new ChatAdapter(ChatActivity.this, new ArrayList<ChatMessage>());
         messagesContainer.setAdapter(adapter);
 
-                for(int i=0; i<chatHistory.size(); i++) {
-                    ChatMessage message = chatHistory.get(i);
-                    displayMessage(message);
-                }
+        for(int i=0; i<chatHistory.size(); i++) {
+            ChatMessage message = chatHistory.get(i);
+            displayMessage(message);
+        }
 
     }
 

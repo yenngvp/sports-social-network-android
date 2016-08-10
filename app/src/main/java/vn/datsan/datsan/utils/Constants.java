@@ -24,11 +24,6 @@ public class Constants {
     public static final String FIREBASE_CHATS = "app/chats";
 
     /*
-     * Indexed objects used for searching
-     */
-    public static final String[] ACCEPT_INDEX_TYPES = {FIREBASE_USERS, FIREBASE_FIELDS, FIREBASE_GROUPS, "user-posts", "posts"};
-
-    /*
      * Elasticsearch server
      */
     // Elasticsearch URL
