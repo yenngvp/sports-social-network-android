@@ -66,8 +66,10 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
@@ -84,14 +86,20 @@
         <activity
             android:name=".activities.FieldSearchActivity"
             android:label="@string/title_activity_location_search"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+        </activity>
         <activity android:name=".activities.SimpleActivity" />
         <activity android:name=".activities.InviteMemberActivity" />
         <activity android:name=".activities.GalleryDetailActivity" />
         <activity
             android:name=".activities.GroupDetailActivity"
             android:label="@string/title_activity_group_detail"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+        <activity android:name=".activities.NewFriendlyMatchActivity"
+            android:label="@string/create_friendly_match"></activity>
     </application>
 
 </manifest>

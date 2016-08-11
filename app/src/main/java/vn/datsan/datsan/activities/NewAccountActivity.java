@@ -134,7 +134,7 @@ public class NewAccountActivity extends AppCompatActivity {
     }
 
     private void createAccount(final User user, String password) {
-        SimpleProgress.show(NewAccountActivity.this);
+        SimpleProgress.show(NewAccountActivity.this, null);
         String email = user.getEmail();
 
         firebaseAuth.createUserWithEmailAndPassword(email, password)

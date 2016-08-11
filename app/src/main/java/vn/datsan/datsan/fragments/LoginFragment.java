@@ -213,13 +213,13 @@ public class LoginFragment extends Fragment {
     }
 
     private void signInGoogle() {
-        SimpleProgress.show(getActivity());
+        SimpleProgress.show(getActivity(), null);
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, Constants.GOOGLE_SIGN_IN_CODE);
     }
 
     private void handleFacebookAccessToken(AccessToken token) {
-        SimpleProgress.show(getActivity());
+        SimpleProgress.show(getActivity(), null);
 
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         FirebaseAuth.getInstance().signInWithCredential(credential)
@@ -265,7 +265,7 @@ public class LoginFragment extends Fragment {
     }
 
     private void loginEmail(final String email, String password) {
-        SimpleProgress.show(getActivity());
+        SimpleProgress.show(getActivity(), null);
 
         FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {

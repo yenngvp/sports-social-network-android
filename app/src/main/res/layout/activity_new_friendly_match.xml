@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context="vn.datsan.datsan.activities.NewFriendlyMatchActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/appbar_padding_top"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:minWidth="90dp"
+            android:textSize="17dp"
+            android:textColor="@android:color/black"
+            android:text="Thành phố"/>
+        <Spinner
+            android:id="@+id/spinner_position"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:entries="@array/positions"
+            android:minWidth="70dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:minWidth="90dp"
+            android:textSize="17dp"
+            android:textColor="@android:color/black"
+            android:text="FC"/>
+        <Spinner
+            android:id="@+id/spinner_fc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:entries="@array/positions"
+            android:minWidth="70dp"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:minWidth="90dp"
+            android:textSize="17dp"
+            android:textColor="@android:color/black"
+            android:text="Sân"/>
+
+        <EditText
+            android:id="@+id/field_edt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="150dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:minWidth="90dp"
+            android:textSize="17dp"
+            android:textColor="@android:color/black"
+            android:text="Thời gian bắt đầu"/>
+
+        <TextView
+            android:id="@+id/start_time_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:minWidth="90dp"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/greengrass"
+            android:text="22:30"/>
+
+        <ImageButton
+            android:id="@+id/change_start_time_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/ic_menu_today"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/endtime_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:minWidth="90dp"
+            android:textSize="17sp"
+            android:textColor="@android:color/black"
+            android:text="Thời gian kết thúc"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:minWidth="90dp"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/greengrass"
+            android:text="22:30"/>
+
+        <ImageButton
+            android:id="@+id/change_end_time_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/ic_menu_today"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/date_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:minWidth="90dp"
+            android:textSize="17sp"
+            android:textColor="@android:color/black"
+            android:text="Ngày giao hữu"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:minWidth="90dp"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/greengrass"
+            android:text="Hôm nay"/>
+
+        <ImageButton
+            android:id="@+id/change_date_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/ic_menu_today"/>
+
+    </LinearLayout>
+    <Button
+        android:id="@+id/register"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:drawableRight="@android:drawable/ic_media_play"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/register"/>
+</LinearLayout>

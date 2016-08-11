@@ -49,7 +49,7 @@ public class ProfileActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        SimpleProgress.show(ProfileActivity.this);
+        SimpleProgress.show(ProfileActivity.this, null);
         UserManager.getInstance().getCurrentUserInfo(profileFetchCallBack);
 
         String keyword = "san bong da";

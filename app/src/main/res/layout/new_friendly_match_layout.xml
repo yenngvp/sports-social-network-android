@@ -3,21 +3,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    <ImageButton
-        android:id="@+id/btn_close"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@android:drawable/ic_menu_close_clear_cancel"
-        android:layout_gravity="top|right"/>
-
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:paddingBottom="10dp"
-        android:textSize="20sp"
-        android:textColor="@color/greengrass"
-        android:text="TẠO ĐỘI BÓNG - FC"/>
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:minWidth="90dp"
+            android:textSize="17dp"
+            android:textColor="@android:color/black"
+            android:text="Thành phố"/>
+        <Spinner
+            android:id="@+id/spinner_position"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:entries="@array/positions"
+            android:minWidth="70dp"/>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,17 +30,37 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="5dp"
             android:minWidth="90dp"
-            android:padding="10dp"
-            android:text="@string/name"
-            android:textSize="17sp"
-            android:textColor="@android:color/black"/>
-
-        <EditText
-            android:id="@+id/group_name"
+            android:textSize="17dp"
+            android:textColor="@android:color/black"
+            android:text="FC"/>
+        <Spinner
+            android:id="@+id/spinner_fc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="My FC"
+            android:entries="@array/positions"
+            android:minWidth="70dp"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:minWidth="90dp"
+            android:textSize="17dp"
+            android:textColor="@android:color/black"
+            android:text="Sân"/>
+
+        <EditText
+            android:id="@+id/field_edt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:minWidth="150dp"/>
     </LinearLayout>
 
@@ -51,33 +75,17 @@
             android:minWidth="90dp"
             android:textSize="17dp"
             android:textColor="@android:color/black"
-            android:text="Khu vực"/>
+            android:text="Sân"/>
 
-        <EditText
-            android:id="@+id/group_location"
+        <TimePicker
+            android:id="@+id/time_picker"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="150dp"/>
-    </LinearLayout>
+            android:layout_height="wrap_content"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
+        <TimePicker
+            android:id="@+id/date_picker"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:minWidth="90dp"
-            android:textSize="17dp"
-            android:textColor="@android:color/black"
-            android:text="@string/phone_number"/>
-
-        <EditText
-            android:id="@+id/group_phone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="150dp"/>
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 
     <Button
@@ -85,6 +93,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
+        android:drawableRight="@android:drawable/ic_media_play"
         android:layout_gravity="center_horizontal"
         android:text="@string/register"/>
 

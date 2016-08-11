@@ -10,6 +10,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.androidmapsextensions.GoogleMap;
 import com.androidmapsextensions.Marker;
@@ -29,6 +31,7 @@ import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.serverdata.FieldManager;
 import vn.datsan.datsan.ui.adapters.DividerItemDecoration;
 import vn.datsan.datsan.ui.adapters.FlexListAdapter;
+import vn.datsan.datsan.ui.adapters.RecyclerTouchListener;
 
 /**
  * Created by xuanpham on 7/25/16.
@@ -84,6 +87,27 @@ public class SportFieldFragment extends Fragment implements GoogleMap.OnInfoWind
         adapter = new FlexListAdapter();
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(adapter);
+
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), recyclerView, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                Toast.makeText(getActivity(), "Touch " + position, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), FieldDetailActivity.class);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
+
+        ((ImageButton) view.findViewById(R.id.btn_close)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                searchResultView.setVisibility(View.GONE);
+            }
+        });
         return view;
     }
 

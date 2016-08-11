@@ -47,6 +47,7 @@ import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.ui.appviews.LoginPopup;
 import vn.datsan.datsan.ui.appviews.MaterialSearchView;
 import vn.datsan.datsan.ui.appviews.NewFCPopup;
+import vn.datsan.datsan.ui.customwidgets.SimpleProgress;
 import vn.datsan.datsan.utils.AppLog;
 import vn.datsan.datsan.search.ElasticsearchService;
 import vn.datsan.datsan.search.interfaces.Searchable;
@@ -82,15 +83,6 @@ public class HomeActivity extends AppCompatActivity implements
         // Set Tabs inside Toolbar
         tabs = (TabLayout) findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NewFCPopup popup = new NewFCPopup(HomeActivity.this);
-                popup.show();
-
-            }
-        });
 
         FloatingActionButton chatFab = (FloatingActionButton) findViewById(R.id.chatFab);
         chatFab.setOnClickListener(new View.OnClickListener() {
@@ -225,17 +217,21 @@ public class HomeActivity extends AppCompatActivity implements
         searchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                switch (viewPager.getCurrentItem()){
-                    case 0:
-                        searchView.setQueryHint(getString(R.string.search_field_hint));
-                        break;
-                    case 1:
-                        searchView.setQueryHint(getString(R.string.search_match_hint));
-                        break;
-                    case 2:
-                        searchView.setQueryHint(getString(R.string.search_club_hint));
-                        break;
-                }
+                handleSearchItemClicked(searchView);
+            }
+        });
+
+        searchView.setSubmitButtonEnabled(true);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                handleSearchViewQuerySubmite(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
             }
         });
 
@@ -258,6 +254,24 @@ public class HomeActivity extends AppCompatActivity implements
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void handleSearchItemClicked(SearchView searchView) {
+        switch (viewPager.getCurrentItem()){
+            case 0:
+                searchView.setQueryHint(getString(R.string.search_field_hint));
+                break;
+            case 1:
+                searchView.setQueryHint(getString(R.string.search_match_hint));
+                break;
+            case 2:
+                searchView.setQueryHint(getString(R.string.search_club_hint));
+                break;
+        }
+    }
+
+    private void handleSearchViewQuerySubmite(String text) {
+        searchLocation(text);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -307,12 +321,12 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
     private void searchLocation(String searchText) {
+        SimpleProgress.show(HomeActivity.this, "Đang tìm...");
         AppSearch.searchField(searchText, "40km", 1, 1, new CallBack.OnResultReceivedListener() {
             @Override
             public void onResultReceived(Object result) {
-                sportFieldFragment.showSearchResult(result
-
-                );
+                sportFieldFragment.showSearchResult(result);
+                SimpleProgress.dismiss();
             }
         });
     }

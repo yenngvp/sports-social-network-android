@@ -10,13 +10,15 @@ import vn.datsan.datsan.R;
  */
 public class SimpleProgress {
     static ProgressDialog progressDialog;
-    private SimpleProgress(Context context) {
+    private SimpleProgress(Context context, String message) {
         progressDialog = new ProgressDialog(context, ProgressDialog.STYLE_SPINNER);
-        progressDialog.setMessage(context.getString(R.string.in_progress));
+        if (message == null)
+            message = context.getString(R.string.in_progress);
+        progressDialog.setMessage(message);
     }
 
-    public static void show(Context context) {
-        new SimpleProgress(context);
+    public static void show(Context context, String message) {
+        new SimpleProgress(context, message);
         progressDialog.show();
     }
 

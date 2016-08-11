@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Sport Network</string>
-    <string name="title_activity_home">Sân thi đấu</string>
+    <string name="title_activity_home">Cộng đồng thể thao</string>
     <string name="title_activity_login">Đăng Nhập</string>
     <string name="title_activity_chat">Chat</string>
 
@@ -32,7 +32,7 @@
     <string name="birthday">Ngày sinh </string>
     <string name="sex">Giới tính </string>
     <string name="register">Đăng ký </string>
-    <string name="title_activity_profile">ProfileActivity</string>
+    <string name="title_activity_profile">Thông tin cá nhân</string>
     <string name="in_progress">Đang xử lý</string>
     <string name="title_activity_main_screen">MainScreenActivity</string>
 
@@ -87,15 +87,16 @@
         <item>Không yêu cầu</item>
         <item>Biết đá</item>
         <item>Trung bình</item>
-        <item>Trung bình khá</item>zzzz
+        <item>Trung bình khá</item>
         <item>Khá</item>
         <item>Giỏi</item>
         <item>Chuyên nghiệp</item>
     </string-array>
-    <string name="title_activity_group_detail">GroupDetailActivity</string>
+    <string name="title_activity_group_detail">Thông tin FC</string>
 
     <string name="search_hint">Search</string>
     <string name="search_field_hint">Tìm sân</string>
     <string name="search_club_hint">Tìm nhóm</string>
     <string name="search_match_hint">Tìm kèo</string>
+    <string name="create_friendly_match">Tạo kèo giao hữu</string>
 </resources>
