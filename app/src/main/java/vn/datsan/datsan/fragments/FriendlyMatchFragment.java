@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import org.joda.time.DateTime;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,6 +31,7 @@ import vn.datsan.datsan.serverdata.GroupManager;
 import vn.datsan.datsan.ui.adapters.DividerItemDecoration;
 import vn.datsan.datsan.ui.adapters.FlexListAdapter;
 import vn.datsan.datsan.ui.adapters.RecyclerTouchListener;
+import vn.datsan.datsan.utils.Utils;
 
 /**
  * Created by xuanpham on 7/25/16.
@@ -98,11 +101,23 @@ public class FriendlyMatchFragment extends Fragment {
                 if (matches != null) {
                     List<FlexListAdapter.FlexItem> list = new ArrayList<>();
                     for (FriendlyMatch match : matches) {
-                        Date startTime = new Date(match.getStartTime());
-                        Date endTime = new Date(match.getEndTime());
-                        FlexListAdapter.FlexItem item = adapter.createItem(null, match.getTitle(),
-                                startTime.getHours() + ":" + startTime.getMinutes() + " - "
-                                + endTime.getHours() + ":" + endTime.getMinutes(), null);
+
+                        DateTime startTime = new DateTime(match.getStartTime());
+                        DateTime endTime = new DateTime(match.getEndTime());
+                        String dayWeek = Utils.convertWeekDayToString(startTime.getDayOfWeek());
+                        String dayMonth = " Ngày " + Utils.DAYMONTH_FORMAT.print(startTime);
+                        String timeRange = "Thời gian " + startTime.getHourOfDay() + "h:" + startTime.getMinuteOfHour() + " - " +
+                                endTime.getHourOfDay() + "h:" + endTime.getMinuteOfHour();
+                        String field = "\nSân : ";
+                        if (match.getFields() == null || match.getFields().isEmpty()) {
+                            field += "Thoả thuận sau";
+                        } else {
+                            field += match.getFields();
+                        }
+                        String content = dayWeek + "," + dayMonth + "\n" + timeRange
+                                + field;
+
+                        FlexListAdapter.FlexItem item = adapter.createItem(null, match.getTitle(),content, null);
                         list.add(item);
                     }
                     adapter.update(list);
