@@ -25,6 +25,7 @@ import vn.datsan.datsan.ui.adapters.DividerItemDecoration;
 import vn.datsan.datsan.ui.adapters.FlexListAdapter;
 import vn.datsan.datsan.ui.adapters.RecyclerTouchListener;
 import vn.datsan.datsan.ui.appviews.NewFCPopup;
+import vn.datsan.datsan.utils.AppLog;
 
 /**
  * Created by xuanpham on 7/25/16.
@@ -94,6 +95,7 @@ public class SportClubFragment extends Fragment {
                 if (groupList != null) {
                     List<FlexListAdapter.FlexItem> list = new ArrayList<>();
                     for (Group group : groupList) {
+                        AppLog.log(AppLog.LogType.LOG_ERROR, "tag", group.toString());
                         FlexListAdapter.FlexItem item = adapter.createItem(null, group.getName(), group.getCity(), null);
                         list.add(item);
                     }

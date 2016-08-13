@@ -109,4 +109,9 @@ public class Group extends FirebaseObject implements Searchable {
 
         return result;
     }
+
+    @Override
+    public String toString() {
+        return name + " : "+ city;
+    }
 }

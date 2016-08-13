@@ -1,8 +1,6 @@
 package vn.datsan.datsan.fragments;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -16,22 +14,19 @@ import android.widget.Toast;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import vn.datsan.datsan.R;
-import vn.datsan.datsan.activities.ChatActivity;
+import vn.datsan.datsan.activities.FriendlyMatchDetailActivity;
 import vn.datsan.datsan.activities.GroupDetailActivity;
 import vn.datsan.datsan.activities.NewFriendlyMatchActivity;
 import vn.datsan.datsan.models.FriendlyMatch;
-import vn.datsan.datsan.models.Group;
 import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.serverdata.FriendlyMatchManager;
-import vn.datsan.datsan.serverdata.GroupManager;
 import vn.datsan.datsan.ui.adapters.DividerItemDecoration;
 import vn.datsan.datsan.ui.adapters.FlexListAdapter;
 import vn.datsan.datsan.ui.adapters.RecyclerTouchListener;
-import vn.datsan.datsan.utils.Utils;
+import vn.datsan.datsan.utils.DateUtils;
 
 /**
  * Created by xuanpham on 7/25/16.
@@ -69,8 +64,7 @@ public class FriendlyMatchFragment extends Fragment {
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                Toast.makeText(getActivity(), "Touch " + position, Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getActivity(), GroupDetailActivity.class);
+                Intent intent = new Intent(getActivity(), FriendlyMatchDetailActivity.class);
                 startActivity(intent);
             }
 
@@ -104,8 +98,8 @@ public class FriendlyMatchFragment extends Fragment {
 
                         DateTime startTime = new DateTime(match.getStartTime());
                         DateTime endTime = new DateTime(match.getEndTime());
-                        String dayWeek = Utils.convertWeekDayToString(startTime.getDayOfWeek());
-                        String dayMonth = " Ngày " + Utils.DAYMONTH_FORMAT.print(startTime);
+                        String dayWeek = DateUtils.convertWeekDayToString(startTime.getDayOfWeek());
+                        String dayMonth = " Ngày " + DateUtils.DAYMONTH_FORMAT.print(startTime);
                         String timeRange = "Thời gian " + startTime.getHourOfDay() + "h:" + startTime.getMinuteOfHour() + " - " +
                                 endTime.getHourOfDay() + "h:" + endTime.getMinuteOfHour();
                         String field = "\nSân : ";

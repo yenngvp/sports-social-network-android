@@ -65,7 +65,10 @@ public class NewFCPopup extends BasePopup {
         List<String> admin = new ArrayList<>();
         admin.add(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-        return new Group(null, 0, null);
+        Group group = new Group(name, 0, null);
+        group.setCity(location);
+        group.setFavouriteFields(admin);
+        return group;
     }
 
 }
