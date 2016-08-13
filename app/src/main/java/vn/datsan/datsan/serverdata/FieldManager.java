@@ -60,22 +60,19 @@ public class FieldManager {
         return instance;
     }
 
-    private String genIden(Field field) {
-        return field.getPhone();
-    }
-
     public void addField(Field field) {
-        fieldDatabaseRef.child(genIden(field)).setValue(field);
+        String key = fieldDatabaseRef.push().getKey();
+        field.setId(key);
+        fieldDatabaseRef.child(key).setValue(field);
     }
 
     public void getField(String id, final CallBack.OnResultReceivedListener callBack) {
         fieldDatabaseRef.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Field user = dataSnapshot.getValue(Field.class);
-                AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "Hello " + user.getName());
+                Field field = dataSnapshot.getValue(Field.class);
                 if (callBack != null)
-                    callBack.onResultReceived(user);
+                    callBack.onResultReceived(field);
             }
 
             @Override

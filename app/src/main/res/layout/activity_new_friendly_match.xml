@@ -40,7 +40,7 @@
             android:id="@+id/spinner_position"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:entries="@array/positions"
+            android:entries="@array/vn_provinces"
             android:minWidth="70dp"/>
     </LinearLayout>
 
@@ -64,26 +64,37 @@
             android:minWidth="70dp"/>
     </LinearLayout>
 
-
-    <LinearLayout
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:minWidth="90dp"
-            android:textSize="17dp"
-            android:textColor="@android:color/black"
-            android:text="Sân"/>
+        android:layout_height="wrap_content">
 
         <EditText
-            android:id="@+id/field_edt"
-            android:layout_width="wrap_content"
+            android:id="@+id/topic_name_edt"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minWidth="150dp"/>
-    </LinearLayout>
+            android:hint="Tiêu đề"
+            android:imeActionId="@+id/login"
+            android:inputType="text"
+            android:imeActionLabel="@string/action_sign_in_short"
+            android:imeOptions="actionUnspecified"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/field_name_edt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Sân thi đấu"
+            android:imeActionId="@+id/login"
+            android:inputType="text"
+            android:imeActionLabel="@string/action_sign_in_short"
+            android:imeOptions="actionUnspecified"/>
+
+    </android.support.design.widget.TextInputLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -118,7 +129,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/endtime_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -131,6 +141,7 @@
             android:textColor="@android:color/black"
             android:text="Thời gian kết thúc"/>
         <TextView
+            android:id="@+id/endtime_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
@@ -153,7 +164,6 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <TextView
-            android:id="@+id/date_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
@@ -162,6 +172,7 @@
             android:textColor="@android:color/black"
             android:text="Ngày giao hữu"/>
         <TextView
+            android:id="@+id/date_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"

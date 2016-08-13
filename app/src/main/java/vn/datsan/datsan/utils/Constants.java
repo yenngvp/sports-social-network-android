@@ -22,6 +22,7 @@ public class Constants {
     public static final String FIREBASE_GROUPS = "app/groups";
     public static final String FIREBASE_FIELDS = "app/fields";
     public static final String FIREBASE_CHATS = "app/chats";
+    public static final String FIREBASE_MATCHS = "app/matchs";
 
     /*
      * Elasticsearch server

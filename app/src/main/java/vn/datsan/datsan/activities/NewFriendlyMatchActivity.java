@@ -2,46 +2,80 @@ package vn.datsan.datsan.activities;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.TimePicker;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeUtils;
 import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
 
-import java.util.TimeZone;
+import java.util.Calendar;
+import java.util.Date;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import vn.datsan.datsan.R;
+import vn.datsan.datsan.models.FriendlyMatch;
+import vn.datsan.datsan.serverdata.FriendlyMatchManager;
+import vn.datsan.datsan.serverdata.UserManager;
+import vn.datsan.datsan.ui.customwidgets.Alert.SimpleAlert;
+import vn.datsan.datsan.utils.AppLog;
 
 public class NewFriendlyMatchActivity extends SimpleActivity {
+
+    @BindView(R.id.start_time_tv)
+    TextView startTimeTv;
+    @BindView(R.id.endtime_tv)
+    TextView endTimeTv;
+    @BindView(R.id.date_tv)
+    TextView date;
+    @BindView(R.id.topic_name_edt)
+    TextView topicName;
+    @BindView(R.id.field_name_edt)
+    TextView fieldName;
+
+    private DateTime startDate;// = DateTime.now(DateTimeZone.forOffsetHours(7));
+    private DateTime endDate;// = DateTime.now(DateTimeZone.forOffsetHours(7));
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_friendly_match);
+        ButterKnife.bind(this);
         super.initToolBar();
+        DateTimeZone.setDefault(DateTimeZone.forOffsetHours(7));
+        startDate = DateTime.now().plusHours(1);
+        endDate = DateTime.now().plusHours(2);
 
         final ImageButton setStartTimeBtn = (ImageButton) findViewById(R.id.change_start_time_btn);
         ImageButton setEndTimeBtn = (ImageButton) findViewById(R.id.change_end_time_btn);
         ImageButton setDateBtn = (ImageButton) findViewById(R.id.change_date_btn);
+        startTimeTv.setText(startDate.getHourOfDay() + 1 + ":" + String.format("%02d", startDate.getMinuteOfHour()));
+        endTimeTv.setText(endDate.getHourOfDay() + 2 + ":" + String.format("%02d",endDate.getMinuteOfHour()));
 
         setStartTimeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LocalTime localTime = new LocalTime();
+
+                AppLog.log(AppLog.LogType.LOG_ERROR, "tag", startDate.toString() + "\n " + startDate.getHourOfDay());
+                Date date = new Date();
                 TimePickerDialog dialog = new TimePickerDialog(NewFriendlyMatchActivity.this,
                         new TimePickerDialog.OnTimeSetListener() {
                             @Override
-                            public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                            public void onTimeSet(TimePicker timePicker, int hours, int minutes) {
+                                startTimeTv.setText(hours + ":" + minutes);
+                                startDate.withHourOfDay(hours);
+                                startDate.withMinuteOfHour(minutes);
 
+                                AppLog.log(AppLog.LogType.LOG_ERROR, "tag", startDate.toString());
                             }
-                        },localTime.getHourOfDay(),localTime.getMinuteOfHour(), true);
+                        }, startDate.getHourOfDay(), startDate.getMinuteOfHour(), true);
                 dialog.setTitle("Chọn thời gian bắt đầu");
                 dialog.show();
             }
@@ -50,35 +84,78 @@ public class NewFriendlyMatchActivity extends SimpleActivity {
         setEndTimeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DateTime dateTime = DateTime.now(DateTimeZone.getDefault());
-
-                LocalTime localTime = new LocalTime(DateTimeZone.forTimeZone(TimeZone.getTimeZone("7")));
+                Date date = new Date();
                 TimePickerDialog dialog = new TimePickerDialog(NewFriendlyMatchActivity.this,
                         new TimePickerDialog.OnTimeSetListener() {
                             @Override
-                            public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                            public void onTimeSet(TimePicker timePicker, int hours, int minutes) {
+                                endTimeTv.setText(hours + ":" + minutes);
 
+                                endDate.withHourOfDay(hours);
+                                endDate.withMinuteOfHour(minutes);
+
+                                AppLog.log(AppLog.LogType.LOG_ERROR, "tag", endDate.toString());
                             }
-                        },dateTime.getHourOfDay(),localTime.getMinuteOfHour(), true);
+                        }, endDate.getHourOfDay(), endDate.getMinuteOfHour(), true);
                 dialog.setTitle("Chọn thời gian kết thúc");
                 dialog.show();
+
         }
         });
 
         setDateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LocalDate localDate = new LocalDate();
                 DatePickerDialog dialog = new DatePickerDialog(NewFriendlyMatchActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
-                    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-
+                    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                        if (month < startDate.getMonthOfYear()
+                                || (month == startDate.getMonthOfYear()) && day < startDate.getDayOfMonth()) {
+                            SimpleAlert.showAlert(NewFriendlyMatchActivity.this, "Dữ liệu nhập không hợp lệ",
+                                    "Không thể chọn ngày trong quá khứ !", "Đóng");
+                        } else {
+                            startDate.withMonthOfYear(month);
+                            endDate.withMonthOfYear(month);
+                            date.setText(day + "/" + month);
+                        }
                     }
-                }, localDate.getYear(), localDate.getMonthOfYear(), localDate.getDayOfMonth());
+                }, startDate.getYear(), startDate.getMonthOfYear(), startDate.getDayOfMonth());
 
                 dialog.setTitle("Chọn ngày thi đấu");
                 dialog.show();
             }
         });
+    }
+
+    @OnClick(R.id.register)
+    public void onCreateMatchButtonClicked() {
+        if(!checkValidation())
+            return;
+        FriendlyMatch friendlyMatch = new FriendlyMatch();
+        friendlyMatch.setTitle(topicName.getText().toString());
+        friendlyMatch.setCreatorId(UserManager.getInstance().getUserInfo().getId());
+        friendlyMatch.setCreatorName(UserManager.getInstance().getUserInfo().getName());
+        friendlyMatch.setStartTime(startDate.getMillis());
+        friendlyMatch.setEndTime(endDate.getMillis());
+        FriendlyMatchManager.getInstance().addMatch(friendlyMatch);
+    }
+
+    private boolean checkValidation() {
+        if (startDate.isBeforeNow())
+            AppLog.log(AppLog.LogType.LOG_ERROR, "Tag", "in past");
+            AppLog.log(AppLog.LogType.LOG_ERROR, "startDate mili", startDate.getMillis() + "");
+            AppLog.log(AppLog.LogType.LOG_ERROR, "sscurrent mili", DateTimeUtils.currentTimeMillis() + "");
+            AppLog.log(AppLog.LogType.LOG_ERROR, "aaaaaanow mili", DateTime.now().getMillis() + "");
+        if (endDate.getMinuteOfDay() - startDate.getMinuteOfDay() < 10 || startDate.isBeforeNow()) {
+            SimpleAlert.showAlert(NewFriendlyMatchActivity.this, "Dữ liệu nhập không hợp lệ",
+                    "Vui lòng kiểm tra lại thời gian nhập !", "Đóng");
+            return false;
+        }
+        if (topicName.getText().length() < 10) {
+            SimpleAlert.showAlert(NewFriendlyMatchActivity.this, "Dữ liệu nhập không hợp lệ",
+                    "Tiêu đề quá ngắn !", "Đóng");
+            return false;
+        }
+        return true;
     }
 }

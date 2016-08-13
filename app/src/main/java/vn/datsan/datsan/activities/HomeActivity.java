@@ -44,6 +44,7 @@ import vn.datsan.datsan.models.Field;
 import vn.datsan.datsan.search.AppSearch;
 import vn.datsan.datsan.search.SearchOption;
 import vn.datsan.datsan.serverdata.CallBack;
+import vn.datsan.datsan.serverdata.UserManager;
 import vn.datsan.datsan.ui.appviews.LoginPopup;
 import vn.datsan.datsan.ui.appviews.MaterialSearchView;
 import vn.datsan.datsan.ui.appviews.NewFCPopup;
@@ -122,7 +123,7 @@ public class HomeActivity extends AppCompatActivity implements
             }
         });
 
-        AppSearch.searchField("san bong da", "1km", 0,0,null);
+//        AppSearch.searchField("san bong da", "1km", 0,0,null);
 
     }
 
@@ -208,6 +209,7 @@ public class HomeActivity extends AppCompatActivity implements
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+        AppLog.log(AppLog.LogType.LOG_ERROR, "TAG", "create menu");
         getMenuInflater().inflate(R.menu.main_screen, menu);
         appBarMenu = menu;
 
@@ -317,6 +319,14 @@ public class HomeActivity extends AppCompatActivity implements
     @Override
     public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
         AppLog.log(AppLog.LogType.LOG_ERROR, TAG, "AuthChanged");
+        if (firebaseAuth.getCurrentUser() != null) {
+            UserManager.getInstance().getCurrentUserInfo(new CallBack.OnResultReceivedListener() {
+                @Override
+                public void onResultReceived(Object result) {
+
+                }
+            });
+        }
         reloadView();
     }
 
