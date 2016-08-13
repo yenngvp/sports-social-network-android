@@ -89,7 +89,9 @@ public class HomeActivity extends AppCompatActivity implements
         chatFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(HomeActivity.this, ChatActivity.class));
+                Intent intent = new Intent(HomeActivity.this, ChatActivity.class);
+                intent.putExtra("chatId", "123456789");
+                startActivity(intent);
             }
         });
 

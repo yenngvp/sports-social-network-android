@@ -14,34 +14,34 @@ import android.widget.TextView;
 import java.util.List;
 
 import vn.datsan.datsan.R;
-import vn.datsan.datsan.models.chat.ChatMessage;
+import vn.datsan.datsan.models.chat.Message;
 
 /**
  * Created by Technovibe on 17-04-2015.
  */
 public class ChatAdapter extends BaseAdapter {
 
-    private final List<ChatMessage> chatMessages;
+    private final List<Message> messages;
     private Activity context;
 
-    public ChatAdapter(Activity context, List<ChatMessage> chatMessages) {
+    public ChatAdapter(Activity context, List<Message> messages) {
         this.context = context;
-        this.chatMessages = chatMessages;
+        this.messages = messages;
     }
 
     @Override
     public int getCount() {
-        if (chatMessages != null) {
-            return chatMessages.size();
+        if (messages != null) {
+            return messages.size();
         } else {
             return 0;
         }
     }
 
     @Override
-    public ChatMessage getItem(int position) {
-        if (chatMessages != null) {
-            return chatMessages.get(position);
+    public Message getItem(int position) {
+        if (messages != null) {
+            return messages.get(position);
         } else {
             return null;
         }
@@ -55,7 +55,7 @@ public class ChatAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
-        ChatMessage chatMessage = getItem(position);
+        Message message = getItem(position);
         LayoutInflater vi = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         if (convertView == null) {
@@ -66,43 +66,25 @@ public class ChatAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        boolean myMsg = chatMessage.getIsme() ;//Just a dummy check to simulate whether it me or other sender
+        boolean myMsg = message.isMe() ;//Just a dummy check to simulate whether it me or other sender
         setAlignment(holder, myMsg);
-        holder.txtMessage.setText(chatMessage.getMessage());
-        holder.txtInfo.setText(chatMessage.getDate());
+        holder.txtMessage.setText(message.getMessage());
+        holder.txtInfo.setText(message.getCreateDate().toString());
 
 
         return convertView;
     }
 
-    public void add(ChatMessage message) {
-        chatMessages.add(message);
+    public void add(Message message) {
+        messages.add(message);
     }
 
-    public void add(List<ChatMessage> messages) {
-        chatMessages.addAll(messages);
+    public void add(List<Message> messages) {
+        this.messages.addAll(messages);
     }
 
     private void setAlignment(ViewHolder holder, boolean isMe) {
         if (!isMe) {
-            holder.contentWithBG.setBackgroundResource(R.drawable.in_message_bg);
-
-            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.contentWithBG.getLayoutParams();
-            layoutParams.gravity = Gravity.RIGHT;
-            holder.contentWithBG.setLayoutParams(layoutParams);
-
-            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.content.getLayoutParams();
-            lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0);
-            lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            holder.content.setLayoutParams(lp);
-            layoutParams = (LinearLayout.LayoutParams) holder.txtMessage.getLayoutParams();
-            layoutParams.gravity = Gravity.RIGHT;
-            holder.txtMessage.setLayoutParams(layoutParams);
-
-            layoutParams = (LinearLayout.LayoutParams) holder.txtInfo.getLayoutParams();
-            layoutParams.gravity = Gravity.RIGHT;
-            holder.txtInfo.setLayoutParams(layoutParams);
-        } else {
             holder.contentWithBG.setBackgroundResource(R.drawable.out_message_bg);
 
             LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.contentWithBG.getLayoutParams();
@@ -119,6 +101,24 @@ public class ChatAdapter extends BaseAdapter {
 
             layoutParams = (LinearLayout.LayoutParams) holder.txtInfo.getLayoutParams();
             layoutParams.gravity = Gravity.LEFT;
+            holder.txtInfo.setLayoutParams(layoutParams);
+        } else {
+            holder.contentWithBG.setBackgroundResource(R.drawable.in_message_bg);
+
+            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.contentWithBG.getLayoutParams();
+            layoutParams.gravity = Gravity.RIGHT;
+            holder.contentWithBG.setLayoutParams(layoutParams);
+
+            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.content.getLayoutParams();
+            lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0);
+            lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            holder.content.setLayoutParams(lp);
+            layoutParams = (LinearLayout.LayoutParams) holder.txtMessage.getLayoutParams();
+            layoutParams.gravity = Gravity.RIGHT;
+            holder.txtMessage.setLayoutParams(layoutParams);
+
+            layoutParams = (LinearLayout.LayoutParams) holder.txtInfo.getLayoutParams();
+            layoutParams.gravity = Gravity.RIGHT;
             holder.txtInfo.setLayoutParams(layoutParams);
         }
     }

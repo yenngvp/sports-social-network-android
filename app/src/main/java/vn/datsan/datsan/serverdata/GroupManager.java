@@ -85,4 +85,24 @@ public class GroupManager {
 
         return userGroups;
     }
+
+    public Group getGroup(String id) {
+        groupDatabaseRef.child(id).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // Get user value
+                        Group group = dataSnapshot.getValue(Group.class);
+
+                        AppLog.d("Find group" + group.toString());
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        AppLog.e(TAG, "getUser:onCancelled: " + databaseError.toException());
+                    }
+                });
+        return null;
+
+    }
 }

@@ -1,6 +1,5 @@
 package vn.datsan.datsan.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.firebase.database.Exclude;
 
 import java.util.List;
@@ -8,7 +7,6 @@ import java.util.Map;
 import java.util.HashMap;
 
 import vn.datsan.datsan.search.interfaces.Searchable;
-import vn.datsan.datsan.utils.Utils;
 import vn.datsan.datsan.utils.localization.VietnameseUnsignedTranslator;
 
 /**
@@ -21,22 +19,19 @@ public class Group extends FirebaseObject implements Searchable {
     public static final int TYPE_CHAT = 2;
 
     private int type;
-    private List<String> members;
+    private HashMap<String, UserRole> members;
     private String name;
     private String city;
-    private List<String> admins;
     private List<String> favouriteFields;
 
     public Group() {
         super();
     }
 
-    public Group(List<String> admins, String city, String name, List<String> members) {
-        this.admins = admins;
+    public Group(String name, int type, HashMap<String, UserRole> members) {
         this.name = name;
-        this.city = city;
-        this.members = members;
         this.type = TYPE_DEFAULT;
+        this.members = members;
     }
 
     /**
@@ -65,28 +60,12 @@ public class Group extends FirebaseObject implements Searchable {
         return source;
     }
 
-    public List<String> getAdmins() {
-        return admins;
-    }
-
-    public void setAdmins(List<String> admins) {
-        this.admins = admins;
-    }
-
     public int getType() {
         return type;
     }
 
     public void setType(int type) {
         this.type = type;
-    }
-
-    public List<String> getMembers() {
-        return members;
-    }
-
-    public void setMembers(List<String> members) {
-        this.members = members;
     }
 
     public String getName() {
@@ -111,5 +90,23 @@ public class Group extends FirebaseObject implements Searchable {
 
     public void setFavouriteFields(List<String> favouriteFields) {
         this.favouriteFields = favouriteFields;
+    }
+
+    public HashMap<String, UserRole> getMembers() {
+        return members;
+    }
+
+    public void setMembers(HashMap<String, UserRole> members) {
+        this.members = members;
+    }
+
+    @Exclude
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("name", getName());
+        result.put("type", getType());
+        result.put("members", getMembers());
+
+        return result;
     }
 }

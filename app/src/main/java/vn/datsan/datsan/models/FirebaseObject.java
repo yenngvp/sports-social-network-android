@@ -14,8 +14,8 @@ public class FirebaseObject {
     protected String id;
     protected DateTime createDate;
     protected DateTime lastModifiedDate;
-    protected User createdBy;
-    protected User lastModifiedBy;
+    protected String createdBy;
+    protected String lastModifiedBy;
 
     public FirebaseObject() {
         this.createDate = DateTime.now();
@@ -51,19 +51,19 @@ public class FirebaseObject {
         this.lastModifiedDate = lastModifiedDate;
     }
 
-    public User getCreatedBy() {
+    public String getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(User createdBy) {
+    public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
-    public User getLastModifiedBy() {
+    public String getLastModifiedBy() {
         return lastModifiedBy;
     }
 
-    public void setLastModifiedBy(User lastModifiedBy) {
+    public void setLastModifiedBy(String lastModifiedBy) {
         this.lastModifiedBy = lastModifiedBy;
     }
 }

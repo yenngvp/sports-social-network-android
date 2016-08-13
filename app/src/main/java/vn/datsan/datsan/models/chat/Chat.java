@@ -1,15 +1,22 @@
 package vn.datsan.datsan.models.chat;
 
+import org.joda.time.DateTime;
+
 import vn.datsan.datsan.models.FirebaseObject;
-import vn.datsan.datsan.models.Group;
 
 /**
  * Created by yennguyen on 8/2/16.
  */
 public class Chat extends FirebaseObject {
 
+    public static final String TYPE_CLUB_CHAT = "CUB_CHAT";
+    public static final String TYPE_MATCH_CHAT = "MATCH_CHAT";
+    public static final String TYPE_ONE_TO_ONE_CHAT = "ONE_TO_ONE_CHAT";
+    public static final String TYPE_GROUP_CHAT = "GROUP_CHAT";
+
     private String name;
     private Message lastMessage;
+    private DateTime timestamp;
 
     public Chat() {
 
@@ -29,5 +36,13 @@ public class Chat extends FirebaseObject {
 
     public void setLastMessage(Message lastMessage) {
         this.lastMessage = lastMessage;
+    }
+
+    public DateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(DateTime timestamp) {
+        this.timestamp = timestamp;
     }
 }

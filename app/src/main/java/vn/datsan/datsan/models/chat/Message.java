@@ -1,21 +1,27 @@
 package vn.datsan.datsan.models.chat;
 
-import java.util.List;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.Exclude;
 
-/**
- * Created by yennguyen on 7/31/16.
- */
 public class Message extends AbstractMessage {
 
-    private String name;
     private String message;
+    private String userId;
+    private String chatId;
 
-    public String getName() {
-        return name;
+    @Exclude
+    public boolean isMe() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        return currentUser.getUid().equals(userId);
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getMessage() {
@@ -24,5 +30,14 @@ public class Message extends AbstractMessage {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    @Exclude
+    public String getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(String chatId) {
+        this.chatId = chatId;
     }
 }
