@@ -31,12 +31,7 @@ import vn.datsan.datsan.ui.appviews.NewFCPopup;
  */
 
 public class SportClubFragment extends Fragment {
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-    private String mParam1;
-    private String mParam2;
     FlexListAdapter adapter;
-    private OnFragmentInteractionListener mListener;
 
     public SportClubFragment() {
         // Required empty public constructor
@@ -45,8 +40,6 @@ public class SportClubFragment extends Fragment {
     public static SportClubFragment newInstance(String param1, String param2) {
         SportClubFragment fragment = new SportClubFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -54,10 +47,6 @@ public class SportClubFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -95,27 +84,6 @@ public class SportClubFragment extends Fragment {
 
         populateData();
         return view;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
     }
 
     private void populateData() {

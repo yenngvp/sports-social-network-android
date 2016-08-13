@@ -56,8 +56,8 @@ public class NewFriendlyMatchActivity extends SimpleActivity {
         final ImageButton setStartTimeBtn = (ImageButton) findViewById(R.id.change_start_time_btn);
         ImageButton setEndTimeBtn = (ImageButton) findViewById(R.id.change_end_time_btn);
         ImageButton setDateBtn = (ImageButton) findViewById(R.id.change_date_btn);
-        startTimeTv.setText(startDate.getHourOfDay() + 1 + ":" + String.format("%02d", startDate.getMinuteOfHour()));
-        endTimeTv.setText(endDate.getHourOfDay() + 2 + ":" + String.format("%02d",endDate.getMinuteOfHour()));
+        startTimeTv.setText(startDate.getHourOfDay() + ":" + String.format("%02d", startDate.getMinuteOfHour()));
+        endTimeTv.setText(endDate.getHourOfDay() + ":" + String.format("%02d",endDate.getMinuteOfHour()));
 
         setStartTimeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,15 +137,13 @@ public class NewFriendlyMatchActivity extends SimpleActivity {
         friendlyMatch.setCreatorName(UserManager.getInstance().getUserInfo().getName());
         friendlyMatch.setStartTime(startDate.getMillis());
         friendlyMatch.setEndTime(endDate.getMillis());
+        friendlyMatch.setFields(fieldName.getText().toString());
         FriendlyMatchManager.getInstance().addMatch(friendlyMatch);
     }
 
     private boolean checkValidation() {
         if (startDate.isBeforeNow())
             AppLog.log(AppLog.LogType.LOG_ERROR, "Tag", "in past");
-            AppLog.log(AppLog.LogType.LOG_ERROR, "startDate mili", startDate.getMillis() + "");
-            AppLog.log(AppLog.LogType.LOG_ERROR, "sscurrent mili", DateTimeUtils.currentTimeMillis() + "");
-            AppLog.log(AppLog.LogType.LOG_ERROR, "aaaaaanow mili", DateTime.now().getMillis() + "");
         if (endDate.getMinuteOfDay() - startDate.getMinuteOfDay() < 10 || startDate.isBeforeNow()) {
             SimpleAlert.showAlert(NewFriendlyMatchActivity.this, "Dữ liệu nhập không hợp lệ",
                     "Vui lòng kiểm tra lại thời gian nhập !", "Đóng");

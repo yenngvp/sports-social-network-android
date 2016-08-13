@@ -6,27 +6,36 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import vn.datsan.datsan.R;
 import vn.datsan.datsan.activities.ChatActivity;
+import vn.datsan.datsan.activities.GroupDetailActivity;
 import vn.datsan.datsan.activities.NewFriendlyMatchActivity;
+import vn.datsan.datsan.models.FriendlyMatch;
+import vn.datsan.datsan.models.Group;
+import vn.datsan.datsan.serverdata.CallBack;
+import vn.datsan.datsan.serverdata.FriendlyMatchManager;
+import vn.datsan.datsan.serverdata.GroupManager;
+import vn.datsan.datsan.ui.adapters.DividerItemDecoration;
+import vn.datsan.datsan.ui.adapters.FlexListAdapter;
+import vn.datsan.datsan.ui.adapters.RecyclerTouchListener;
 
 /**
  * Created by xuanpham on 7/25/16.
  */
 
 public class FriendlyMatchFragment extends Fragment {
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    private String mParam1;
-    private String mParam2;
-
-    private OnFragmentInteractionListener mListener;
-
+    FlexListAdapter adapter;
     public FriendlyMatchFragment() {
         // Required empty public constructor
     }
@@ -34,8 +43,6 @@ public class FriendlyMatchFragment extends Fragment {
     public static FriendlyMatchFragment newInstance(String param1, String param2) {
         FriendlyMatchFragment fragment = new FriendlyMatchFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -43,10 +50,6 @@ public class FriendlyMatchFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -54,6 +57,27 @@ public class FriendlyMatchFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_friendly_match, null);
+
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        adapter = new FlexListAdapter();
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+        recyclerView.setAdapter(adapter);
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), recyclerView, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                Toast.makeText(getActivity(), "Touch " + position, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), GroupDetailActivity.class);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
+
+
         FloatingActionButton add = (FloatingActionButton) view.findViewById(R.id.add);
         add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,44 +85,29 @@ public class FriendlyMatchFragment extends Fragment {
                 startActivity(new Intent(getActivity(), NewFriendlyMatchActivity.class));
             }
         });
+
+        populateData();
         return view;
     }
 
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    private void populateData() {
+        FriendlyMatchManager.getInstance().getMaths(new CallBack.OnResultReceivedListener() {
+            @Override
+            public void onResultReceived(Object result) {
+                List<FriendlyMatch> matches = (List<FriendlyMatch> )  result;
+                if (matches != null) {
+                    List<FlexListAdapter.FlexItem> list = new ArrayList<>();
+                    for (FriendlyMatch match : matches) {
+                        Date startTime = new Date(match.getStartTime());
+                        Date endTime = new Date(match.getEndTime());
+                        FlexListAdapter.FlexItem item = adapter.createItem(null, match.getTitle(),
+                                startTime.getHours() + ":" + startTime.getMinutes() + " - "
+                                + endTime.getHours() + ":" + endTime.getMinutes(), null);
+                        list.add(item);
+                    }
+                    adapter.update(list);
+                }
+            }
+        });
     }
 }

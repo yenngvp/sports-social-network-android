@@ -16,6 +16,7 @@ public class FriendlyMatch {
     private String homeGroupName;
     private String opponentGroup;
     private String opponentGroupName;
+    private String fields;
     private long startTime;
     private long endTime;
     private String title;
@@ -25,6 +26,14 @@ public class FriendlyMatch {
 
     public FriendlyMatch() {
 
+    }
+
+    public String getFields() {
+        return fields;
+    }
+
+    public void setFields(String fields) {
+        this.fields = fields;
     }
 
     public String getTitle() {
