@@ -31,7 +31,7 @@ public class NewFCPopup extends BasePopup {
 
         groupName = (EditText) getPopup().findViewById(R.id.group_name);
         groupLocation = (EditText) getPopup().findViewById(R.id.group_location);
-        groupPhone = (EditText) getPopup().findViewById(R.id.group_phone);
+        groupPhone = (EditText) getPopup().findViewById(R.id.phone);
         Button button = (Button) getPopup().findViewById(R.id.register);
         button.setOnClickListener(new View.OnClickListener() {
             @Override

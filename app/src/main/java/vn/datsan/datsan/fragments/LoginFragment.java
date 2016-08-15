@@ -205,6 +205,8 @@ public class LoginFragment extends Fragment {
     void newAccountBtnClicked() {
         Intent intent = new Intent(getActivity(), NewAccountActivity.class);
         startActivity(intent);
+        if (callBack != null)
+            callBack.dismiss(0);
     }
 
     @OnClick(R.id.gg_login_button)

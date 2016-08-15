@@ -1,20 +1,24 @@
 package vn.datsan.datsan.models;
 
-import org.joda.time.DateTime;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import vn.datsan.datsan.search.interfaces.Searchable;
+import vn.datsan.datsan.utils.localization.VietnameseUnsignedTranslator;
 
 /**
  * Created by xuanpham on 8/12/16.
  */
-public class FriendlyMatch {
-    private String id;
+public class FriendlyMatch extends FirebaseObject implements Searchable, Parcelable {
     private String creatorId;
     private String creatorName;
     private String homeGroupId;
     private String homeGroupName;
-    private String opponentGroup;
+    private String opponentGroupId;
     private String opponentGroupName;
     private String fields;
     private long startTime;
@@ -27,6 +31,33 @@ public class FriendlyMatch {
     public FriendlyMatch() {
 
     }
+
+    protected FriendlyMatch(Parcel in) {
+        creatorId = in.readString();
+        creatorName = in.readString();
+        homeGroupId = in.readString();
+        homeGroupName = in.readString();
+        opponentGroupId = in.readString();
+        opponentGroupName = in.readString();
+        fields = in.readString();
+        startTime = in.readLong();
+        endTime = in.readLong();
+        title = in.readString();
+        description = in.readString();
+        score = in.readString();
+    }
+
+    public static final Creator<FriendlyMatch> CREATOR = new Creator<FriendlyMatch>() {
+        @Override
+        public FriendlyMatch createFromParcel(Parcel in) {
+            return new FriendlyMatch(in);
+        }
+
+        @Override
+        public FriendlyMatch[] newArray(int size) {
+            return new FriendlyMatch[size];
+        }
+    };
 
     public String getFields() {
         return fields;
@@ -84,12 +115,12 @@ public class FriendlyMatch {
         this.homeGroupName = homeGroupName;
     }
 
-    public String getOpponentGroup() {
-        return opponentGroup;
+    public String getOpponentGroupId() {
+        return opponentGroupId;
     }
 
-    public void setOpponentGroup(String opponentGroup) {
-        this.opponentGroup = opponentGroup;
+    public void setOpponentGroupId(String opponentGroupId) {
+        this.opponentGroupId = opponentGroupId;
     }
 
     public String getOpponentGroupName() {
@@ -138,5 +169,46 @@ public class FriendlyMatch {
 
     public void setComments(List<BaseComment> comments) {
         this.comments = comments;
+    }
+
+    @Override
+    public String getDocumentId() {
+        return getId();
+    }
+
+    @Override
+    public Map<String, String> getSearchableSource() {
+        Map<String, String> source = new HashMap<>();
+        source.put("title_unsigned", getTitle());
+        source.put("creatorName", getCreatorName());
+        source.put("homeGroupName", getHomeGroupName());
+        source.put("fields", getFields());
+
+        source.put("title_unsigned", VietnameseUnsignedTranslator.getInstance().getTranslation(getTitle()));
+        source.put("creatorName_unsigned", VietnameseUnsignedTranslator.getInstance().getTranslation(getCreatorName()));
+        source.put("homeGroupName_unsigned", VietnameseUnsignedTranslator.getInstance().getTranslation(getHomeGroupName()));
+        source.put("fields_unsigned", VietnameseUnsignedTranslator.getInstance().getTranslation(getFields()));
+        return source;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(creatorId);
+        parcel.writeString(creatorName);
+        parcel.writeString(homeGroupId);
+        parcel.writeString(homeGroupName);
+        parcel.writeString(opponentGroupId);
+        parcel.writeString(opponentGroupName);
+        parcel.writeString(fields);
+        parcel.writeLong(startTime);
+        parcel.writeLong(endTime);
+        parcel.writeString(title);
+        parcel.writeString(description);
+        parcel.writeString(score);
     }
 }

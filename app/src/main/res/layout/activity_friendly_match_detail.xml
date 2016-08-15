@@ -118,7 +118,7 @@
                     android:tint="@color/gray_light"
                     android:src="@android:drawable/ic_menu_myplaces"/>
                 <TextView
-                    android:id="@+id/field"
+                    android:id="@+id/field_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@android:color/black"

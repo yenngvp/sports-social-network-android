@@ -32,6 +32,7 @@ import vn.datsan.datsan.serverdata.FieldManager;
 import vn.datsan.datsan.ui.adapters.DividerItemDecoration;
 import vn.datsan.datsan.ui.adapters.FlexListAdapter;
 import vn.datsan.datsan.ui.adapters.RecyclerTouchListener;
+import vn.datsan.datsan.ui.customwidgets.Alert.SimpleAlert;
 
 /**
  * Created by xuanpham on 7/25/16.
@@ -193,8 +194,16 @@ public class SportFieldFragment extends Fragment implements GoogleMap.OnInfoWind
     }
 
     public void showSearchResult(Object object) {
-        searchResultView.setVisibility(View.VISIBLE);
+        if (object == null)
+            return;
         List<Field> fields = (List<Field>) object;
+        if (fields.isEmpty()) {
+            SimpleAlert.showAlert(getActivity(), "Tìm sân", "Không tìm thấy kết quả !", getString(R.string.close));
+            return;
+        }
+
+
+        searchResultView.setVisibility(View.VISIBLE);
         List<FlexListAdapter.FlexItem> list = new ArrayList<>();
         for (Field field : fields) {
             FlexListAdapter.FlexItem item = adapter.createItem(null, field.getName(), field.getAddress(), null);

@@ -278,6 +278,7 @@ public class HomeActivity extends AppCompatActivity implements
         searchLocation(text);
     }
 
+    DrawerLayout drawer;
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -300,7 +301,7 @@ public class HomeActivity extends AppCompatActivity implements
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -311,6 +312,7 @@ public class HomeActivity extends AppCompatActivity implements
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             if (user == null || user.isAnonymous()) {
                 loginPopup.show();
+                drawer.closeDrawer(GravityCompat.START);
             } else {
                 FirebaseAuth.getInstance().signOut();
                 LoginManager.getInstance().logOut();

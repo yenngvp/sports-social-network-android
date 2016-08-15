@@ -100,6 +100,9 @@
     <string name="search_match_hint">Tìm kèo</string>
     <string name="create_friendly_match">Tạo kèo giao hữu</string>
 
+    <string name="select_avatar">Chọn ảnh đại diện</string>
+    <string name="failed_doagain">Thất bại, vui lòng thử lại !</string>
+
     <string-array name="vn_provinces">
         <item>TP HCM</item>
         <item>Hà Nội</item>

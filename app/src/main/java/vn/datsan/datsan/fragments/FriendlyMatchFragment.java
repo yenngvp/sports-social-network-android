@@ -34,6 +34,7 @@ import vn.datsan.datsan.utils.DateUtils;
 
 public class FriendlyMatchFragment extends Fragment {
     FlexListAdapter adapter;
+    List<FriendlyMatch> matches;
     public FriendlyMatchFragment() {
         // Required empty public constructor
     }
@@ -64,7 +65,10 @@ public class FriendlyMatchFragment extends Fragment {
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
+                if (matches == null || matches.isEmpty())
+                    return;
                 Intent intent = new Intent(getActivity(), FriendlyMatchDetailActivity.class);
+                intent.putExtra("data", matches.get(position));
                 startActivity(intent);
             }
 
@@ -91,7 +95,7 @@ public class FriendlyMatchFragment extends Fragment {
         FriendlyMatchManager.getInstance().getMaths(new CallBack.OnResultReceivedListener() {
             @Override
             public void onResultReceived(Object result) {
-                List<FriendlyMatch> matches = (List<FriendlyMatch> )  result;
+                matches = (List<FriendlyMatch> )  result;
                 if (matches != null) {
                     List<FlexListAdapter.FlexItem> list = new ArrayList<>();
                     for (FriendlyMatch match : matches) {

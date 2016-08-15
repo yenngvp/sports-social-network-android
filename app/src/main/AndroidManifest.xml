@@ -14,6 +14,8 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".SocialSportApplication"
@@ -41,8 +43,8 @@
 
         <activity
             android:name=".activities.HomeActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_home">
+            android:label="@string/title_activity_home"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -103,7 +105,8 @@
         <activity
             android:name=".activities.NewFriendlyMatchActivity"
             android:label="@string/create_friendly_match" />
-        <activity android:name=".activities.FriendlyMatchDetailActivity"></activity>
+        <activity android:name=".activities.FriendlyMatchDetailActivity" />
+        <activity android:name=".activities.NewGroupActivity"></activity>
     </application>
 
 </manifest>

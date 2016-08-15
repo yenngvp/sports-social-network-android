@@ -50,10 +50,10 @@ public class GroupManager {
         return instance;
     }
 
-    public void addGroup(Group group) {
+    public void addGroup(Group group, DatabaseReference.CompletionListener listener) {
         String key = groupDatabaseRef.push().getKey();
         group.setId(key);
-        groupDatabaseRef.child(key).setValue(group);
+        groupDatabaseRef.child(key).setValue(group, listener);
     }
 
     public List<Group> getUserGroups(final CallBack.OnResultReceivedListener callBack) {

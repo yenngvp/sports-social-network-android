@@ -22,6 +22,7 @@ public class Group extends FirebaseObject implements Searchable {
     private HashMap<String, UserRole> members;
     private String name;
     private String city;
+    private List<String> phones;
     private List<String> favouriteFields;
 
     public Group() {
@@ -92,12 +93,26 @@ public class Group extends FirebaseObject implements Searchable {
         this.favouriteFields = favouriteFields;
     }
 
+    public List<String> getPhones() {
+        return phones;
+    }
+
+    public void setPhones(List<String> phones) {
+        this.phones = phones;
+    }
+
     public HashMap<String, UserRole> getMembers() {
         return members;
     }
 
     public void setMembers(HashMap<String, UserRole> members) {
         this.members = members;
+    }
+
+    public void addMember(String id, UserRole role) {
+        if (members == null)
+            members = new HashMap<>();
+        members.put(id, role);
     }
 
     @Exclude

@@ -1,5 +1,9 @@
 package vn.datsan.datsan.serverdata;
 
+import android.support.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -7,6 +11,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
+import vn.datsan.datsan.models.BaseDto;
 import vn.datsan.datsan.models.User;
 import vn.datsan.datsan.search.ElasticsearchService;
 import vn.datsan.datsan.search.interfaces.Searchable;
@@ -51,16 +58,20 @@ public class UserManager {
         return instance;
     }
 
-    public void addUser(User user) {
-        userDatabaseRef.child(user.getId()).setValue(user);
-
-//        String key = userLocation.push().getKey();
-//        user.setId(key);
-//        userLocation.child(key).setValue(user);
+    public void addUser(User user, DatabaseReference.CompletionListener listener) {
+        userDatabaseRef.child(user.getId()).setValue(user, listener);
     }
 
-    public void updateUser(User user) {
-        userDatabaseRef.child(user.getId()).setValue(user);
+    public void updateUser(User user, DatabaseReference.CompletionListener listener) {
+        userDatabaseRef.child(user.getId()).setValue(user, listener);
+    }
+
+    public void addUserToGroup(BaseDto group, DatabaseReference.CompletionListener listener) {
+        if (userInfo.getGroups() == null) {
+            userInfo.setGroups(new ArrayList<BaseDto>());
+        }
+        userInfo.getGroups().add(group);
+        userDatabaseRef.child(userInfo.getId()).setValue(userInfo, listener);
     }
 
     public void getCurrentUserInfo(CallBack.OnResultReceivedListener callBack) {
@@ -73,9 +84,6 @@ public class UserManager {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
-                if (user != null)
-                    AppLog.log(AppLog.LogType.LOG_ERROR, TAG, "Hello " + user.getName());
-                userInfo = user;
 
                 if (callBack != null)
                     callBack.onResultReceived(user);

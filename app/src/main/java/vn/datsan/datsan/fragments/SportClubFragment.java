@@ -18,6 +18,7 @@ import java.util.List;
 
 import vn.datsan.datsan.R;
 import vn.datsan.datsan.activities.GroupDetailActivity;
+import vn.datsan.datsan.activities.NewGroupActivity;
 import vn.datsan.datsan.models.Group;
 import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.serverdata.GroupManager;
@@ -78,8 +79,11 @@ public class SportClubFragment extends Fragment {
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NewFCPopup popup = new NewFCPopup(getActivity());
-                popup.show();
+//                NewFCPopup popup = new NewFCPopup(getActivity());
+//                popup.show();
+                Intent intent = new Intent(getActivity(), NewGroupActivity.class);
+                startActivity(intent);
+
             }
         });
 

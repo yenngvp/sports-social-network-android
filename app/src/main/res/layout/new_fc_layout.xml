@@ -60,25 +60,21 @@
             android:minWidth="150dp"/>
     </LinearLayout>
 
-    <LinearLayout
+
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:minWidth="90dp"
-            android:textSize="17dp"
-            android:textColor="@android:color/black"
-            android:text="@string/phone_number"/>
+        android:layout_height="wrap_content">
 
         <EditText
-            android:id="@+id/group_phone"
-            android:layout_width="wrap_content"
+            android:id="@+id/phoneNumber"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minWidth="150dp"/>
-    </LinearLayout>
+            android:hint="@string/phone_number"
+            android:inputType="phone"
+            android:maxLines="1"
+            android:singleLine="true" />
+
+    </android.support.design.widget.TextInputLayout>
 
     <Button
         android:id="@+id/register"

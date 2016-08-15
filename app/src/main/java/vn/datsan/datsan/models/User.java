@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.firebase.database.Exclude;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import vn.datsan.datsan.search.interfaces.Searchable;
@@ -25,14 +26,14 @@ public class User implements Searchable {
     private String email;
     private String phone;
     private String address;
-    private Group groups;
+    private List<BaseDto> groups;
     private String location;
     private String avatar;
     private int role;
 
     public User() {}
 
-    public User(String name, String email, String phone, String address, Group groups, String location) {
+    public User(String name, String email, String phone, String address, List<BaseDto> groups, String location) {
         this.name = name;
         this.email = email;
         this.phone = phone;
@@ -113,11 +114,11 @@ public class User implements Searchable {
         this.address = address;
     }
 
-    public Group getGroups() {
+    public List<BaseDto> getGroups() {
         return groups;
     }
 
-    public void setGroups(Group groups) {
+    public void setGroups(List<BaseDto> groups) {
         this.groups = groups;
     }
 

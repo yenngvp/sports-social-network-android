@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -26,6 +27,7 @@ import vn.datsan.datsan.R;
 import vn.datsan.datsan.models.User;
 import vn.datsan.datsan.serverdata.UserManager;
 import vn.datsan.datsan.setting.UserDefine;
+import vn.datsan.datsan.ui.customwidgets.Alert.AlertInterface;
 import vn.datsan.datsan.ui.customwidgets.Alert.SimpleAlert;
 import vn.datsan.datsan.ui.customwidgets.SimpleProgress;
 import vn.datsan.datsan.utils.AppLog;
@@ -69,19 +71,6 @@ public class NewAccountActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        firebaseAuth.addAuthStateListener(authListener);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (authListener != null) {
-            firebaseAuth.removeAuthStateListener(authListener);
-        }
-    }
 
     @OnClick(R.id.email_sign_up_button)
     public void signUp() {
@@ -146,11 +135,23 @@ public class NewAccountActivity extends AppCompatActivity {
                             SimpleAlert.showAlert(NewAccountActivity.this, getString(R.string.error), task.getException().getMessage() + "",
                                     getString(R.string.close));
                         } else {
-                            Toast.makeText(NewAccountActivity.this, "Register successfully !",
-                                    Toast.LENGTH_SHORT).show();
-
                             user.setId(task.getResult().getUser().getUid());
-                            UserManager.getInstance().addUser(user);
+                            UserManager.getInstance().addUser(user, new DatabaseReference.CompletionListener() {
+                                @Override
+                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+
+                                }
+                            });
+
+//                            resetView();
+
+                            SimpleAlert.showAlert(NewAccountActivity.this, "Đăng ký thành công",
+                                    getString(R.string.close), null, new AlertInterface.OnTapListener() {
+                                        @Override
+                                        public void onTap(SimpleAlert alert, int buttonIndex) {
+                                            finish();
+                                        }
+                                    });
                         }
                     }
                 });
@@ -164,21 +165,6 @@ public class NewAccountActivity extends AppCompatActivity {
         return password.length() > 5;
     }
 
-    FirebaseAuth.AuthStateListener authListener = new FirebaseAuth.AuthStateListener() {
-        @Override
-        public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-            FirebaseUser user = firebaseAuth.getCurrentUser();
-            if (user != null) {
-                // User is signed in
-                Log.e("TAG", "onAuthStateChanged:signed_in:" + user.getUid());
-            } else {
-                // User is signed out
-                Log.e("TAG", "onAuthStateChanged:signed_out");
-            }
-            // ...
-        }
-    };
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -188,6 +174,14 @@ public class NewAccountActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void resetView() {
+        emailEdt.clearComposingText();
+        pwdEdt.clearComposingText();
+        rePwdEdt.clearComposingText();
+        nameEdt.setText(null);
+        phoneEdt.setText(null);
     }
 }
 
