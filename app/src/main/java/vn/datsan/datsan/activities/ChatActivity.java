@@ -173,7 +173,12 @@ public class ChatActivity extends AppCompatActivity {
         messageService.getMessageDatabaseRef(chatId).orderByKey().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() == null) {
+                    return; // No data
+                }
+
                 Map<String, Object> messages  = (HashMap<String, Object>) dataSnapshot.getValue();
+
                 final ObjectMapper mapper = new ObjectMapper();
 
                 List<Message> messageHistory = new ArrayList<Message>();

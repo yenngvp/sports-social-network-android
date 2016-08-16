@@ -3,6 +3,7 @@ package vn.datsan.datsan.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.firebase.database.Exclude;
 
 import org.joda.time.DateTime;
 
@@ -30,7 +31,7 @@ public class FirebaseObject {
     }
 
     // TODO Write custom serializer/deserializer for the date time
-    @JsonIgnore
+    @Exclude
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     public DateTime getCreateDate() {
         return createDate;
@@ -41,7 +42,7 @@ public class FirebaseObject {
     }
 
     // TODO Write custom serializer/deserializer for the date time
-    @JsonIgnore
+    @Exclude
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     public DateTime getLastModifiedDate() {
         return lastModifiedDate;

@@ -49,8 +49,8 @@ public class MessageService {
 
         DatabaseReference chatMessgeRef = getMessageDatabaseRef(message.getChatId());
         String messageKey = chatMessgeRef.push().getKey();
-        chatMessgeRef.child(messageKey).setValue(message);
         message.setId(messageKey);
+        chatMessgeRef.child(messageKey).setValue(message);
         return message;
     }
 

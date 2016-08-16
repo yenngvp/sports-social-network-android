@@ -40,4 +40,5 @@ public class Message extends AbstractMessage {
     public void setChatId(String chatId) {
         this.chatId = chatId;
     }
+
 }

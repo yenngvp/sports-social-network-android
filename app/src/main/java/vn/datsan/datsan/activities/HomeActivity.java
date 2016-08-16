@@ -41,10 +41,14 @@ import vn.datsan.datsan.fragments.SportClubFragment;
 import vn.datsan.datsan.fragments.FriendlyMatchFragment;
 import vn.datsan.datsan.fragments.SportFieldFragment;
 import vn.datsan.datsan.models.Field;
+import vn.datsan.datsan.models.UserRole;
+import vn.datsan.datsan.models.chat.Chat;
+import vn.datsan.datsan.models.chat.Member;
 import vn.datsan.datsan.search.AppSearch;
 import vn.datsan.datsan.search.SearchOption;
 import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.serverdata.UserManager;
+import vn.datsan.datsan.serverdata.chat.ChatService;
 import vn.datsan.datsan.ui.appviews.LoginPopup;
 import vn.datsan.datsan.ui.appviews.MaterialSearchView;
 import vn.datsan.datsan.ui.appviews.NewFCPopup;
@@ -89,9 +93,20 @@ public class HomeActivity extends AppCompatActivity implements
         chatFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(HomeActivity.this, ChatActivity.class);
-                intent.putExtra("chatId", "123456789");
-                startActivity(intent);
+
+                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+//                if (currentUser != null && !currentUser.isAnonymous()) {
+                    // Create chat
+//                    List<Member> initialMembers = new ArrayList<Member>();
+//                    Member me = new Member(currentUser.getUid(), UserRole.ADMIN);
+//                    initialMembers.add(me);
+//                    Chat chat = ChatService.getInstance().createChat("Chat Test", Chat.TYPE_CLUB_CHAT, initialMembers, null);
+
+                    // Go to chat
+                    Intent intent = new Intent(HomeActivity.this, ChatActivity.class);
+                    intent.putExtra("chatId", "123456789");
+                    startActivity(intent);
+//                }
             }
         });
 

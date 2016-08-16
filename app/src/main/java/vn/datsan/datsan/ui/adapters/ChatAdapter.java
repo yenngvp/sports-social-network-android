@@ -66,7 +66,7 @@ public class ChatAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        boolean myMsg = message.isMe() ;//Just a dummy check to simulate whether it me or other sender
+        boolean myMsg = message.isMe() ;
         setAlignment(holder, myMsg);
         holder.txtMessage.setText(message.getMessage());
         holder.txtInfo.setText(message.getCreateDate().toString());

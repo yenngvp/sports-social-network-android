@@ -17,12 +17,13 @@ public class Constants {
     /*
      * Firebase objects
      */
-    public static final String FIREBASE_APP_ROOT = "app";
+    public static final String FIREBASE_APP_ROOT = "/";
     public static final String FIREBASE_USERS = "app/users";
     public static final String FIREBASE_GROUPS = "app/groups";
     public static final String FIREBASE_FIELDS = "app/fields";
     public static final String FIREBASE_CHATS = "app/chats";
     public static final String FIREBASE_MESSAGES = "app/messages";
+    public static final String FIREBASE_MEMBERS = "app/members";
     public static final String FIREBASE_MATCHS = "app/matchs";
 
     /*
