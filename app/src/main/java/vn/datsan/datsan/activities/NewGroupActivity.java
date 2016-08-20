@@ -67,7 +67,7 @@ public class NewGroupActivity extends SimpleActivity {
         Toast.makeText(NewGroupActivity.this, "click", Toast.LENGTH_SHORT).show();
         openImageIntent();
     }
-    @OnClick(R.id.register)
+    @OnClick(R.id.register_btn)
     public void onRegisterBtnClicked() {
         Group group = createGroup();
         if (group != null) {
