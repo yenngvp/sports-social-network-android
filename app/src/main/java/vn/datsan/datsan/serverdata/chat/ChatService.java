@@ -75,15 +75,15 @@ public class ChatService {
             userRolesMap.putAll(member.toUserRoleMap());
         }
 
-        String currentUserUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
         // Because a chat always has a list of members when creating
         // so we would create chat and member objects at the same time to make sure the consistency
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put(Constants.FIREBASE_CHATS + "/" + chatKey, chat.toMap());
         childUpdates.put(Constants.FIREBASE_MEMBERS + "/" + chatKey, userRolesMap);
-        childUpdates.put(Constants.FIREBASE_USERS + "/" + currentUserUid + "/chats/" + chatKey, chat.toSimpleMap());
-
+        for (Member member : initialMembers) {
+            // Create chat for all users are members
+            childUpdates.put(Constants.FIREBASE_USERS + "/" + member.getUser() + "/chats/" + chatKey, chat.toSimpleMap());
+        }
         FirebaseDatabase.getInstance().getReference().updateChildren(childUpdates);
 
         return chat;
@@ -184,6 +184,8 @@ public class ChatService {
     }
 
     public void removeDatabaseRefListeners() {
-        chatDatabaseRef.removeEventListener(valueEventListener);
+        if (valueEventListener != null) {
+            chatDatabaseRef.removeEventListener(valueEventListener);
+        }
     }
 }
