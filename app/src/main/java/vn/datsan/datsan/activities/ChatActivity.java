@@ -1,8 +1,6 @@
 package vn.datsan.datsan.activities;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,16 +11,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +29,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import vn.datsan.datsan.R;
+import vn.datsan.datsan.models.User;
+import vn.datsan.datsan.models.chat.Chat;
 import vn.datsan.datsan.models.chat.Message;
+import vn.datsan.datsan.serverdata.UserManager;
 import vn.datsan.datsan.serverdata.chat.ChatService;
 import vn.datsan.datsan.serverdata.chat.MessageService;
 import vn.datsan.datsan.ui.adapters.ChatAdapter;
@@ -62,7 +63,7 @@ public class ChatActivity extends SimpleActivity {
     private ChatService chatService = ChatService.getInstance();
     private MessageService messageService = MessageService.getInstance();
     private ChildEventListener messageChildEventListener;
-    private String chatId;
+    private Chat chat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,21 +77,21 @@ public class ChatActivity extends SimpleActivity {
         messagesContainer.setAdapter(adapter);
         companionLabel.setText("My Buddy");
 
-        chatId = getIntent().getStringExtra("chatId");
+        chat = getIntent().getParcelableExtra("chat");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
 
-        messageService.getMessageDatabaseRef(chatId).removeEventListener(messageChildEventListener);
+        messageService.getMessageDatabaseRef(chat.getId()).removeEventListener(messageChildEventListener);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        loadMessageHistory(chatId);
+        loadMessageHistory(chat.getId());
     }
 
     @Override
@@ -127,7 +128,7 @@ public class ChatActivity extends SimpleActivity {
 
             }
         };
-        messageService.getMessageDatabaseRef(chatId).addChildEventListener(messageChildEventListener);
+        messageService.getMessageDatabaseRef(chat.getId()).addChildEventListener(messageChildEventListener);
 
     }
 
@@ -171,22 +172,16 @@ public class ChatActivity extends SimpleActivity {
                     return; // No data
                 }
 
-                Map<String, Object> messages  = (HashMap<String, Object>) dataSnapshot.getValue();
-
-                final ObjectMapper mapper = new ObjectMapper();
-
                 List<Message> messageHistory = new ArrayList<Message>();
-
-                for (Map.Entry<String, Object> entry : messages.entrySet()) {
-                    Message message = mapper.convertValue(entry.getValue(), Message.class);
-                    message.setId(entry.getKey());
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    Message message = data.getValue(Message.class);
                     messageHistory.add(message);
                 }
 
                 // Get messages history and add to display in revert order,
                 // because we want to display latest message at the bottom of the chat list, not on the top
-                for (int i = messageHistory.size() - 1; i >= 0; i--) {
-                    Message message = messageHistory.get(i);
+                Collections.reverse(messageHistory); // Want to have the latest chats on top
+                for (Message message : messageHistory) {
                     displayMessage(message);
                 }
             }
@@ -209,11 +204,13 @@ public class ChatActivity extends SimpleActivity {
         }
 
         // Construct message
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        User currentUser = UserManager.getInstance().getCurrentUser();
         Message message = new Message();
         message.setMessage(messageText);
-        message.setUserId(currentUser.getUid());
-        message.setChatId(chatId);
+        message.setUserId(currentUser.getId());
+        message.setChat(chat);
+        message.setUserName(currentUser.getName());
+        message.setTimestamp(DateTime.now());
 
         // Save to Firebase
         messageService.save(message);

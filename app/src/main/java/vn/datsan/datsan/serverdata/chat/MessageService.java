@@ -1,5 +1,6 @@
 package vn.datsan.datsan.serverdata.chat;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -41,16 +42,28 @@ public class MessageService {
     }
 
     /**
-     * Save a new message to the firebase
+     * Save a new message to the firebase and update as last message to related chat
      * @param message
      * @return new message key
      */
     public Message save(Message message) {
 
-        DatabaseReference chatMessgeRef = getMessageDatabaseRef(message.getChatId());
-        String messageKey = chatMessgeRef.push().getKey();
-        message.setId(messageKey);
-        chatMessgeRef.child(messageKey).setValue(message);
+        message.getChat().setLastMessage(message.getMessage());
+        String chatId = message.getChat().getId();
+
+        DatabaseReference chatMessgeRef = getMessageDatabaseRef(chatId);
+        String messageId = chatMessgeRef.push().getKey();
+        message.setId(messageId);
+
+        String currentUserUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put(Constants.FIREBASE_CHATS + "/" + chatId, message.getChat().toMap());
+        childUpdates.put(Constants.FIREBASE_USERS + "/" + currentUserUid + "/chats/" + chatId, message.getChat().toMap());
+        childUpdates.put(Constants.FIREBASE_MESSAGES + "/" + chatId + "/" + messageId, message.toMap());
+
+        FirebaseDatabase.getInstance().getReference().updateChildren(childUpdates);
+
         return message;
     }
 

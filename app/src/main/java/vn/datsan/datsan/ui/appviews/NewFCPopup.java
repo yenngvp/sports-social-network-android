@@ -37,8 +37,8 @@ public class NewFCPopup extends BasePopup {
             @Override
             public void onClick(View view) {
                 Group group = createGroup();
-                if (group != null)
-                    GroupManager.getInstance().addGroup(group);
+//                if (group != null)
+//                    GroupManager.getInstance().addGroup(group);
             }
         });
     }

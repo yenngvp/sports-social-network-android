@@ -39,4 +39,7 @@ public class Constants {
     public static final int GOOGLE_SIGN_IN_CODE = 9001;
 
     public static final int ELASTICSEARCH_PAGINATION_SIZE_DEFAULT = 50;
+
+    public static final String DATATIME_FORMAT = "dd/MM/yy HH:mm:ss";
+
 }

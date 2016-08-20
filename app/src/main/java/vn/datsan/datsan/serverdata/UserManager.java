@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -18,6 +19,7 @@ import vn.datsan.datsan.models.User;
 import vn.datsan.datsan.search.ElasticsearchService;
 import vn.datsan.datsan.search.interfaces.Searchable;
 import vn.datsan.datsan.utils.AppLog;
+import vn.datsan.datsan.utils.Constants;
 import vn.datsan.datsan.utils.listeners.FirebaseChildEventListener;
 
 /**
@@ -28,11 +30,12 @@ public class UserManager {
     private static UserManager instance;
     private DatabaseReference userDatabaseRef;
     private User userInfo;
+    private User currentUser;
 
     private FirebaseChildEventListener firebaseChildEventListener;
 
     private  UserManager() {
-        userDatabaseRef = FirebaseDatabase.getInstance().getReference("app/users");
+        userDatabaseRef = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_USERS);
 
         // Enable 'Searchable' put mapping for the managed underline User
         ElasticsearchService.getInstance().putMapping(User.getPutMapping(), User.class);
@@ -104,5 +107,26 @@ public class UserManager {
 
     public void setUserInfo(User userInfo) {
         this.userInfo = userInfo;
+    }
+
+    /**
+     * Get current logged user
+     *
+     * @return
+     */
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
+    }
+
+    /**
+     * Get Chat history of the current user
+     * @return
+     */
+    public DatabaseReference getUserChatDatabaseRef() {
+        return userDatabaseRef.child(currentUser.getId()).child("chats");
     }
 }

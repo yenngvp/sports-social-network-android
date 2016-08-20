@@ -41,6 +41,7 @@ import vn.datsan.datsan.fragments.SportClubFragment;
 import vn.datsan.datsan.fragments.FriendlyMatchFragment;
 import vn.datsan.datsan.fragments.SportFieldFragment;
 import vn.datsan.datsan.models.Field;
+import vn.datsan.datsan.models.User;
 import vn.datsan.datsan.models.UserRole;
 import vn.datsan.datsan.models.chat.Chat;
 import vn.datsan.datsan.models.chat.Member;
@@ -337,10 +338,15 @@ public class HomeActivity extends AppCompatActivity implements
             UserManager.getInstance().getCurrentUserInfo(new CallBack.OnResultReceivedListener() {
                 @Override
                 public void onResultReceived(Object result) {
+                    UserManager.getInstance().setCurrentUser((User) result);
 
+                    // TODO: Wait until here before "Dismiss spinner"?
                 }
             });
+        } else {
+            UserManager.getInstance().setCurrentUser(null);
         }
+
         reloadView();
     }
 

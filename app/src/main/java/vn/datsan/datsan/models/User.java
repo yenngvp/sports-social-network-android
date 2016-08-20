@@ -31,6 +31,7 @@ public class User implements Searchable {
     private String avatar;
     private int role;
 
+
     public User() {}
 
     public User(String name, String email, String phone, String address, List<BaseDto> groups, String location) {

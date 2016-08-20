@@ -2,17 +2,10 @@ package vn.datsan.datsan.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +13,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import vn.datsan.datsan.R;
-import vn.datsan.datsan.models.UserRole;
+import vn.datsan.datsan.models.User;
 import vn.datsan.datsan.models.chat.Chat;
-import vn.datsan.datsan.models.chat.Member;
 import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.serverdata.UserManager;
 import vn.datsan.datsan.serverdata.chat.ChatService;
@@ -61,7 +53,7 @@ public class ChatHistoryActivity extends SimpleActivity {
 
                 // Starting chat
                 Intent intent = new Intent(view.getContext(), ChatActivity.class);
-                intent.putExtra("chatId", chatHistory.get(position).getId());
+                intent.putExtra("chat", chatHistory.get(position));
                 startActivity(intent);
             }
 
@@ -77,18 +69,15 @@ public class ChatHistoryActivity extends SimpleActivity {
             @Override
             public void onClick(View view) {
                 // Create chat
-                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                List<Member> initialMembers = new ArrayList<Member>();
-                Member me = new Member(currentUser.getUid(), UserRole.ADMIN);
-                Member dummyBuddy = new Member("48l2Z9GZqUap2oVhQthvGGvTQHw1", UserRole.MEMBER); // ntyentk@gmail.com (gg)
-                initialMembers.add(me);
-                initialMembers.add(dummyBuddy);
+                User currentUser = UserManager.getInstance().getCurrentUser();
+                User dummyBuddy = new User();
+                dummyBuddy.setId("zdyU0yszf1XRxhx1FyYxWM0ykpl1");
+                dummyBuddy.setName("Dummy Buddy");
 
-                Chat chat = ChatService.getInstance().createChat("Chat " + DateTime.now().getMillisOfDay(),
-                        Chat.TYPE_ONE_TO_ONE_CHAT, initialMembers, null);
+                Chat chat = ChatService.getInstance().createOneToOneChat(currentUser, dummyBuddy);
                 // Starting chat
                 Intent intent = new Intent(view.getContext(), ChatActivity.class);
-                intent.putExtra("chatId", chat.getId());
+                intent.putExtra("chat", chat);
                 startActivity(intent);
             }
         });
@@ -117,7 +106,7 @@ public class ChatHistoryActivity extends SimpleActivity {
                 // Get history in order of latest on top of the list
                 for (Chat chat : chatHistory) {
                     String title = chat.getTitle();
-                    String content = chat.getLastMessage() == null ? "" : chat.getLastMessage().getMessage();
+                    String content = chat.getLastMessage() == null ? "" : chat.getLastMessage();
                     FlexListAdapter.FlexItem item = adapter.createItem(null, title, content, null);
                     list.add(item);
                 }

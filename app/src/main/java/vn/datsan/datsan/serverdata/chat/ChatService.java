@@ -1,5 +1,6 @@
 package vn.datsan.datsan.serverdata.chat;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -23,6 +24,8 @@ import vn.datsan.datsan.models.chat.Member;
 import vn.datsan.datsan.models.chat.Message;
 import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.serverdata.GroupManager;
+import vn.datsan.datsan.serverdata.UserManager;
+import vn.datsan.datsan.utils.AppLog;
 import vn.datsan.datsan.utils.Constants;
 
 /**
@@ -72,11 +75,14 @@ public class ChatService {
             userRolesMap.putAll(member.toUserRoleMap());
         }
 
+        String currentUserUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
         // Because a chat always has a list of members when creating
         // so we would create chat and member objects at the same time to make sure the consistency
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put(Constants.FIREBASE_CHATS + "/" + chatKey, chat.toMap());
         childUpdates.put(Constants.FIREBASE_MEMBERS + "/" + chatKey, userRolesMap);
+        childUpdates.put(Constants.FIREBASE_USERS + "/" + currentUserUid + "/chats/" + chatKey, chat.toSimpleMap());
 
         FirebaseDatabase.getInstance().getReference().updateChildren(childUpdates);
 
@@ -88,16 +94,13 @@ public class ChatService {
      * @param buddy
      * @return
      */
-    public Chat creatOneToOneChat(User me, User buddy) {
+    public Chat createOneToOneChat(User me, User buddy) {
         // Create chat has two members me and other
         List<Member> members = new ArrayList<>();
         members.add(new Member(me.getId(), UserRole.ADMIN));
         members.add(new Member(buddy.getId(), UserRole.MEMBER));
-        List<String> names = new ArrayList<>();
-        for (Member member : members) {
-            names.add(member.getUser());
-        }
-        String title = buildChatTitle(names);
+
+        String title = me.getName() + ", " + buddy.getName();
         return createChat(title, Chat.TYPE_ONE_TO_ONE_CHAT, members, null);
     }
 
@@ -137,7 +140,17 @@ public class ChatService {
         return StringUtils.join(names, ",");
     }
 
+    /**
+     * Load chat history for current user
+     * @param callBack
+     */
     public void loadChatHistory(final CallBack.OnResultReceivedListener callBack) {
+
+        User currentUser = UserManager.getInstance().getCurrentUser();
+        if (currentUser == null) { // This should not never happened but need a debug checkpoint
+            AppLog.e(TAG, "loadChatHistory currentUser is NULL");
+            return;
+        }
 
         valueEventListener = new ValueEventListener() {
             @Override
@@ -156,9 +169,10 @@ public class ChatService {
                     }
                 }
                 if (callBack != null) {
-                    Collections.reverse(chatHistory); // Would have the latest chats on top
+                    Collections.reverse(chatHistory); // Want to have the latest chats on top
                     callBack.onResultReceived(chatHistory);
                 }
+
             }
 
             @Override
@@ -166,7 +180,7 @@ public class ChatService {
 
             }
         };
-        chatDatabaseRef.orderByKey().addValueEventListener(valueEventListener);
+        UserManager.getInstance().getUserChatDatabaseRef().orderByKey().addValueEventListener(valueEventListener);;
     }
 
     public void removeDatabaseRefListeners() {
