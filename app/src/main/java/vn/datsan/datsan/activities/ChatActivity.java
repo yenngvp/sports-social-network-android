@@ -38,7 +38,7 @@ import vn.datsan.datsan.ui.adapters.ChatAdapter;
 import vn.datsan.datsan.utils.AppLog;
 
 
-public class ChatActivity extends AppCompatActivity {
+public class ChatActivity extends SimpleActivity {
 
     private static final String TAG = ChatActivity.class.getName();
 
@@ -70,13 +70,7 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+        super.initToolBar();
 
         adapter = new ChatAdapter(ChatActivity.this, new ArrayList<Message>());
         messagesContainer.setAdapter(adapter);
@@ -168,7 +162,7 @@ public class ChatActivity extends AppCompatActivity {
         if (StringUtils.isBlank(chatId)) {
             return;
         }
-
+        AppLog.d(TAG, "loadMessageHistory for chat: " + chatId);
         // Load chat history from firebase chatService
         messageService.getMessageDatabaseRef(chatId).orderByKey().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -189,7 +183,10 @@ public class ChatActivity extends AppCompatActivity {
                     messageHistory.add(message);
                 }
 
-                for (Message message : messageHistory) {
+                // Get messages history and add to display in revert order,
+                // because we want to display latest message at the bottom of the chat list, not on the top
+                for (int i = messageHistory.size() - 1; i >= 0; i--) {
+                    Message message = messageHistory.get(i);
                     displayMessage(message);
                 }
             }

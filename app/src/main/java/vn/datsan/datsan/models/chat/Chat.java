@@ -2,8 +2,6 @@ package vn.datsan.datsan.models.chat;
 
 import com.google.firebase.database.Exclude;
 
-import org.joda.time.DateTime;
-
 import java.util.HashMap;
 import java.util.Map;
 

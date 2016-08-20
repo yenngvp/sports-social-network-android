@@ -107,6 +107,12 @@
             android:label="@string/create_friendly_match" />
         <activity android:name=".activities.FriendlyMatchDetailActivity" />
         <activity android:name=".activities.NewGroupActivity"></activity>
+        <activity
+            android:name=".activities.ChatHistoryActivity"
+            android:label="@string/chats" />
+        <activity
+            android:name=".activities.NewChatActivity"
+            android:label="@string/new_chat" />
     </application>
 
 </manifest>

@@ -4,7 +4,7 @@ package vn.datsan.datsan.models;
  * Created by yennguyen on 8/12/16.
  */
 public enum UserRole {
-    USER("USER"),
+    MEMBER("MEMBER"),
     MODERATOR("MODERATOR"),
     ADMIN("ADMIN"),
     SUPER_ADMIN("SUPER_ADMIN");

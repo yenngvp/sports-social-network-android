@@ -168,4 +168,9 @@
         <item>Yên Bái</item>
         <item>Phú Yên</item>
     </string-array>
+
+    <!-- Chats -->
+    <string name="chats">Tin nhắn</string>
+    <string name="new_chat">Tin nhắn mới</string>
+
 </resources>

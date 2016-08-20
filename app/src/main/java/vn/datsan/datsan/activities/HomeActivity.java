@@ -95,18 +95,13 @@ public class HomeActivity extends AppCompatActivity implements
             public void onClick(View view) {
 
                 FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-//                if (currentUser != null && !currentUser.isAnonymous()) {
-                    // Create chat
-//                    List<Member> initialMembers = new ArrayList<Member>();
-//                    Member me = new Member(currentUser.getUid(), UserRole.ADMIN);
-//                    initialMembers.add(me);
-//                    Chat chat = ChatService.getInstance().createChat("Chat Test", Chat.TYPE_CLUB_CHAT, initialMembers, null);
-
-                    // Go to chat
-                    Intent intent = new Intent(HomeActivity.this, ChatActivity.class);
-                    intent.putExtra("chatId", "123456789");
+                if (currentUser == null || currentUser.isAnonymous()) {
+                    loginPopup.show();
+                } else {
+                    // Show chat history
+                    Intent intent = new Intent(HomeActivity.this, ChatHistoryActivity.class);
                     startActivity(intent);
-//                }
+                }
             }
         });
 

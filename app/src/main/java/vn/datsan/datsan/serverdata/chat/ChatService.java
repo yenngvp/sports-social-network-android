@@ -1,17 +1,28 @@
 package vn.datsan.datsan.serverdata.chat;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.util.TextUtils;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import vn.datsan.datsan.models.Group;
+import vn.datsan.datsan.models.User;
 import vn.datsan.datsan.models.UserRole;
 import vn.datsan.datsan.models.chat.Chat;
 import vn.datsan.datsan.models.chat.Member;
 import vn.datsan.datsan.models.chat.Message;
+import vn.datsan.datsan.serverdata.CallBack;
+import vn.datsan.datsan.serverdata.GroupManager;
 import vn.datsan.datsan.utils.Constants;
 
 /**
@@ -21,10 +32,14 @@ public class ChatService {
 
     private static final String TAG = ChatService.class.getName();
 
-    private DatabaseReference chatDatabaseRef = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_CHATS);
     private static ChatService instance = new ChatService();
 
+    private DatabaseReference chatDatabaseRef = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_CHATS);
+    private ValueEventListener valueEventListener;
+
     private MemberService memberService = MemberService.getInstance();
+
+    List<Chat> chatHistory = new ArrayList<>();
 
     private ChatService() {}
 
@@ -68,6 +83,24 @@ public class ChatService {
         return chat;
     }
 
+    /**
+     * Start chat with someone
+     * @param buddy
+     * @return
+     */
+    public Chat creatOneToOneChat(User me, User buddy) {
+        // Create chat has two members me and other
+        List<Member> members = new ArrayList<>();
+        members.add(new Member(me.getId(), UserRole.ADMIN));
+        members.add(new Member(buddy.getId(), UserRole.MEMBER));
+        List<String> names = new ArrayList<>();
+        for (Member member : members) {
+            names.add(member.getUser());
+        }
+        String title = buildChatTitle(names);
+        return createChat(title, Chat.TYPE_ONE_TO_ONE_CHAT, members, null);
+    }
+
     public void updateChatTitle(String chatId, String title) {
 
     }
@@ -78,5 +111,65 @@ public class ChatService {
 
     public void addMember(String chatId, Member member) {
         memberService.add(chatId, member);
+    }
+
+    public String getDisplayTitle(Chat chat) {
+        if (!TextUtils.isBlank(chat.getTitle())) {
+            return chat.getTitle();
+        }
+
+        // Build dynamic title for display
+        // if this is a group chat, display chat title as the group name
+        if (chat.getLinkedGroup() != null) {
+            // Find the group
+            Group group = GroupManager.getInstance().getGroup(chat.getLinkedGroup());
+            if (group != null && group.getName() != null) {
+                return  group.getName();
+            }
+        }
+
+        // Create chat title from name members in the group
+        List<String> members = MemberService.getInstance().getMembers(chat.getId());
+        return buildChatTitle(members);
+    }
+
+    private String buildChatTitle(List<String> names) {
+        return StringUtils.join(names, ",");
+    }
+
+    public void loadChatHistory(final CallBack.OnResultReceivedListener callBack) {
+
+        valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                // TODO optimize loading history (do some kind of pagination)
+                if (chatHistory.size() > 0) {
+                    chatHistory.removeAll(chatHistory);
+                }
+
+                for (DataSnapshot data: dataSnapshot.getChildren()) {
+                    Chat chat = data.getValue(Chat.class);
+                    if (chat != null) {
+                        chat.setId(data.getKey());
+                        chatHistory.add(chat);
+                    }
+                }
+                if (callBack != null) {
+                    Collections.reverse(chatHistory); // Would have the latest chats on top
+                    callBack.onResultReceived(chatHistory);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        chatDatabaseRef.orderByKey().addValueEventListener(valueEventListener);
+    }
+
+    public void removeDatabaseRefListeners() {
+        chatDatabaseRef.removeEventListener(valueEventListener);
     }
 }
