@@ -8,6 +8,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +40,12 @@ public class NewFCPopup extends BasePopup {
             public void onClick(View view) {
                 Group group = createGroup();
                 if (group != null)
-                    GroupManager.getInstance().addGroup(group);
+                    GroupManager.getInstance().addGroup(group, new DatabaseReference.CompletionListener() {
+                        @Override
+                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                            
+                        }
+                    });
             }
         });
     }
