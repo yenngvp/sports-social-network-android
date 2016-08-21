@@ -14,13 +14,16 @@ import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import vn.datsan.datsan.utils.AppLog;
+
 /**
  * Created by xuanpham on 7/20/16.
  */
 public class CloudDataStorage {
     private final String bucketUrl = "gs://social-sport-b1cff.appspot.com";
     private static CloudDataStorage instance;
-    private StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+    private StorageReference storageReference = FirebaseStorage.getInstance()
+            .getReferenceFromUrl(bucketUrl);//FirebaseStorage.getInstance().getReference();
 
     public static CloudDataStorage getInstance() {
         if (instance == null)
@@ -36,8 +39,8 @@ public class CloudDataStorage {
         return fileName;
     }
 
-    public void uploadPhoto(Bitmap bitmap, String folder, String fileName) {
-        StorageReference imageRef = storageReference.child("images");
+    public void uploadPhoto(Bitmap bitmap, String fileName) {
+        StorageReference imageRef = storageReference.child("images/" + fileName);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
@@ -48,12 +51,14 @@ public class CloudDataStorage {
             @Override
             public void onFailure(@NonNull Exception exception) {
                 // Handle unsuccessful uploads
+                exception.printStackTrace();
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                AppLog.log(AppLog.LogType.LOG_ERROR, "Photo", "Success");
             }
         });
     }

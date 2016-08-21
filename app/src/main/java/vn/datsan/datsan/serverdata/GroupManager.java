@@ -57,17 +57,18 @@ public class GroupManager {
     }
 
     public List<Group> getUserGroups(final CallBack.OnResultReceivedListener callBack) {
-
-        if (userGroups != null && !userGroups.isEmpty()) {
-            if (callBack != null)
-                callBack.onResultReceived(userGroups);
-            return userGroups;
-        }
+        AppLog.log(AppLog.LogType.LOG_ERROR, "group", "get");
+//        if (userGroups != null && !userGroups.isEmpty()) {
+//            if (callBack != null)
+//                callBack.onResultReceived(userGroups);
+//            return userGroups;
+//        }
 
         groupDatabaseRef.addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                AppLog.log(AppLog.LogType.LOG_ERROR, "group", "onReceived");
                 userGroups = new ArrayList<>();
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
                     Group field = postSnapshot.getValue(Group.class);
@@ -80,6 +81,7 @@ public class GroupManager {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+                AppLog.log(AppLog.LogType.LOG_ERROR, "group", databaseError.toString());
             }
         });
 

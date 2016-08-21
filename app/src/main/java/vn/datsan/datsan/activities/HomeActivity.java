@@ -320,7 +320,11 @@ public class HomeActivity extends AppCompatActivity implements
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             if (user == null || user.isAnonymous()) {
                 loginPopup.show();
-                drawer.closeDrawer(GravityCompat.START);
+                try {
+                    drawer.closeDrawer(GravityCompat.START);
+                }catch (Exception e) {
+
+                }
             } else {
                 FirebaseAuth.getInstance().signOut();
                 LoginManager.getInstance().logOut();

@@ -4,12 +4,14 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -31,8 +33,10 @@ import vn.datsan.datsan.R;
 import vn.datsan.datsan.models.Group;
 import vn.datsan.datsan.models.UserRole;
 import vn.datsan.datsan.serverdata.GroupManager;
+import vn.datsan.datsan.serverdata.storage.CloudDataStorage;
 import vn.datsan.datsan.ui.customwidgets.Alert.AlertInterface;
 import vn.datsan.datsan.ui.customwidgets.Alert.SimpleAlert;
+import vn.datsan.datsan.utils.AppLog;
 
 public class NewGroupActivity extends SimpleActivity {
 
@@ -184,6 +188,14 @@ public class NewGroupActivity extends SimpleActivity {
                     selectedImageUri = outputFileUri;
                 } else {
                     selectedImageUri = data == null ? null : data.getData();
+                }
+
+                AppLog.log(AppLog.LogType.LOG_ERROR, "image url", selectedImageUri.toString());
+                try {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+                    CloudDataStorage.getInstance().uploadPhoto(bitmap, selectedImageUri.toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }

@@ -24,4 +24,6 @@ public class ImageUtil {
         Bitmap bitmap = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
         return bitmap;
     }
+
+
 }
