@@ -135,9 +135,6 @@ public class HomeActivity extends AppCompatActivity implements
             public void onPageScrollStateChanged(int state) {
             }
         });
-
-//        AppSearch.searchField("san bong da", "1km", 0,0,null);
-
     }
 
     private void navigateSearch(String text) {

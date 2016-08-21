@@ -1,18 +1,18 @@
 package vn.datsan.datsan.serverdata.chat;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import vn.datsan.datsan.models.chat.Member;
 import vn.datsan.datsan.models.chat.Message;
+import vn.datsan.datsan.utils.AppLog;
 import vn.datsan.datsan.utils.Constants;
 
 /**
@@ -46,23 +46,47 @@ public class MessageService {
      * @param message
      * @return new message key
      */
-    public Message save(Message message) {
+    public Message send(Message message) {
 
         message.getChat().setLastMessage(message.getMessage());
-        String chatId = message.getChat().getId();
+        final String chatId = message.getChat().getId();
 
         DatabaseReference chatMessgeRef = getMessageDatabaseRef(chatId);
         String messageId = chatMessgeRef.push().getKey();
         message.setId(messageId);
 
-        String currentUserUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        final Message messageAllParticipants = message;
 
-        Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put(Constants.FIREBASE_CHATS + "/" + chatId, message.getChat().toMap());
-        childUpdates.put(Constants.FIREBASE_USERS + "/" + currentUserUid + "/chats/" + chatId, message.getChat().toMap());
-        childUpdates.put(Constants.FIREBASE_MESSAGES + "/" + chatId + "/" + messageId, message.toMap());
+        // Get list of all participants of the chat
+        MemberService.getInstance().getMemberDatabaseRef(chatId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
-        FirebaseDatabase.getInstance().getReference().updateChildren(childUpdates);
+                if (dataSnapshot.getValue() == null) {
+                    // Chat no member, should never happened
+                    AppLog.e(TAG, "Chat " + chatId + " has no member");
+                    return;
+                }
+
+                Map<String, Object> childUpdates = new HashMap<>();
+
+                // Add all participants to the message broadcast list
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    String memberId = data.getKey();
+                    childUpdates.put(Constants.FIREBASE_USERS + "/" + memberId + "/chats/" + chatId, messageAllParticipants.getChat().toMap());
+                }
+
+                childUpdates.put(Constants.FIREBASE_CHATS + "/" + chatId, messageAllParticipants.getChat().toMap());
+                childUpdates.put(Constants.FIREBASE_MESSAGES + "/" + chatId + "/" + messageAllParticipants.getId(), messageAllParticipants.toMap());
+
+                FirebaseDatabase.getInstance().getReference().updateChildren(childUpdates);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         return message;
     }

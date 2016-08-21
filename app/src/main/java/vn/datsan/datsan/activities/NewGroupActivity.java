@@ -128,7 +128,7 @@ public class NewGroupActivity extends SimpleActivity {
 
     private void openImageIntent() {
 
-        // Determine Uri of camera image to save.
+        // Determine Uri of camera image to send.
         final File root = new File(Environment.getExternalStorageDirectory() + File.separator + "MyDir" + File.separator);
         root.mkdirs();
         final String fname = "xboyfname";//Utils.getUniqueImageFilename();

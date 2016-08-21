@@ -1,6 +1,5 @@
 package vn.datsan.datsan.serverdata.chat;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -82,7 +81,7 @@ public class ChatService {
         childUpdates.put(Constants.FIREBASE_MEMBERS + "/" + chatKey, userRolesMap);
         for (Member member : initialMembers) {
             // Create chat for all users are members
-            childUpdates.put(Constants.FIREBASE_USERS + "/" + member.getUser() + "/chats/" + chatKey, chat.toSimpleMap());
+            childUpdates.put(Constants.FIREBASE_USERS + "/" + member.getUserId() + "/chats/" + chatKey, chat.toSimpleMap());
         }
         FirebaseDatabase.getInstance().getReference().updateChildren(childUpdates);
 

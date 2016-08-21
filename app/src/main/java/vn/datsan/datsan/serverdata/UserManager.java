@@ -28,6 +28,7 @@ import vn.datsan.datsan.utils.listeners.FirebaseChildEventListener;
 public class UserManager {
     private static final String TAG = UserManager.class.getName();
     private static UserManager instance;
+
     private DatabaseReference userDatabaseRef;
     private User userInfo;
     private User currentUser;
@@ -118,8 +119,8 @@ public class UserManager {
         return currentUser;
     }
 
-    public void setCurrentUser(User currentUser) {
-        this.currentUser = currentUser;
+    public void setCurrentUser(User user) {
+        currentUser = user;
     }
 
     /**

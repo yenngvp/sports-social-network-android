@@ -99,7 +99,7 @@ public class GroupManager {
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        AppLog.e(TAG, "getUser:onCancelled: " + databaseError.toException());
+                        AppLog.e(TAG, "getUserId:onCancelled: " + databaseError.toException());
                     }
                 });
         return null;

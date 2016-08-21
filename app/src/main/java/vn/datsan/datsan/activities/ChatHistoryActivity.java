@@ -7,6 +7,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,8 +73,8 @@ public class ChatHistoryActivity extends SimpleActivity {
                 // Create chat
                 User currentUser = UserManager.getInstance().getCurrentUser();
                 User dummyBuddy = new User();
-                dummyBuddy.setId("zdyU0yszf1XRxhx1FyYxWM0ykpl1");
-                dummyBuddy.setName("Dummy Buddy");
+                dummyBuddy.setId("2XkzZSN3syR5ztej5nsCk2BQmKA2"); //xuancong
+                dummyBuddy.setName("xuancong");
 
                 Chat chat = ChatService.getInstance().createOneToOneChat(currentUser, dummyBuddy);
                 // Starting chat
@@ -92,6 +94,21 @@ public class ChatHistoryActivity extends SimpleActivity {
         ChatService.getInstance().removeDatabaseRefListeners();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            UserManager.getInstance().getCurrentUserInfo(new CallBack.OnResultReceivedListener() {
+                @Override
+                public void onResultReceived(Object result) {
+                    UserManager.getInstance().setCurrentUser((User) result);
+                }
+            });
+        } else {
+            UserManager.getInstance().setCurrentUser(null);
+        }
+    }
 
     private void populateData() {
         ChatService.getInstance().loadChatHistory(new CallBack.OnResultReceivedListener() {

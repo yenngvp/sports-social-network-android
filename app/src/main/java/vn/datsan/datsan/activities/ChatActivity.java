@@ -10,7 +10,6 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -21,9 +20,7 @@ import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -194,7 +191,7 @@ public class ChatActivity extends SimpleActivity {
     }
 
     /**
-     * Send message, save to firebase
+     * Send message, send to firebase
      */
     @OnClick(R.id.chatSendButton)
     public void sendMessage() {
@@ -213,7 +210,7 @@ public class ChatActivity extends SimpleActivity {
         message.setTimestamp(DateTime.now());
 
         // Save to Firebase
-        messageService.save(message);
+        messageService.send(message);
 
         // Reset input field
         messageEdt.setText("");

@@ -14,13 +14,13 @@ import vn.datsan.datsan.models.UserRole;
 public class Member extends FirebaseObject {
 
     private String chatId;
-    private String user;
+    private String userId;
     private UserRole role;
 
     public Member() {};
 
-    public Member(String user, UserRole role) {
-        this.user = user;
+    public Member(String userId, UserRole role) {
+        this.userId = userId;
         this.role = role;
     }
 
@@ -33,12 +33,12 @@ public class Member extends FirebaseObject {
         this.chatId = chatId;
     }
 
-    public String getUser() {
-        return user;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUser(String user) {
-        this.user = user;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     @Exclude
@@ -67,7 +67,7 @@ public class Member extends FirebaseObject {
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
-        result.put("user", getUser());
+        result.put("userId", getUserId());
         result.put("role", getRole());
 
         return result;
@@ -76,7 +76,7 @@ public class Member extends FirebaseObject {
     @Exclude
     public Map<String, Object> toUserRoleMap() {
         HashMap<String, Object> result = new HashMap<>();
-        result.put(getUser(), getRole());
+        result.put(getUserId(), getRole());
 
         return result;
     }
