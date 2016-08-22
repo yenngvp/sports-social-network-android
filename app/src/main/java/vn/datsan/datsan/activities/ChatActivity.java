@@ -290,4 +290,23 @@ public class ChatActivity extends SimpleActivity {
         messagesContainer.setSelection(messagesContainer.getCount() - 1);
     }
 
+    private void showSendingIndicator() {
+
+    }
+
+    private void dismissSendingIndicator() {
+
+    }
+
+    private void showSentIndicator() {
+
+    }
+
+    private void showReadIndicator() {
+
+    }
+
+    private void showTypingIndicator() {
+
+    }
 }
