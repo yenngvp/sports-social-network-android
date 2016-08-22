@@ -179,7 +179,9 @@ public class ChatService {
 
             }
         };
-        UserManager.getInstance().getUserChatDatabaseRef().orderByKey().addValueEventListener(valueEventListener);;
+        UserManager.getInstance().getUserChatDatabaseRef()
+                .orderByKey()
+                .addValueEventListener(valueEventListener);
     }
 
     public void removeDatabaseRefListeners() {

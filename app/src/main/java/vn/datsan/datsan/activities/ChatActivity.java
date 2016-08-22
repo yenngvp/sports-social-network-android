@@ -15,7 +15,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
-import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
@@ -34,6 +33,7 @@ import vn.datsan.datsan.serverdata.chat.ChatService;
 import vn.datsan.datsan.serverdata.chat.MessageService;
 import vn.datsan.datsan.ui.adapters.ChatAdapter;
 import vn.datsan.datsan.utils.AppLog;
+import vn.datsan.datsan.utils.Constants;
 
 
 public class ChatActivity extends SimpleActivity {
@@ -55,12 +55,17 @@ public class ChatActivity extends SimpleActivity {
     RelativeLayout container;
 
     private ChatAdapter adapter;
-    private ArrayList<Message> chatHistory;
 
     private ChatService chatService = ChatService.getInstance();
     private MessageService messageService = MessageService.getInstance();
-    private ChildEventListener messageChildEventListener;
+    private ChildEventListener incomingMessageEventListener;
     private Chat chat;
+
+    private volatile List<Message> messageHistory;
+
+    private String startAt;
+    private String endAt;
+    private Message latestMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,57 +80,40 @@ public class ChatActivity extends SimpleActivity {
         companionLabel.setText("My Buddy");
 
         chat = getIntent().getParcelableExtra("chat");
+
+        messageHistory = new ArrayList<>();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
 
-        messageService.getMessageDatabaseRef(chat.getId()).removeEventListener(messageChildEventListener);
+        if (incomingMessageEventListener != null) {
+            messageService.getMessageDatabaseRef(chat.getId()).removeEventListener(incomingMessageEventListener);
+            incomingMessageEventListener = null;
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        loadMessageHistory(chat.getId());
+        // Load message for the chat in following procedure:
+        // 1. Load message history from local database first
+        // 2. Get the latest local message
+        // 3. Load messages from the server that newer than the local
+        // 4. Listen on any incoming message to the group (message child event)
+
+        loadLocalMessageHistory();
+        loadServerMessageHistory();
+
+        // Listen on new incoming messages
+        listenOnIncomingMessage();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
-        // Listen to any message update for the chat group (chat group)
-        messageChildEventListener = new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Message message = dataSnapshot.getValue(Message.class);
-                if (!message.isMe()) {
-                    displayMessage(message);
-                }
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                AppLog.e(TAG, "We don't expect to have child message Changed");
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                AppLog.e(TAG, "Remove message feature not supported yet!");
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                AppLog.e(TAG, "We don't expect to have child message Moved");
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-        messageService.getMessageDatabaseRef(chat.getId()).addChildEventListener(messageChildEventListener);
 
     }
 
@@ -156,38 +144,106 @@ public class ChatActivity extends SimpleActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void loadMessageHistory(String chatId) {
-        if (StringUtils.isBlank(chatId)) {
-            return;
-        }
-        AppLog.d(TAG, "loadMessageHistory for chat: " + chatId);
+    private void loadLocalMessageHistory() {
+        String chatId = chat.getId();
+
+
+    }
+
+    private void loadServerMessageHistory() {
+
+        String chatId = chat.getId();
+
+        AppLog.d(TAG, "loadServerMessageHistory for chat: " + chatId);
+
         // Load chat history from firebase chatService
-        messageService.getMessageDatabaseRef(chatId).orderByKey().addListenerForSingleValueEvent(new ValueEventListener() {
+        ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() == null) {
                     return; // No data
                 }
 
-                List<Message> messageHistory = new ArrayList<Message>();
+                List<Message> messageServerHistory = new ArrayList<Message>();
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     Message message = data.getValue(Message.class);
-                    messageHistory.add(message);
+                    messageServerHistory.add(message);
                 }
 
-                // Get messages history and add to display in revert order,
-                // because we want to display latest message at the bottom of the chat list, not on the top
-                Collections.reverse(messageHistory); // Want to have the latest chats on top
-                for (Message message : messageHistory) {
-                    displayMessage(message);
-                }
+                // Reset view and old messages
+                messageHistory.removeAll(messageHistory);
+                // Update new server messages
+                messageHistory.addAll(messageServerHistory);
+                // Display messages
+                adapter.add(messageHistory);
+                adapter.notifyDataSetChanged();
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        };
+
+        if (endAt == null) {
+            // First page load
+            // Load latest number of CHAT_HISTORY_PAGINATION_SIZE_DEFAULT messages from the server
+            messageService.getMessageDatabaseRef(chatId)
+                    .orderByKey()
+                    .limitToLast(Constants.CHAT_HISTORY_PAGINATION_SIZE_DEFAULT)
+                    .addListenerForSingleValueEvent(valueEventListener);
+        } else {
+            // Response to scroll event
+            // Load latest number of CHAT_HISTORY_PAGINATION_SIZE_DEFAULT messages from the server
+            // but specify startAt and endAt key index
+            messageService.getMessageDatabaseRef(chatId)
+                    .orderByKey()
+                    .endAt(startAt)
+                    .limitToLast(Constants.CHAT_HISTORY_PAGINATION_SIZE_DEFAULT)
+                    .addListenerForSingleValueEvent(valueEventListener);
+        }
+    }
+
+    private void listenOnIncomingMessage() {
+
+        if (incomingMessageEventListener == null) {
+            // Listen to any incoming message to the chat group
+            incomingMessageEventListener = new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    Message message = dataSnapshot.getValue(Message.class);
+                    if (message.isMe()) {
+                        // we know that we just receive a message of current user, so it means user successfully sent message to the server
+                        // show signal to the user to indicate "Sent" status
+                        // TODO ...
+                    } else {
+                        displayMessage(message); // display others incoming message
+                    }
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                    AppLog.e(TAG, "We don't expect to have child message Changed");
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+                    AppLog.e(TAG, "Remove message feature not supported yet!");
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                    AppLog.e(TAG, "We don't expect to have child message Moved");
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+            messageService.getMessageDatabaseRef(chat.getId())
+                    .addChildEventListener(incomingMessageEventListener);
+        }
     }
 
     /**
@@ -209,7 +265,12 @@ public class ChatActivity extends SimpleActivity {
         message.setUserName(currentUser.getName());
         message.setTimestamp(DateTime.now());
 
-        // Save to Firebase
+        latestMessage = message;
+
+        // Save to the local database
+
+
+        // Send to Firebase
         messageService.send(message);
 
         // Reset input field
