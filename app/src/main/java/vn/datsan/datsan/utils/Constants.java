@@ -1,5 +1,8 @@
 package vn.datsan.datsan.utils;
 
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 import java.util.List;
 
 import vn.datsan.datsan.BuildConfig;
@@ -41,6 +44,8 @@ public class Constants {
     public static final int ELASTICSEARCH_PAGINATION_SIZE_DEFAULT = 100;
     public static final int CHAT_HISTORY_PAGINATION_SIZE_DEFAULT = 100;
 
-    public static final String DATATIME_FORMAT = "dd/MM/yy HH:mm:ss";
+    public static final String DATETIME_FORMAT = "dd/MM/yy HH:mm:ss";
+    public static final DateTimeFormatter DATETIME_FORMATTER = DateTimeFormat.forPattern(DATETIME_FORMAT);
 
+    public static final String GROUP_NAME_SEPARATOR = ", ";
 }

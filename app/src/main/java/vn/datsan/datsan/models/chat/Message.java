@@ -88,7 +88,7 @@ public class Message extends AbstractMessage {
         result.put("userName", getUserName());
         result.put("message", getMessage());
         if (getTimestamp() != null) {
-            DateTimeFormatter formatter = DateTimeFormat.forPattern(Constants.DATATIME_FORMAT);
+            DateTimeFormatter formatter = DateTimeFormat.forPattern(Constants.DATETIME_FORMAT);
             result.put("timestamp", formatter.print(getTimestamp()));
         }
         return result;

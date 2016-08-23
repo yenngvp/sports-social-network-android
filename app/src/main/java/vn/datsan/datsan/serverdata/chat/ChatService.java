@@ -99,7 +99,7 @@ public class ChatService {
         members.add(new Member(me.getId(), UserRole.ADMIN));
         members.add(new Member(buddy.getId(), UserRole.MEMBER));
 
-        String title = me.getName() + ", " + buddy.getName();
+        String title = me.getName() + Constants.GROUP_NAME_SEPARATOR + buddy.getName();
         return createChat(title, Chat.TYPE_ONE_TO_ONE_CHAT, members, null);
     }
 

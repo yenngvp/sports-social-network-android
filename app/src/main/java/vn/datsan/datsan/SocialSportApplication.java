@@ -9,6 +9,7 @@ import com.facebook.appevents.AppEventsLogger;
 
 import vn.datsan.datsan.search.ElasticsearchService;
 import vn.datsan.datsan.utils.AppLog;
+import vn.datsan.datsan.utils.MyActivityLifecycleHandler;
 
 /**
  * Created by yennguyen on 10/06/2016.
@@ -30,6 +31,8 @@ public class SocialSportApplication extends android.app.Application {
          * Create elasticsearch index if it not exists
          */
         ElasticsearchService.getInstance().createIndex();
+
+        registerActivityLifecycleCallbacks(new MyActivityLifecycleHandler());
     }
 
     @Override

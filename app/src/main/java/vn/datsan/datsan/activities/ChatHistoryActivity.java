@@ -9,6 +9,8 @@ import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import org.joda.time.format.DateTimeFormat;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +25,7 @@ import vn.datsan.datsan.serverdata.chat.ChatService;
 import vn.datsan.datsan.ui.adapters.DividerItemDecoration;
 import vn.datsan.datsan.ui.adapters.FlexListAdapter;
 import vn.datsan.datsan.ui.adapters.RecyclerTouchListener;
+import vn.datsan.datsan.utils.Constants;
 
 /**
  * Created by yennguyen on 8/17/16.
@@ -122,9 +125,10 @@ public class ChatHistoryActivity extends SimpleActivity {
                 List<FlexListAdapter.FlexItem> list = new ArrayList<>();
                 // Get history in order of latest on top of the list
                 for (Chat chat : chatHistory) {
-                    String title = chat.getTitle();
+                    String title = chat.getDynamicChatTitle();
                     String content = chat.getLastMessage() == null ? "" : chat.getLastMessage();
-                    FlexListAdapter.FlexItem item = adapter.createItem(null, title, content, null);
+                    String date = null;
+                    FlexListAdapter.FlexItem item = adapter.createItem(null, title, content, date);
                     list.add(item);
                 }
 

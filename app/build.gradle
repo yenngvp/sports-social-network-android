@@ -3,7 +3,7 @@ apply plugin: 'android-apt'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "23.0.3"
+    buildToolsVersion "24.0.1"
 
     defaultConfig {
         applicationId "vn.datsan.datsan"
@@ -13,6 +13,7 @@ android {
         versionName "1.0"
         multiDexEnabled true
         manifestPlaceholders = [HOCKEYAPP_APP_ID: "1ea153ea663947dabeced25b541da1f4"]
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
