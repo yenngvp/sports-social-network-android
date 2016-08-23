@@ -1,7 +1,9 @@
 package vn.datsan.datsan.activities;
 
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -28,6 +30,8 @@ import vn.datsan.datsan.R;
 import vn.datsan.datsan.models.User;
 import vn.datsan.datsan.models.chat.Chat;
 import vn.datsan.datsan.models.chat.Message;
+import vn.datsan.datsan.models.chat.TypingSignal;
+import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.serverdata.UserManager;
 import vn.datsan.datsan.serverdata.chat.ChatService;
 import vn.datsan.datsan.serverdata.chat.MessageService;
@@ -40,19 +44,13 @@ public class ChatActivity extends SimpleActivity {
 
     private static final String TAG = ChatActivity.class.getName();
 
-    @BindView(R.id.messageEdit)
-    EditText messageEdt;
-    @BindView(R.id.messagesContainer)
-    ListView messagesContainer;
-    @BindView(R.id.chatSendButton)
-    Button sendBtn;
+    @BindView(R.id.messageEdit) EditText messageEdt;
+    @BindView(R.id.messagesContainer) ListView messagesContainer;
+    @BindView(R.id.chatSendButton) Button sendBtn;
 
-    @BindView(R.id.meLbl)
-    TextView meLabel;
-    @BindView(R.id.friendLabel)
-    TextView companionLabel;
-    @BindView(R.id.container)
-    RelativeLayout container;
+    @BindView(R.id.meLbl) TextView meLabel;
+    @BindView(R.id.friendLabel) TextView companionLabel;
+    @BindView(R.id.container) RelativeLayout container;
 
     private ChatAdapter adapter;
 
@@ -82,6 +80,43 @@ public class ChatActivity extends SimpleActivity {
         chat = getIntent().getParcelableExtra("chat");
 
         messageHistory = new ArrayList<>();
+
+        final String chatId = chat.getId();
+        // Listen on message input
+        messageEdt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                AppLog.d("beforeTextChanged: " + charSequence.length());
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                AppLog.d("onTextChanged: " + charSequence.length());
+
+                User currentUser = UserManager.getInstance().getCurrentUser();
+                TypingSignal signal = new TypingSignal();
+                signal.setUserTyping(currentUser.getName());
+                messageService.sendTypingSignal(chatId, signal);
+                AppLog.d(currentUser.getName() + " typing a message ...");
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                AppLog.d("afterTextChanged: ");
+            }
+        });
+
+        // Listen on message typing signal
+        MessageService.getInstance().listenOnTypingSignal(chat.getId(), new CallBack.OnResultReceivedListener() {
+            @Override
+            public void onResultReceived(Object result) {
+
+                TypingSignal typingSignal = (TypingSignal) result;
+                if (typingSignal != null) {
+                    AppLog.d(typingSignal.toString());
+                }
+            }
+        });
     }
 
     @Override
@@ -215,7 +250,7 @@ public class ChatActivity extends SimpleActivity {
                     if (message.isMe()) {
                         // we know that we just receive a message of current user, so it means user successfully sent message to the server
                         // show signal to the user to indicate "Sent" status
-                        // TODO ...
+                        AppLog.d("Received my message");
                     } else {
                         displayMessage(message); // display others incoming message
                     }

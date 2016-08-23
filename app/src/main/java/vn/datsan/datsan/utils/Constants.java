@@ -28,6 +28,7 @@ public class Constants {
     public static final String FIREBASE_MESSAGES = "app/messages";
     public static final String FIREBASE_MEMBERS = "app/members";
     public static final String FIREBASE_MATCHS = "app/matchs";
+    public static final String FIREBASE_TYPING_SIGNAL = "TypingSignals";
 
     /*
      * Elasticsearch server

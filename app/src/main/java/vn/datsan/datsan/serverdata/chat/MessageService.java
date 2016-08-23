@@ -10,8 +10,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import vn.datsan.datsan.models.chat.Member;
 import vn.datsan.datsan.models.chat.Message;
+import vn.datsan.datsan.models.chat.TypingSignal;
+import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.utils.AppLog;
 import vn.datsan.datsan.utils.Constants;
 
@@ -24,6 +25,8 @@ public class MessageService {
 
     private DatabaseReference messageDatabaseRef = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_MESSAGES);
     private static MessageService instance = new MessageService();
+
+    private ValueEventListener valueEventListener;
 
     private MessageService() {}
 
@@ -93,5 +96,51 @@ public class MessageService {
 
     public DatabaseReference getMessageDatabaseRef(String chatId) {
         return messageDatabaseRef.child(chatId);
+    }
+
+    public DatabaseReference getTypingSignalDatabaseRef(String chatId) {
+        String typingMessageKey = getTypingSignalKeyForChat(chatId);
+        return messageDatabaseRef.child(chatId).child(typingMessageKey);
+    }
+
+    public void sendTypingSignal(String chatId, TypingSignal signal) {
+        getTypingSignalDatabaseRef(chatId).setValue(signal);
+    }
+
+    /**
+     * Create listener for typing signal
+     */
+    public void listenOnTypingSignal(String chatId, final CallBack.OnResultReceivedListener callback) {
+        if (valueEventListener == null) {
+            valueEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    TypingSignal signal = dataSnapshot.getValue(TypingSignal.class);
+                    if (callback != null) {
+                        callback.onResultReceived(signal);
+                        AppLog.d(signal.toString());
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+
+            getTypingSignalDatabaseRef(chatId).addValueEventListener(valueEventListener);
+        }
+    }
+
+    public void removeTypingSignalListeners(String chatId) {
+        if (valueEventListener != null) {
+            getTypingSignalDatabaseRef(chatId).removeEventListener(valueEventListener);
+            valueEventListener = null;
+        }
+    }
+
+    private String getTypingSignalKeyForChat(String chatId) {
+        return chatId + "_" + Constants.FIREBASE_TYPING_SIGNAL;
     }
 }
