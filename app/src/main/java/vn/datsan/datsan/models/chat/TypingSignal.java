@@ -7,67 +7,54 @@ import com.google.firebase.database.Exclude;
  */
 public class TypingSignal {
 
-    private String userName1;
-    private String userName2;
-    private int otherUsersCounter;
+    private long timestamp;
+    private boolean stopped;
+    private String userId;
+    private String userName;
 
-    public String getUserName1() {
-        return userName1;
+    public TypingSignal() {}
+
+    public TypingSignal(String userId, String userName) {
+        this.userId = userId;
+        this.userName = userName;
     }
 
-    public void setUserName1(String userName1) {
-        this.userName1 = userName1;
+    public long getTimestamp() {
+        return timestamp;
     }
 
-    public String getUserName2() {
-        return userName2;
-    }
-
-    public void setUserName2(String userName2) {
-        this.userName2 = userName2;
-    }
-
-    public int getOtherUsersCounter() {
-        return otherUsersCounter;
-    }
-
-    public void setOtherUsersCounter(int otherUsersCounter) {
-        this.otherUsersCounter = otherUsersCounter;
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 
     @Exclude
+    public boolean isStopped() {
+        return stopped;
+    }
+
+    public void setStopped(boolean stopped) {
+        this.stopped = stopped;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    @Exclude
+    @Override
     public String toString() {
-
-        String signal;
-        if (userName1 == null) {
-            // Nobody typing
-            signal = null;
-        } else if (userName2 == null) {
-            // Just one user typing
-            signal = String.format("%s typing ...", userName1);
-        } else if (otherUsersCounter > 0) {
-            // User1 and user2 are typing
-            signal = String.format("%s and %s typing ...", userName1, userName2);
-        } else {
-            // User1, user2 and somebody else typing
-            signal = String.format("%s, %s and %i others typing ...", userName1, userName2, otherUsersCounter);
-        }
-
-        return signal;
-    }
-
-    @Exclude
-    public void setUserTyping(String userName) {
-        if (userName.equals(userName1) || userName.equals(userName2)) {
-            return;
-        }
-
-        if (userName1 == null) {
-            userName1 = userName;
-        } else if (userName2 == null) {
-            userName2 = userName;
-        } else {
-            otherUsersCounter++;
-        }
+        return String.format("%s (%s) started typing from %d ...", userName, userId, timestamp);
     }
 }

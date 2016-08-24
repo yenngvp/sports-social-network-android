@@ -1,11 +1,13 @@
 package vn.datsan.datsan.serverdata.chat;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +28,7 @@ public class MessageService {
     private DatabaseReference messageDatabaseRef = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_MESSAGES);
     private static MessageService instance = new MessageService();
 
-    private ValueEventListener valueEventListener;
+    private ChildEventListener childEventListener;
 
     private MessageService() {}
 
@@ -103,24 +105,47 @@ public class MessageService {
         return messageDatabaseRef.child(chatId).child(typingMessageKey);
     }
 
-    public void sendTypingSignal(String chatId, TypingSignal signal) {
-        getTypingSignalDatabaseRef(chatId).setValue(signal);
+    public void startTypingSignal(String chatId, TypingSignal signal) {
+        getTypingSignalDatabaseRef(chatId).child(signal.getUserId()).setValue(signal);
+    }
+
+    public void stopTypingSignal(String chatId, TypingSignal signal) {
+        getTypingSignalDatabaseRef(chatId).child(signal.getUserId()).setValue(null);
     }
 
     /**
      * Create listener for typing signal
      */
     public void listenOnTypingSignal(String chatId, final CallBack.OnResultReceivedListener callback) {
-        if (valueEventListener == null) {
-            valueEventListener = new ValueEventListener() {
+        if (childEventListener == null) {
+
+            childEventListener = new ChildEventListener() {
                 @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
                     TypingSignal signal = dataSnapshot.getValue(TypingSignal.class);
                     if (callback != null) {
                         callback.onResultReceived(signal);
-                        AppLog.d(signal.toString());
                     }
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+                    TypingSignal signal = dataSnapshot.getValue(TypingSignal.class);
+                    signal.setStopped(true);
+                    if (callback != null) {
+                        callback.onResultReceived(signal);
+                    }
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
                 }
 
                 @Override
@@ -129,15 +154,31 @@ public class MessageService {
                 }
             };
 
-            getTypingSignalDatabaseRef(chatId).addValueEventListener(valueEventListener);
+            getTypingSignalDatabaseRef(chatId).addChildEventListener(childEventListener);
         }
     }
 
     public void removeTypingSignalListeners(String chatId) {
-        if (valueEventListener != null) {
-            getTypingSignalDatabaseRef(chatId).removeEventListener(valueEventListener);
-            valueEventListener = null;
+        if (childEventListener != null) {
+            getTypingSignalDatabaseRef(chatId).removeEventListener(childEventListener);
+            childEventListener = null;
         }
+    }
+
+    public void searchForUserTyping(String chatId, String userId, final CallBack.OnResultReceivedListener callback) {
+        getTypingSignalDatabaseRef(chatId).child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (callback != null) {
+                    callback.onResultReceived(dataSnapshot.getValue(TypingSignal.class));
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private String getTypingSignalKeyForChat(String chatId) {

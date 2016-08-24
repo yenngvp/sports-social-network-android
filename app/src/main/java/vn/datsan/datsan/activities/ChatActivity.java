@@ -1,6 +1,7 @@
 package vn.datsan.datsan.activities;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -20,7 +21,6 @@ import com.google.firebase.database.ValueEventListener;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -65,6 +65,42 @@ public class ChatActivity extends SimpleActivity {
     private String endAt;
     private Message latestMessage;
 
+    private volatile TypingSignal myTypingSignal;
+    private volatile List<TypingSignal> incomingTypingSignals = new ArrayList<>();
+
+    // Timer handler for handling typing timeout
+    private Handler timerHandler = new Handler();
+    private Runnable timerRunnable = new Runnable() {
+
+        @Override
+        public void run() {
+
+            // Check for current user typing timeout, ie. user focusing text input field but stopped typing for awhile
+            long now = DateTime.now().getMillis();
+
+            if (myTypingSignal != null
+                    && (now - myTypingSignal.getTimestamp() > Constants.TYPING_SIGNAL_TIMEOUT_MILLIS)) {
+                // Stop my typing
+                MessageService.getInstance().stopTypingSignal(chat.getId(), myTypingSignal);
+                myTypingSignal = null;
+                AppLog.d("TYPING_SIGNAL", "Stopped my typing due to timedout!");
+            }
+
+            // Check any incoming signal timed out
+            for (TypingSignal signal : incomingTypingSignals) {
+                if (now - signal.getTimestamp() > Constants.TYPING_SIGNAL_TIMEOUT_MILLIS) {
+                    MessageService.getInstance().stopTypingSignal(chat.getId(), signal);
+                }
+            }
+
+            // Update UI
+            AppLog.d("TYPING_SIGNAL", "After timeout There are " + incomingTypingSignals.size() + " typing ...");
+
+            // Delay some millis for the next check
+            timerHandler.postDelayed(this, Constants.TYPING_SIGNAL_TIMEOUT_MILLIS);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,47 +122,68 @@ public class ChatActivity extends SimpleActivity {
         messageEdt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                AppLog.d("beforeTextChanged: " + charSequence.length());
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                AppLog.d("onTextChanged: " + charSequence.length());
-
                 User currentUser = UserManager.getInstance().getCurrentUser();
-                TypingSignal signal = new TypingSignal();
-                signal.setUserTyping(currentUser.getName());
-                messageService.sendTypingSignal(chatId, signal);
-                AppLog.d(currentUser.getName() + " typing a message ...");
+                int len = charSequence.length();
+
+                // Stopped typing when user clear the input
+                if (len == 0 && myTypingSignal != null) {
+                    MessageService.getInstance().stopTypingSignal(chatId, myTypingSignal);
+                    myTypingSignal = null;
+                } else {
+                    // Check if passing the keep-alive interval
+                    boolean passedKeepAliveInterval = false;
+                    if (myTypingSignal != null) {
+                        long now = DateTime.now().getMillis();
+                        if (now - myTypingSignal.getTimestamp() > Constants.TYPING_SIGNAL_KEEP_ALIVE_MILLIS) {
+                            passedKeepAliveInterval = true;
+                        }
+                    }
+
+                    // Start typing or keep alive typing signal
+                    if (myTypingSignal == null || passedKeepAliveInterval) {
+                        if (myTypingSignal == null) {
+                            myTypingSignal = new TypingSignal(currentUser.getId(), currentUser.getName());
+                        }
+                        myTypingSignal.setTimestamp(DateTime.now().getMillis());
+                        MessageService.getInstance().startTypingSignal(chatId, myTypingSignal);
+
+                        AppLog.d("TYPING_SIGNAL", myTypingSignal.toString());
+                    }
+
+                }
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
-                AppLog.d("afterTextChanged: ");
             }
         });
 
-        // Listen on message typing signal
-        MessageService.getInstance().listenOnTypingSignal(chat.getId(), new CallBack.OnResultReceivedListener() {
-            @Override
-            public void onResultReceived(Object result) {
 
-                TypingSignal typingSignal = (TypingSignal) result;
-                if (typingSignal != null) {
-                    AppLog.d(typingSignal.toString());
-                }
-            }
-        });
     }
 
     @Override
     protected void onPause() {
         super.onPause();
 
+        // Remove timer handler
+        timerHandler.removeCallbacks(timerRunnable);
+
         if (incomingMessageEventListener != null) {
             messageService.getMessageDatabaseRef(chat.getId()).removeEventListener(incomingMessageEventListener);
             incomingMessageEventListener = null;
         }
+
+        if (myTypingSignal != null) {
+            MessageService.getInstance().stopTypingSignal(chat.getId(), myTypingSignal);
+            myTypingSignal = null;
+        }
+
+        MessageService.getInstance().removeTypingSignalListeners(chat.getId());
+
     }
 
     @Override
@@ -144,6 +201,12 @@ public class ChatActivity extends SimpleActivity {
 
         // Listen on new incoming messages
         listenOnIncomingMessage();
+
+        // Listen on message incoming typing signals
+        listenOnIncomingTypingSignals();
+
+        // Start timer handler
+        timerHandler.postDelayed(timerRunnable, Constants.TYPING_SIGNAL_TIMEOUT_MILLIS);
     }
 
     @Override
@@ -250,7 +313,7 @@ public class ChatActivity extends SimpleActivity {
                     if (message.isMe()) {
                         // we know that we just receive a message of current user, so it means user successfully sent message to the server
                         // show signal to the user to indicate "Sent" status
-                        AppLog.d("Received my message");
+                        AppLog.d("Received message of myself!");
                     } else {
                         displayMessage(message); // display others incoming message
                     }
@@ -279,6 +342,28 @@ public class ChatActivity extends SimpleActivity {
             messageService.getMessageDatabaseRef(chat.getId())
                     .addChildEventListener(incomingMessageEventListener);
         }
+    }
+
+    private void listenOnIncomingTypingSignals() {
+        MessageService.getInstance().listenOnTypingSignal(chat.getId(), new CallBack.OnResultReceivedListener() {
+            @Override
+            public void onResultReceived(Object result) {
+
+                TypingSignal signal = (TypingSignal) result;
+                User currentUser = UserManager.getInstance().getCurrentUser();
+                if (signal != null
+                        && signal.getUserId() != currentUser.getId()) {
+                    if (signal.isStopped() && incomingTypingSignals.contains(signal)) {
+                        incomingTypingSignals.remove(signal);
+                    } else if (!signal.isStopped()) {
+                        incomingTypingSignals.add(signal);
+                    }
+
+                    // Update UI
+                    AppLog.d("TYPING_SIGNAL", "There are " + incomingTypingSignals.size() + " typing ...");
+                }
+            }
+        });
     }
 
     /**
