@@ -351,14 +351,23 @@ public class ChatActivity extends SimpleActivity {
 
                 TypingSignal signal = (TypingSignal) result;
                 User currentUser = UserManager.getInstance().getCurrentUser();
-                if (signal != null
-                        && signal.getUserId() != currentUser.getId()) {
-                    if (signal.isStopped() && incomingTypingSignals.contains(signal)) {
-                        incomingTypingSignals.remove(signal);
-                    } else if (!signal.isStopped()) {
-                        incomingTypingSignals.add(signal);
-                    }
 
+                if (signal != null && signal.getUserId() != currentUser.getId()) {
+
+                    if (!signal.isStopped() && incomingTypingSignals.size() == 0) {
+                        incomingTypingSignals.add(signal);
+                    } else {
+                        for (TypingSignal s : incomingTypingSignals) {
+                            if (signal.getUserId().equals(s.getUserId())) {
+                                incomingTypingSignals.remove(s); // stopped
+                                if (!signal.isStopped()) {
+                                    // Update signal
+                                    incomingTypingSignals.add(signal);
+                                }
+                                break;
+                            }
+                        }
+                    }
                     // Update UI
                     AppLog.d("TYPING_SIGNAL", "There are " + incomingTypingSignals.size() + " typing ...");
                 }

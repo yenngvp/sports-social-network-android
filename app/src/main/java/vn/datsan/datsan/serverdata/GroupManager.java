@@ -70,11 +70,11 @@ public class GroupManager {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 AppLog.log(AppLog.LogType.LOG_ERROR, "group", "onReceived");
                 userGroups = new ArrayList<>();
-                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-                    Group field = postSnapshot.getValue(Group.class);
-                    if (field != null)
-                        userGroups.add(field);
-                }
+//                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+//                    Group field = postSnapshot.getValue(Group.class);
+//                    if (field != null)
+//                        userGroups.add(field);
+//                }
                 if (callBack != null)
                     callBack.onResultReceived(userGroups);
             }
