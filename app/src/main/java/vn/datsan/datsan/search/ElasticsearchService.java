@@ -1,6 +1,5 @@
 package vn.datsan.datsan.search;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.database.DataSnapshot;
 
 import vn.datsan.datsan.search.interfaces.Searchable;
@@ -72,8 +71,7 @@ public class ElasticsearchService {
         param.setIndexName(Constants.ELASTICSEARCH_INDEX);
         param.setIndexType(eventClazz.getSimpleName());
 
-        final ObjectMapper mapper = new ObjectMapper(); // jackson's objectmapper
-        Object object = mapper.convertValue(dataSnapshot.getValue(), eventClazz);
+        Object object = dataSnapshot.getValue(eventClazz);
 
         if (object != null && object instanceof Searchable) {
             param.setSource((Searchable) object);

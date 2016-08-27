@@ -2,10 +2,12 @@ package vn.datsan.datsan.models;
 
 import com.google.firebase.database.Exclude;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
+import vn.datsan.datsan.models.chat.Member;
 import vn.datsan.datsan.search.interfaces.Searchable;
 import vn.datsan.datsan.utils.localization.VietnameseUnsignedTranslator;
 
@@ -19,7 +21,7 @@ public class Group extends FirebaseObject implements Searchable {
     public static final int TYPE_CHAT = 2;
 
     private int type;
-    private HashMap<String, UserRole> members;
+    private List<Member> members;
     private String name;
     private String city;
     private List<String> phones;
@@ -29,7 +31,7 @@ public class Group extends FirebaseObject implements Searchable {
         super();
     }
 
-    public Group(String name, int type, HashMap<String, UserRole> members) {
+    public Group(String name, int type, List<Member>members) {
         this.name = name;
         this.type = TYPE_DEFAULT;
         this.members = members;
@@ -101,18 +103,39 @@ public class Group extends FirebaseObject implements Searchable {
         this.phones = phones;
     }
 
-    public HashMap<String, UserRole> getMembers() {
+    public HashMap<String, String> getMembers() {
+
+        HashMap<String, String> membersMap = new HashMap<>();
+        for (Member member : members) {
+            membersMap.putAll(member.toUserRoleMap());
+        }
+        return membersMap;
+    }
+
+    public void setMembers(HashMap<String, String> members) {
+        if (this.members == null) {
+            this.members = new ArrayList<>();
+        }
+        for (Map.Entry<String, String> entry : members.entrySet()) {
+            String userId = entry.getKey();
+            String userRole = entry.getValue();
+            this.members.add(new Member(userId, userRole));
+        }
+    }
+
+    public List<Member> getMembersList() {
         return members;
     }
 
-    public void setMembers(HashMap<String, UserRole> members) {
+    public void setMembersList(List<Member> members) {
         this.members = members;
     }
 
     public void addMember(String id, UserRole role) {
-        if (members == null)
-            members = new HashMap<>();
-        members.put(id, role);
+        if (members == null) {
+            members = new ArrayList<>();
+        }
+        members.add(new Member(id, role));
     }
 
     @Exclude
