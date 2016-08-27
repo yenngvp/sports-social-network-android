@@ -24,6 +24,16 @@ public class Member extends FirebaseObject {
         this.role = role;
     }
 
+    public Member(String userId, String roleString) {
+        this.userId = userId;
+        if (roleString == null) {
+            this.role = null;
+        } else {
+            this.role = UserRole.valueOf(roleString);
+        }
+    }
+
+
     @Exclude
     public String getChatId() {
         return chatId;
@@ -74,8 +84,8 @@ public class Member extends FirebaseObject {
     }
 
     @Exclude
-    public Map<String, Object> toUserRoleMap() {
-        HashMap<String, Object> result = new HashMap<>();
+    public Map<String, String> toUserRoleMap() {
+        HashMap<String, String> result = new HashMap<>();
         result.put(getUserId(), getRole());
 
         return result;
