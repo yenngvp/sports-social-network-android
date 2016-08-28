@@ -33,12 +33,14 @@ import butterknife.OnClick;
 import vn.datsan.datsan.R;
 import vn.datsan.datsan.models.Group;
 import vn.datsan.datsan.models.UserRole;
+import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.serverdata.GroupManager;
 import vn.datsan.datsan.serverdata.UserManager;
 import vn.datsan.datsan.serverdata.storage.AppCloudDataManager;
 import vn.datsan.datsan.serverdata.storage.CloudDataStorage;
 import vn.datsan.datsan.ui.customwidgets.Alert.AlertInterface;
 import vn.datsan.datsan.ui.customwidgets.Alert.SimpleAlert;
+import vn.datsan.datsan.ui.customwidgets.SimpleProgress;
 import vn.datsan.datsan.utils.ActivityUtils;
 import vn.datsan.datsan.utils.AppLog;
 
@@ -80,32 +82,53 @@ public class NewGroupActivity extends SimpleActivity {
     }
     @OnClick(R.id.register_btn)
     public void onRegisterBtnClicked() {
-        final Group group = createGroup();
+        final Group group = createGroupObject();
         if (group != null) {
-            GroupManager.getInstance().addGroup(group, new DatabaseReference.CompletionListener() {
-                @Override
-                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                    if (databaseError == null) {
-                        if (avatarBitmap != null)
-                            AppCloudDataManager.getInstance().uploadImage(avatarBitmap,
-                                    group.getId() + "/avatar.png");
-                        SimpleAlert.showAlert(NewGroupActivity.this, "Đăng ký thành công",
-                                getString(R.string.close), null, new AlertInterface.OnTapListener() {
-                                    @Override
-                                    public void onTap(SimpleAlert alert, int buttonIndex) {
-                                        finish();
-                                    }
-                                });
-                    } else {
-                        SimpleAlert.showAlert(NewGroupActivity.this, getString(R.string.error),
-                                getString(R.string.failed_doagain),getString(R.string.close));
-                    }
-                }
-            });
+//            SimpleProgress.show(NewGroupActivity.this, "Tạo FC..");
+            if (avatarBitmap != null) {
+                AppCloudDataManager.getInstance().uploadImage(avatarBitmap,
+                        group.getId() + "/avatar.png", new CallBack.OnResultReceivedListener() {
+                            @Override
+                            public void onResultReceived(Object result) {
+                                String imageUrl = (String) result;
+                                if (imageUrl != null) {
+                                    group.setLogoUrl(imageUrl);
+                                    doAddNewGroup(group);
+                                } else {
+                                    SimpleProgress.dismiss();
+                                    SimpleAlert.showAlert(NewGroupActivity.this, getString(R.string.error),
+                                            getString(R.string.failed_doagain), getString(R.string.close));
+                                }
+                            }
+                        });
+            } else {
+                doAddNewGroup(group);
+            }
         }
     }
 
-    private Group createGroup() {
+    private void doAddNewGroup(Group group) {
+        GroupManager.getInstance().addGroup(group, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+//                SimpleProgress.dismiss();
+                if (databaseError == null) {
+                    SimpleAlert.showAlert(NewGroupActivity.this, "Đăng ký thành công",
+                            getString(R.string.close), null, new AlertInterface.OnTapListener() {
+                                @Override
+                                public void onTap(SimpleAlert alert, int buttonIndex) {
+                                    finish();
+                                }
+                            });
+                } else {
+                    SimpleAlert.showAlert(NewGroupActivity.this, getString(R.string.error),
+                            getString(R.string.failed_doagain),getString(R.string.close));
+                }
+            }
+        });
+    }
+
+    private Group createGroupObject() {
         String groupName = name.getText().toString();
         if (groupName.isEmpty()) {
             SimpleAlert.showAlert(NewGroupActivity.this, getString(R.string.error),
@@ -139,40 +162,6 @@ public class NewGroupActivity extends SimpleActivity {
     }
 
     private void openImageIntent() {
-
-        // Determine Uri of camera image to save.
-//        final File root = new File(Environment.getExternalStorageDirectory() + File.separator + "MyDir" + File.separator);
-//        root.mkdirs();
-//        final String fname = "xboyfname";//Utils.getUniqueImageFilename();
-//        final File sdImageMainDirectory = new File(root, fname);
-//        outputFileUri = Uri.fromFile(sdImageMainDirectory);
-//
-//        // Camera.
-//        final List<Intent> cameraIntents = new ArrayList<Intent>();
-//        final Intent captureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-//        final PackageManager packageManager = getPackageManager();
-//        final List<ResolveInfo> listCam = packageManager.queryIntentActivities(captureIntent, 0);
-//        for(ResolveInfo res : listCam) {
-//            final String packageName = res.activityInfo.packageName;
-//            final Intent intent = new Intent(captureIntent);
-//            intent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
-//            intent.setPackage(packageName);
-//            intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-//            cameraIntents.add(intent);
-//        }
-//
-//        // Filesystem.
-//        final Intent galleryIntent = new Intent();
-//        galleryIntent.setType("image/*");
-//        galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-//
-//        // Chooser of filesystem options.
-//        final Intent chooserIntent = Intent.createChooser(galleryIntent, getString(R.string.select_avatar));
-//
-//        // Add the camera options.
-//        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[cameraIntents.size()]));
-//
-//        startActivityForResult(chooserIntent, 111);
         ActivityUtils.startImageIntent(NewGroupActivity.this, 111, getString(R.string.select_avatar));
     }
 

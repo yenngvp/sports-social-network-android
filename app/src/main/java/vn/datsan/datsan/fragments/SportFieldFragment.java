@@ -73,7 +73,7 @@ public class SportFieldFragment extends Fragment implements GoogleMap.OnInfoWind
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new FlexListAdapter();
+        adapter = new FlexListAdapter(getActivity());
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(adapter);
 

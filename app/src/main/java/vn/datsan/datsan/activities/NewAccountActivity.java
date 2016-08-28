@@ -123,7 +123,7 @@ public class NewAccountActivity extends AppCompatActivity {
     }
 
     private void createAccount(final User user, String password) {
-        SimpleProgress.show(NewAccountActivity.this, null);
+        SimpleProgress.show(NewAccountActivity.this, "Tạo tài khoản mới..");
         String email = user.getEmail();
 
         firebaseAuth.createUserWithEmailAndPassword(email, password)

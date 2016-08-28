@@ -12,4 +12,7 @@ public enum DataType {
     private DataType(String s) {
         name = s;
     }
+    public String getName() {
+        return name;
+    }
     }

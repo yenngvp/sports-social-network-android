@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.UploadTask;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 
@@ -31,7 +33,7 @@ public class AppCloudDataManager {
         return instance;
     }
 
-    public void uploadImage(Bitmap bitmap, String fileName) {
+    public void uploadImage(Bitmap bitmap, String fileName, final CallBack.OnResultReceivedListener callBack) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
 
@@ -39,13 +41,20 @@ public class AppCloudDataManager {
 //        String fileExtension = arr[arr.length - 1];
 
         byte[] data = baos.toByteArray();
-        String filePath = DataType.IMAGE.toString() + File.pathSeparator + fileName;
-        cloudDataStorage.uploadFile(data, filePath, null, null);
+        String filePath = DataType.IMAGE.getName() + File.separator + fileName;
+        cloudDataStorage.uploadFile(data, filePath, null, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                if (callBack != null) {
+                    callBack.onResultReceived(taskSnapshot.getDownloadUrl().toString());
+                }
+            }
+        });
     }
 
     public void getFileUrl(String filePath, DataType type, final CallBack.OnResultReceivedListener callBack) {
-        String folder = type.toString();
-        AppLog.log(AppLog.LogType.LOG_WARN, "url", folder + "/" + filePath);
+        String folder = type.getName();
+        AppLog.log(AppLog.LogType.LOG_ERROR, "url", folder + "/" + filePath);
         cloudDataStorage.getDownloadUrl(folder + "/" + filePath,
                 new OnSuccessListener<Uri>() {
 

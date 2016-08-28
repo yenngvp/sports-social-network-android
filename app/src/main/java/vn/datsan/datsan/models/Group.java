@@ -1,5 +1,8 @@
 package vn.datsan.datsan.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.firebase.database.Exclude;
 
 import java.util.ArrayList;
@@ -14,18 +17,20 @@ import vn.datsan.datsan.utils.localization.VietnameseUnsignedTranslator;
 /**
  * Created by xuanpham on 6/20/16.
  */
-public class Group extends FirebaseObject implements Searchable {
+public class Group implements Searchable, Parcelable {
 
     public static final int TYPE_DEFAULT = 0;
     public static final int TYPE_CLUB = 1;
     public static final int TYPE_CHAT = 2;
 
+    private String id;
     private int type;
     private List<Member> members;
     private String name;
     private String city;
     private List<String> phones;
     private List<String> favouriteFields;
+    private String logoUrl;
 
     public Group() {
         super();
@@ -36,6 +41,27 @@ public class Group extends FirebaseObject implements Searchable {
         this.type = TYPE_DEFAULT;
         this.members = members;
     }
+
+    protected Group(Parcel in) {
+        id = in.readString();
+        type = in.readInt();
+        name = in.readString();
+        city = in.readString();
+        phones = in.createStringArrayList();
+        favouriteFields = in.createStringArrayList();
+    }
+
+    public static final Creator<Group> CREATOR = new Creator<Group>() {
+        @Override
+        public Group createFromParcel(Parcel in) {
+            return new Group(in);
+        }
+
+        @Override
+        public Group[] newArray(int size) {
+            return new Group[size];
+        }
+    };
 
     /**
      * Get JSON string as put mapping for Searchable object
@@ -151,5 +177,37 @@ public class Group extends FirebaseObject implements Searchable {
     @Override
     public String toString() {
         return name + " : "+ city;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getLogoUrl() {
+        return logoUrl;
+    }
+
+    public void setLogoUrl(String logoUrl) {
+        this.logoUrl = logoUrl;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(id);
+        parcel.writeInt(type);
+        parcel.writeString(name);
+        parcel.writeString(city);
+        parcel.writeString(logoUrl);
+        parcel.writeStringList(phones);
+        parcel.writeStringList(favouriteFields);
     }
 }

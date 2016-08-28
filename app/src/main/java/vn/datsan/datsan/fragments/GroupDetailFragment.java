@@ -20,6 +20,7 @@ import vn.datsan.datsan.models.Group;
 import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.serverdata.DataType;
 import vn.datsan.datsan.serverdata.storage.AppCloudDataManager;
+import vn.datsan.datsan.utils.AppLog;
 
 public class GroupDetailFragment extends Fragment {
     private Group group;
@@ -52,7 +53,7 @@ public class GroupDetailFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_group_detail, container, false);
 //        ButterKnife.bind(view, getActivity());
         fcName = (TextView) view.findViewById(R.id.fc_name);
-        fcAvatar = (ImageView) view.findViewById(R.id.fc_avatar);
+        fcAvatar = (ImageView) view.findViewById(R.id.fc_logo);
         populateData(group);
         return view;
     }
@@ -64,9 +65,10 @@ public class GroupDetailFragment extends Fragment {
             public void onResultReceived(Object result) {
                 if (result != null) {
                     Uri avatarUri = (Uri) result;
+                    AppLog.log(AppLog.LogType.LOG_ERROR, "avatar", avatarUri.toString());
                     Picasso.with(getActivity())
-                            .load(avatarUri.getPath())
-//                            .resize(100, 100)
+                            .load(avatarUri.toString())
+                            .resize(100, 100)
 //                            .centerCrop()
                             .into(fcAvatar);
                 }

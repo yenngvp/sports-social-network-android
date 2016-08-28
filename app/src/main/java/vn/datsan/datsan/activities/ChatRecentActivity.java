@@ -46,7 +46,7 @@ public class ChatRecentActivity extends SimpleActivity {
         super.initToolBar();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new FlexListAdapter();
+        adapter = new FlexListAdapter(ChatRecentActivity.this);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(adapter);
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new RecyclerTouchListener.ClickListener() {

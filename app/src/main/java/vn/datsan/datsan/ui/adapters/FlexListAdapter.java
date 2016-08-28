@@ -1,5 +1,6 @@
 package vn.datsan.datsan.ui.adapters;
 
+import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.databinding.adapters.ImageViewBindingAdapter;
@@ -9,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,14 +24,17 @@ import vn.datsan.datsan.R;
 public class FlexListAdapter extends RecyclerView.Adapter<FlexListAdapter.FlexViewHolder>{
 
     private List<FlexItem> dataSource;
+    private Context context;
 
-    public FlexListAdapter() {
+    public FlexListAdapter(Context context) {
+        this.context = context;
         dataSource = new ArrayList<>();
 }
 
-    public FlexListAdapter(List<FlexItem> list) {
+    public FlexListAdapter(Context context, List<FlexItem> list) {
         if (list == null)
             dataSource = new ArrayList<>();
+        this.context = context;
         dataSource = list;
     }
 
@@ -51,6 +57,14 @@ public class FlexListAdapter extends RecyclerView.Adapter<FlexListAdapter.FlexVi
         FlexItem item = dataSource.get(position);
         holder.getTitle().setText(item.getRowTitle());
         holder.getContent().setText(item.getRowContent());
+
+        String imageUrl = dataSource.get(position).getImageUrl();
+        if (imageUrl != null && !imageUrl.isEmpty())
+            Picasso.with(context)
+                .load(dataSource.get(position).getImageUrl())
+//                .resize(100, 100)
+//                .centerCrop()
+                .into(holder.getThumb());
     }
 
     @Override
