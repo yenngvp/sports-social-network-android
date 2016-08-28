@@ -34,6 +34,7 @@ import vn.datsan.datsan.utils.AppLog;
 
 public class SportClubFragment extends Fragment {
     FlexListAdapter adapter;
+    List<Group> groupList;
 
     public SportClubFragment() {
         // Required empty public constructor
@@ -66,6 +67,7 @@ public class SportClubFragment extends Fragment {
             public void onClick(View view, int position) {
                 Toast.makeText(getActivity(), "Touch " + position, Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getActivity(), GroupDetailActivity.class);
+                intent.putExtra("data", groupList.get(position));
                 startActivity(intent);
             }
 
@@ -95,7 +97,7 @@ public class SportClubFragment extends Fragment {
         GroupManager.getInstance().getUserGroups(new CallBack.OnResultReceivedListener() {
             @Override
             public void onResultReceived(Object result) {
-                List<Group> groupList = (List<Group> )  result;
+                groupList = (List<Group> )  result;
                 if (groupList != null) {
                     List<FlexListAdapter.FlexItem> list = new ArrayList<>();
                     for (Group group : groupList) {

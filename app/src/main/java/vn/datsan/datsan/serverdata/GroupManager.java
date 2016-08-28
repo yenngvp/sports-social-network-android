@@ -52,7 +52,7 @@ public class GroupManager {
 
     public void addGroup(Group group, DatabaseReference.CompletionListener listener) {
         String key = groupDatabaseRef.push().getKey();
-        group.setId(key);
+        group.setId(new String(key));
         groupDatabaseRef.child(key).setValue(group, listener);
     }
 

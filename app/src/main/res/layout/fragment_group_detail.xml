@@ -2,139 +2,103 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="5dp"
+    android:fillViewport="true"
     android:orientation="vertical">
-    <TextView
-        android:id="@+id/fc_name"
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="15dp"
-        android:gravity="center_horizontal"
-        android:textSize="22sp"
-        android:textColor="@color/red"
-        android:text="FC Những người bạn"/>
+        android:layout_height="match_parent"
+        android:paddingBottom="60dp"
+        android:scrollbars="none">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:minWidth="90dp"
-            android:textSize="17dp"
-            android:textColor="@android:color/black"
-            android:text="@string/level"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <RatingBar
-            android:id="@+id/ratingbar_level"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:numStars="5"
-            android:rating="4"
-            android:stepSize="0.5"/>
-    </LinearLayout>
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:minWidth="90dp"
-            android:textSize="17dp"
-            android:textColor="@android:color/black"
-            android:text="@string/member_number"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/member_number"
-            android:text="10"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+                    <ImageView
+                        android:id="@+id/fc_wallpaper"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:src="@drawable/fc_team" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:minWidth="90dp"
-            android:textSize="17dp"
-            android:textColor="@android:color/black"
-            android:text="@string/favourite_location"/>
+                    <vn.datsan.datsan.ui.customwidgets.HelveticTextViewBold
+                        android:id="@+id/fc_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:padding="5dp"
+                        android:text="FC Những người bạn"
+                        android:textColor="@color/greengrass"
+                        android:textSize="22sp" />
 
-        <TextView
-            android:id="@+id/favourite_location"
-            android:text="Cộng Hoà, Lăng Cha Cả, Quang Trung"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+                    <ImageView
+                        android:id="@+id/fc_logo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:src="@drawable/fclogo" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:minWidth="90dp"
-            android:textSize="17dp"
-            android:textColor="@android:color/black"
-            android:text="@string/found_date"/>
+                    <RatingBar
+                        android:id="@+id/ratingbar_level"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:numStars="5"
+                        android:rating="4"
+                        android:stepSize="0.5" />
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
 
-        <TextView
-            android:id="@+id/found_date"
-            android:text="25-02-2016"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:minWidth="90dp"
-            android:textSize="17dp"
-            android:textColor="@android:color/black"
-            android:text="@string/contact"/>
+                    <vn.datsan.datsan.ui.customwidgets.HelveticTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/favourite_location"
+                        android:textColor="@android:color/black"
+                        android:textSize="17dp" />
 
-        <TextView
-            android:id="@+id/contact"
-            android:text="098363497"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+                    <vn.datsan.datsan.ui.customwidgets.HelveticTextView
+                        android:id="@+id/favourite_location"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="25dp"
+                        android:text="Cộng Hoà, Lăng Cha Cả, Quang Trung" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:minWidth="90dp"
-            android:textSize="17dp"
-            android:textColor="@android:color/black"
-            android:text="@string/intro"/>
+                    <vn.datsan.datsan.ui.customwidgets.HelveticTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/intro"
+                        android:textColor="@android:color/black"
+                        android:textSize="17dp" />
 
-        <TextView
-            android:id="@+id/intro"
-            android:text="Đội bóng được thành lập bởi các cựu ngôi sao futsal Việt Nam, mục tiêu tìm kiếm danh hiệu nghiệp dư"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
-    </LinearLayout>
+                    <vn.datsan.datsan.ui.customwidgets.HelveticTextView
+                        android:id="@+id/intro"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="25dp"
+                        android:text="Đội bóng được thành lập bởi các cựu ngôi sao futsal Việt Nam, mục tiêu tìm kiếm danh hiệu nghiệp dư" />
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

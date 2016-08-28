@@ -48,11 +48,6 @@ import vn.datsan.datsan.utils.AppLog;
 import vn.datsan.datsan.utils.Constants;
 
 public class LoginFragment extends Fragment {
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-    private String mParam1;
-    private String mParam2;
     private GoogleApiClient mGoogleApiClient;
 
     @BindView(R.id.email_login)
@@ -84,21 +79,12 @@ public class LoginFragment extends Fragment {
 
     public static LoginFragment newInstance(String param1, String param2) {
         LoginFragment fragment = new LoginFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-
     }
 
     @Override

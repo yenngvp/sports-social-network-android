@@ -5,6 +5,8 @@ import android.graphics.BitmapFactory;
 import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by xuanpham on 6/26/16.
@@ -25,5 +27,11 @@ public class ImageUtil {
         return bitmap;
     }
 
-
+    public static String genUniqFileName() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+        String prefix = dateFormat.format(new Date());
+        String surfix = ((new Date()).getTime() % 1000000) + "";
+        String fileName = prefix + "_" + surfix;
+        return fileName;
+    }
 }

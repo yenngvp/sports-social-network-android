@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -33,9 +34,12 @@ import vn.datsan.datsan.R;
 import vn.datsan.datsan.models.Group;
 import vn.datsan.datsan.models.UserRole;
 import vn.datsan.datsan.serverdata.GroupManager;
+import vn.datsan.datsan.serverdata.UserManager;
+import vn.datsan.datsan.serverdata.storage.AppCloudDataManager;
 import vn.datsan.datsan.serverdata.storage.CloudDataStorage;
 import vn.datsan.datsan.ui.customwidgets.Alert.AlertInterface;
 import vn.datsan.datsan.ui.customwidgets.Alert.SimpleAlert;
+import vn.datsan.datsan.utils.ActivityUtils;
 import vn.datsan.datsan.utils.AppLog;
 
 public class NewGroupActivity extends SimpleActivity {
@@ -48,6 +52,9 @@ public class NewGroupActivity extends SimpleActivity {
     Spinner citySpinner;
     @BindView(R.id.take_photo)
     ImageButton takePhotoBtn;
+    @BindView(R.id.fc_avatar)
+    ImageView groupAvatar;
+    private Bitmap avatarBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,12 +80,15 @@ public class NewGroupActivity extends SimpleActivity {
     }
     @OnClick(R.id.register_btn)
     public void onRegisterBtnClicked() {
-        Group group = createGroup();
+        final Group group = createGroup();
         if (group != null) {
             GroupManager.getInstance().addGroup(group, new DatabaseReference.CompletionListener() {
                 @Override
                 public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                     if (databaseError == null) {
+                        if (avatarBitmap != null)
+                            AppCloudDataManager.getInstance().uploadImage(avatarBitmap,
+                                    group.getId() + "/avatar.png");
                         SimpleAlert.showAlert(NewGroupActivity.this, "Đăng ký thành công",
                                 getString(R.string.close), null, new AlertInterface.OnTapListener() {
                                     @Override
@@ -94,8 +104,6 @@ public class NewGroupActivity extends SimpleActivity {
             });
         }
     }
-
-    private Uri outputFileUri;
 
     private Group createGroup() {
         String groupName = name.getText().toString();
@@ -132,39 +140,40 @@ public class NewGroupActivity extends SimpleActivity {
 
     private void openImageIntent() {
 
-        // Determine Uri of camera image to send.
-        final File root = new File(Environment.getExternalStorageDirectory() + File.separator + "MyDir" + File.separator);
-        root.mkdirs();
-        final String fname = "xboyfname";//Utils.getUniqueImageFilename();
-        final File sdImageMainDirectory = new File(root, fname);
-        outputFileUri = Uri.fromFile(sdImageMainDirectory);
-
-        // Camera.
-        final List<Intent> cameraIntents = new ArrayList<Intent>();
-        final Intent captureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        final PackageManager packageManager = getPackageManager();
-        final List<ResolveInfo> listCam = packageManager.queryIntentActivities(captureIntent, 0);
-        for(ResolveInfo res : listCam) {
-            final String packageName = res.activityInfo.packageName;
-            final Intent intent = new Intent(captureIntent);
-            intent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
-            intent.setPackage(packageName);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-            cameraIntents.add(intent);
-        }
-
-        // Filesystem.
-        final Intent galleryIntent = new Intent();
-        galleryIntent.setType("image/*");
-        galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-
-        // Chooser of filesystem options.
-        final Intent chooserIntent = Intent.createChooser(galleryIntent, getString(R.string.select_avatar));
-
-        // Add the camera options.
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[cameraIntents.size()]));
-
-        startActivityForResult(chooserIntent, 111);
+        // Determine Uri of camera image to save.
+//        final File root = new File(Environment.getExternalStorageDirectory() + File.separator + "MyDir" + File.separator);
+//        root.mkdirs();
+//        final String fname = "xboyfname";//Utils.getUniqueImageFilename();
+//        final File sdImageMainDirectory = new File(root, fname);
+//        outputFileUri = Uri.fromFile(sdImageMainDirectory);
+//
+//        // Camera.
+//        final List<Intent> cameraIntents = new ArrayList<Intent>();
+//        final Intent captureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+//        final PackageManager packageManager = getPackageManager();
+//        final List<ResolveInfo> listCam = packageManager.queryIntentActivities(captureIntent, 0);
+//        for(ResolveInfo res : listCam) {
+//            final String packageName = res.activityInfo.packageName;
+//            final Intent intent = new Intent(captureIntent);
+//            intent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
+//            intent.setPackage(packageName);
+//            intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+//            cameraIntents.add(intent);
+//        }
+//
+//        // Filesystem.
+//        final Intent galleryIntent = new Intent();
+//        galleryIntent.setType("image/*");
+//        galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+//
+//        // Chooser of filesystem options.
+//        final Intent chooserIntent = Intent.createChooser(galleryIntent, getString(R.string.select_avatar));
+//
+//        // Add the camera options.
+//        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[cameraIntents.size()]));
+//
+//        startActivityForResult(chooserIntent, 111);
+        ActivityUtils.startImageIntent(NewGroupActivity.this, 111, getString(R.string.select_avatar));
     }
 
     @Override
@@ -172,7 +181,7 @@ public class NewGroupActivity extends SimpleActivity {
         if (resultCode == RESULT_OK) {
             if (requestCode == 111) {
                 final boolean isCamera;
-                if (data == null) {
+                if (data == null || data.getData() == null) {
                     isCamera = true;
                 } else {
                     final String action = data.getAction();
@@ -185,15 +194,19 @@ public class NewGroupActivity extends SimpleActivity {
 
                 Uri selectedImageUri;
                 if (isCamera) {
-                    selectedImageUri = outputFileUri;
+                    selectedImageUri = ActivityUtils.getDefaultCameraUri();
                 } else {
                     selectedImageUri = data == null ? null : data.getData();
                 }
 
+                //AppLog.log(AppLog.LogType.LOG_ERROR, "data", data.getExtras().toString());
                 AppLog.log(AppLog.LogType.LOG_ERROR, "image url", selectedImageUri.toString());
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
-                    CloudDataStorage.getInstance().uploadPhoto(bitmap, selectedImageUri.toString());
+                    avatarBitmap = bitmap;
+//                    CloudDataStorage.getInstance().uploadPhoto(bitmap,
+//                            UserManager.getInstance().getUserInfo().getId() + "/avatar/");
+                    groupAvatar.setImageBitmap(avatarBitmap);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
