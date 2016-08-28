@@ -5,13 +5,12 @@ import com.google.firebase.database.Exclude;
 import java.util.HashMap;
 import java.util.Map;
 
-import vn.datsan.datsan.models.FirebaseObject;
 import vn.datsan.datsan.models.UserRole;
 
 /**
  * Created by yennguyen on 8/2/16.
  */
-public class Member extends FirebaseObject {
+public class Member {
 
     private String chatId;
     private String userId;

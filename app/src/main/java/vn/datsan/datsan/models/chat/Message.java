@@ -6,7 +6,7 @@ import com.google.firebase.database.Exclude;
 import com.google.firebase.database.ServerValue;
 
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
+import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.HashMap;
@@ -14,8 +14,10 @@ import java.util.Map;
 
 import vn.datsan.datsan.utils.Constants;
 
-public class Message extends AbstractMessage {
+public class Message {
 
+    private String id;
+    private  MessageType type;
     private String message;
     private String userId;
     private Chat chat;
@@ -23,6 +25,44 @@ public class Message extends AbstractMessage {
     private String userName;
 
     public Message() {
+    }
+
+    public Message(MessageType type) {
+        this.type = type;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    @Exclude
+    public MessageType getTypeVal() {
+        return type;
+    }
+
+    public void setTypeVal(MessageType type) {
+        this.type = type;
+    }
+
+    public String getType() {
+        if (this.type == null) {
+            return null;
+        } else {
+            return this.type.name();
+        }
+    }
+
+    public void setType(String typeString) {
+        // Get enum from string
+        if (typeString == null) {
+            this.type = null;
+        } else {
+            this.type = MessageType.valueOf(typeString);
+        }
     }
 
     @Exclude
@@ -78,6 +118,14 @@ public class Message extends AbstractMessage {
         this.timestamp = timestamp;
     }
 
+    @Exclude
+    public String getTimestampAsDatetime() {
+        int offset = Constants.VN_TIMEZONE_OFFSET_HOUR;
+        DateTime dateTime = new DateTime(this.timestamp, DateTimeZone.forOffsetHours(offset));
+        DateTimeFormatter formatter = Constants.DATETIME_FORMATTER;
+        return formatter.print(dateTime);
+    }
+
     /**
      * Get description of the message to show in the chat history or notification,
      * which is telling [userName]: [just sending a message]
@@ -92,6 +140,7 @@ public class Message extends AbstractMessage {
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
+        result.put("type", getType());
         result.put("userId", getUserId());
         result.put("userName", getUserName());
         result.put("message", getMessage());

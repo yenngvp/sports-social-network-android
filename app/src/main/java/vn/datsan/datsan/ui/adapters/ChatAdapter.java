@@ -10,12 +10,17 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormatter;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import vn.datsan.datsan.R;
 
 import vn.datsan.datsan.models.chat.Message;
+import vn.datsan.datsan.utils.Constants;
 
 /**
  * Created by yennguyen on 8/28/16.
@@ -65,7 +70,9 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
         Message message = dataSource.get(position);
         setAlignment(holder, message.isMe());
         holder.getTxtMessage().setText(message.getMessage());
-        holder.getTxtInfo().setText(message.getCreateDate().toString());
+        if (message.getTimestampMillis() > 0) {
+            holder.getTxtInfo().setText(message.getTimestampAsDatetime());
+        }
     }
 
     @Override

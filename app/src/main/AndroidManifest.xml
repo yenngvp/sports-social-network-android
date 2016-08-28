@@ -108,7 +108,7 @@
         <activity android:name=".activities.FriendlyMatchDetailActivity" />
         <activity android:name=".activities.NewGroupActivity"></activity>
         <activity
-            android:name=".activities.ChatHistoryActivity"
+            android:name=".activities.ChatRecentActivity"
             android:label="@string/chats" />
         <activity
             android:name=".activities.NewChatActivity"

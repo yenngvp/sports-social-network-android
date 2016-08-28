@@ -10,6 +10,7 @@ import org.joda.time.DateTime;
 /**
  * Created by xuanpham on 6/20/16.
  */
+@Deprecated
 public class FirebaseObject {
 
     protected String id;

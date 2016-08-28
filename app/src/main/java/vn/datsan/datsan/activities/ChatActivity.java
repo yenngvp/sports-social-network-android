@@ -30,6 +30,7 @@ import vn.datsan.datsan.R;
 import vn.datsan.datsan.models.User;
 import vn.datsan.datsan.models.chat.Chat;
 import vn.datsan.datsan.models.chat.Message;
+import vn.datsan.datsan.models.chat.MessageType;
 import vn.datsan.datsan.models.chat.TypingSignal;
 import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.serverdata.UserManager;
@@ -56,8 +57,6 @@ public class ChatActivity extends SimpleActivity {
     private MessageService messageService = MessageService.getInstance();
     private ChildEventListener incomingMessageEventListener;
     private Chat chat;
-
-    private volatile List<Message> messageHistory;
 
     private String startAt;
     private String endAt;
@@ -117,8 +116,6 @@ public class ChatActivity extends SimpleActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
         chat = getIntent().getParcelableExtra("chat");
-
-        messageHistory = new ArrayList<>();
 
         final String chatId = chat.getId();
         // Listen on message input
@@ -318,7 +315,7 @@ public class ChatActivity extends SimpleActivity {
 
         // Construct message
         User currentUser = UserManager.getInstance().getCurrentUser();
-        Message message = new Message();
+        Message message = new Message(MessageType.TEXT_MESSAGE);
         message.setMessage(messageText);
         message.setUserId(currentUser.getId());
         message.setChat(chat);
@@ -341,6 +338,7 @@ public class ChatActivity extends SimpleActivity {
             Message localMessageWithServerValue = chatAdapter.getDataSource().get(i);
             localMessageWithServerValue.setTimestamp(message.getTimestampMillis());
             chatAdapter.getDataSource().set(i, localMessageWithServerValue);
+            chatAdapter.notifyDataSetChanged();
         } else {
             chatAdapter.add(message);
             recyclerView.smoothScrollToPosition(chatAdapter.getItemCount() - 1);

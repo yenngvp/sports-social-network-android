@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.Exclude;
+import com.google.firebase.database.ServerValue;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -15,7 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import vn.datsan.datsan.models.FirebaseObject;
 import vn.datsan.datsan.models.User;
 import vn.datsan.datsan.serverdata.UserManager;
 import vn.datsan.datsan.utils.Constants;
@@ -23,13 +23,18 @@ import vn.datsan.datsan.utils.Constants;
 /**
  * Created by yennguyen on 8/2/16.
  */
-public class Chat extends FirebaseObject implements Parcelable {
+public class Chat implements Parcelable {
 
     public static final String TYPE_CLUB_CHAT = "CUB_CHAT";
     public static final String TYPE_MATCH_CHAT = "MATCH_CHAT";
     public static final String TYPE_ONE_TO_ONE_CHAT = "ONE_TO_ONE_CHAT";
     public static final String TYPE_GROUP_CHAT = "GROUP_CHAT";
 
+    private String id;
+    private long createdTimestamp;
+    private long lastModifiedTimestamp;
+    private String createdBy;
+    private String lastModifiedBy;
     private String title;
     private String type;
     private String lastMessage;
@@ -66,6 +71,56 @@ public class Chat extends FirebaseObject implements Parcelable {
             return new Chat[size];
         }
     };
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Map<String, String> getCreatedTimestamp() {
+        return ServerValue.TIMESTAMP;
+    }
+
+    @Exclude
+    public long getCreatedTimestampMillis() {
+        return createdTimestamp;
+    }
+
+    public void setCreatedTimestamp(long timestamp) {
+        this.createdTimestamp = timestamp;
+    }
+
+    public Map<String, String> getLastModifiedTimestamp() {
+        return ServerValue.TIMESTAMP;
+    }
+
+    @Exclude
+    public long getLastModifiedTimestampMillis() {
+        return lastModifiedTimestamp;
+    }
+
+    public void setLastModifiedTimestamp(long timestamp) {
+        this.lastModifiedTimestamp = timestamp;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public String getLastModifiedBy() {
+        return lastModifiedBy;
+    }
+
+    public void setLastModifiedBy(String lastModifiedBy) {
+        this.lastModifiedBy = lastModifiedBy;
+    }
 
     public String getTitle() {
         return title;
@@ -113,6 +168,12 @@ public class Chat extends FirebaseObject implements Parcelable {
         HashMap<String, Object> result = new HashMap<>();
         result.put("title", getTitle());
         result.put("type", getType());
+        if (getCreatedTimestampMillis() == 0) {
+            result.put("createdTimestamp", getCreatedTimestamp());
+        } else {
+            result.put("createdTimestamp", getCreatedTimestampMillis());
+        }
+        result.put("lastModifiedTimestamp", getLastModifiedTimestamp());
         result.put("linkedGroup", getLinkedGroup());
         result.put("lastMessage", getLastMessage());
 

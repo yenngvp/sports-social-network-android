@@ -30,7 +30,7 @@ import vn.datsan.datsan.utils.Constants;
 /**
  * Created by yennguyen on 8/17/16.
  */
-public class ChatHistoryActivity extends SimpleActivity {
+public class ChatRecentActivity extends SimpleActivity {
 
     FlexListAdapter adapter;
     List<Chat> chatHistory;

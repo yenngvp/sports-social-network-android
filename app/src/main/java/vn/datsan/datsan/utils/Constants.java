@@ -42,11 +42,12 @@ public class Constants {
 
     public static final int GOOGLE_SIGN_IN_CODE = 9001;
 
-    public static final int ELASTICSEARCH_PAGINATION_SIZE_DEFAULT = 100;
-    public static final int CHAT_HISTORY_PAGINATION_SIZE_DEFAULT = 100;
+    public static final int ELASTICSEARCH_PAGINATION_SIZE_DEFAULT = 50;
+    public static final int CHAT_HISTORY_PAGINATION_SIZE_DEFAULT = 50;
 
     public static final String DATETIME_FORMAT = "dd/MM/yy HH:mm:ss";
     public static final DateTimeFormatter DATETIME_FORMATTER = DateTimeFormat.forPattern(DATETIME_FORMAT);
+    public static final int VN_TIMEZONE_OFFSET_HOUR = 7;
 
     public static final String GROUP_NAME_SEPARATOR = ", ";
 

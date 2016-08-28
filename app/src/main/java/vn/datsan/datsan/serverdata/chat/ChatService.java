@@ -180,7 +180,8 @@ public class ChatService {
             }
         };
         UserManager.getInstance().getUserChatDatabaseRef()
-                .orderByKey()
+                .orderByChild("lastModifiedTimestamp")
+                .limitToLast(Constants.CHAT_HISTORY_PAGINATION_SIZE_DEFAULT)
                 .addValueEventListener(valueEventListener);
     }
 

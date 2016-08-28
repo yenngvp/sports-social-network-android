@@ -1,6 +1,5 @@
 package vn.datsan.datsan.activities;
 
-import android.app.SearchManager;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -23,41 +22,28 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import io.searchbox.core.SearchResult;
 import vn.datsan.datsan.R;
 import vn.datsan.datsan.fragments.SportClubFragment;
 import vn.datsan.datsan.fragments.FriendlyMatchFragment;
 import vn.datsan.datsan.fragments.SportFieldFragment;
-import vn.datsan.datsan.models.Field;
 import vn.datsan.datsan.models.User;
-import vn.datsan.datsan.models.UserRole;
-import vn.datsan.datsan.models.chat.Chat;
-import vn.datsan.datsan.models.chat.Member;
 import vn.datsan.datsan.search.AppSearch;
-import vn.datsan.datsan.search.SearchOption;
 import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.serverdata.UserManager;
-import vn.datsan.datsan.serverdata.chat.ChatService;
 import vn.datsan.datsan.ui.appviews.LoginPopup;
 import vn.datsan.datsan.ui.appviews.MaterialSearchView;
-import vn.datsan.datsan.ui.appviews.NewFCPopup;
 import vn.datsan.datsan.ui.customwidgets.SimpleProgress;
 import vn.datsan.datsan.utils.AppLog;
-import vn.datsan.datsan.search.ElasticsearchService;
-import vn.datsan.datsan.search.interfaces.Searchable;
 
 public class HomeActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, FirebaseAuth.AuthStateListener {
@@ -102,7 +88,7 @@ public class HomeActivity extends AppCompatActivity implements
                     loginPopup.show();
                 } else {
                     // Show chat history
-                    Intent intent = new Intent(HomeActivity.this, ChatHistoryActivity.class);
+                    Intent intent = new Intent(HomeActivity.this, ChatRecentActivity.class);
                     startActivity(intent);
                 }
             }
