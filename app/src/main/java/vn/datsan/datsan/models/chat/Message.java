@@ -3,6 +3,7 @@ package vn.datsan.datsan.models.chat;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.Exclude;
+import com.google.firebase.database.ServerValue;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -18,8 +19,11 @@ public class Message extends AbstractMessage {
     private String message;
     private String userId;
     private Chat chat;
-    private DateTime timestamp;
+    private long timestamp;
     private String userName;
+
+    public Message() {
+    }
 
     @Exclude
     public boolean isMe() {
@@ -61,12 +65,16 @@ public class Message extends AbstractMessage {
         this.userName = userDisplayName;
     }
 
+    public Map<String, String> getTimestamp() {
+        return ServerValue.TIMESTAMP;
+    }
+
     @Exclude
-    public DateTime getTimestamp() {
+    public long getTimestampMillis() {
         return timestamp;
     }
 
-    public void setTimestamp(DateTime timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -87,11 +95,19 @@ public class Message extends AbstractMessage {
         result.put("userId", getUserId());
         result.put("userName", getUserName());
         result.put("message", getMessage());
-        if (getTimestamp() != null) {
-            DateTimeFormatter formatter = DateTimeFormat.forPattern(Constants.DATETIME_FORMAT);
-            result.put("timestamp", formatter.print(getTimestamp()));
-        }
+        result.put("timestamp", getTimestamp());
         return result;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        Message other = (Message) obj;
+        if (other == null) {
+            return false;
+        }
+        if (this.getId() != null && other.getId() != null && this.getId().equals(other.getId())) {
+            return true;
+        }
+        return false;
+    }
 }

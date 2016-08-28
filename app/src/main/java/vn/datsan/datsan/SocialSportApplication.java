@@ -6,6 +6,8 @@ import android.support.multidex.MultiDex;
 
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.FirebaseDatabase;
 
 import vn.datsan.datsan.search.ElasticsearchService;
 import vn.datsan.datsan.utils.AppLog;
@@ -32,7 +34,13 @@ public class SocialSportApplication extends android.app.Application {
          */
         ElasticsearchService.getInstance().createIndex();
 
-        registerActivityLifecycleCallbacks(new MyActivityLifecycleHandler());
+        // If we need it, enable it
+        //registerActivityLifecycleCallbacks(new MyActivityLifecycleHandler());
+
+        // Enable offline capability
+        if (!FirebaseApp.getApps(this).isEmpty()) {
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        }
     }
 
     @Override

@@ -51,5 +51,5 @@ public class Constants {
     public static final String GROUP_NAME_SEPARATOR = ", ";
 
     public static final int TYPING_SIGNAL_KEEP_ALIVE_MILLIS = 5000; // milliseconds
-    public static final int TYPING_SIGNAL_TIMEOUT_MILLIS = 10000;    // milliseconds
+    public static final int TYPING_SIGNAL_TIMEOUT_MILLIS = 10000;   // milliseconds
 }

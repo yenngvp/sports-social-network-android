@@ -30,6 +30,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,6 +79,7 @@ public class HomeActivity extends AppCompatActivity implements
 
 //        ButterKnife.bind(this);
         FirebaseAuth.getInstance().addAuthStateListener(this);
+
         FacebookSdk.sdkInitialize(this.getApplicationContext());
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

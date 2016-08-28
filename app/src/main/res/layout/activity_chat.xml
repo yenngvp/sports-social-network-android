@@ -22,7 +22,7 @@
     </android.support.design.widget.AppBarLayout>
 
     <RelativeLayout
-        android:id="@+id/container"
+        android:id="@+id/chat_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -46,36 +46,19 @@
             android:text="Send"
             android:textColor="@color/background_material_light"/>
 
-        <ListView
-            android:id="@+id/messagesContainer"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="false"
             android:layout_alignParentTop="false"
             android:layout_marginBottom="20dp"
             android:layout_above="@+id/messageEdit"
-            android:layout_below="@+id/meLbl"
             android:layout_marginTop="10dp"
             android:listSelector="@android:color/transparent"
             android:transcriptMode="alwaysScroll"
-            android:divider="@null" />
-
-        <TextView
-            android:id="@+id/meLbl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left|center_vertical"
-            android:text="MySelf"
-            android:singleLine="false"
-            android:textSize="20dp" />
-
-        <TextView
-            android:id="@+id/friendLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="Friend"
-            android:textSize="20dp" />
+            android:divider="@null"
+            android:scrollbars="vertical" />
 
     </RelativeLayout>
 </LinearLayout>

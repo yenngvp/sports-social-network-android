@@ -2,6 +2,9 @@ package vn.datsan.datsan.activities;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -9,14 +12,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
 
 import org.joda.time.DateTime;
 
@@ -45,14 +45,12 @@ public class ChatActivity extends SimpleActivity {
     private static final String TAG = ChatActivity.class.getName();
 
     @BindView(R.id.messageEdit) EditText messageEdt;
-    @BindView(R.id.messagesContainer) ListView messagesContainer;
     @BindView(R.id.chatSendButton) Button sendBtn;
 
-    @BindView(R.id.meLbl) TextView meLabel;
-    @BindView(R.id.friendLabel) TextView companionLabel;
-    @BindView(R.id.container) RelativeLayout container;
+    @BindView(R.id.chat_container) RelativeLayout chat_container;
 
-    private ChatAdapter adapter;
+    private RecyclerView recyclerView;
+    private ChatAdapter chatAdapter;
 
     private ChatService chatService = ChatService.getInstance();
     private MessageService messageService = MessageService.getInstance();
@@ -63,7 +61,7 @@ public class ChatActivity extends SimpleActivity {
 
     private String startAt;
     private String endAt;
-    private Message latestMessage;
+    private Message myLatestLocalMessage;
 
     private volatile TypingSignal myTypingSignal;
     private volatile List<TypingSignal> incomingTypingSignals = new ArrayList<>();
@@ -109,9 +107,14 @@ public class ChatActivity extends SimpleActivity {
 
         super.initToolBar();
 
-        adapter = new ChatAdapter(ChatActivity.this, new ArrayList<Message>());
-        messagesContainer.setAdapter(adapter);
-        companionLabel.setText("My Buddy");
+        chatAdapter = new ChatAdapter();
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setStackFromEnd(true);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(chatAdapter);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
 
         chat = getIntent().getParcelableExtra("chat");
 
@@ -190,15 +193,6 @@ public class ChatActivity extends SimpleActivity {
     protected void onResume() {
         super.onResume();
 
-        // Load message for the chat in following procedure:
-        // 1. Load message history from local database first
-        // 2. Get the latest local message
-        // 3. Load messages from the server that newer than the local
-        // 4. Listen on any incoming message to the group (message child event)
-
-        loadLocalMessageHistory();
-        loadServerMessageHistory();
-
         // Listen on new incoming messages
         listenOnIncomingMessage();
 
@@ -242,66 +236,6 @@ public class ChatActivity extends SimpleActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void loadLocalMessageHistory() {
-        String chatId = chat.getId();
-
-
-    }
-
-    private void loadServerMessageHistory() {
-
-        String chatId = chat.getId();
-
-        AppLog.d(TAG, "loadServerMessageHistory for chat: " + chatId);
-
-        // Load chat history from firebase chatService
-        ValueEventListener valueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue() == null) {
-                    return; // No data
-                }
-
-                List<Message> messageServerHistory = new ArrayList<Message>();
-                for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    Message message = data.getValue(Message.class);
-                    messageServerHistory.add(message);
-                }
-
-                // Reset view and old messages
-                messageHistory.removeAll(messageHistory);
-                // Update new server messages
-                messageHistory.addAll(messageServerHistory);
-                // Display messages
-                adapter.add(messageHistory);
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-
-        if (endAt == null) {
-            // First page load
-            // Load latest number of CHAT_HISTORY_PAGINATION_SIZE_DEFAULT messages from the server
-            messageService.getMessageDatabaseRef(chatId)
-                    .orderByKey()
-                    .limitToLast(Constants.CHAT_HISTORY_PAGINATION_SIZE_DEFAULT)
-                    .addListenerForSingleValueEvent(valueEventListener);
-        } else {
-            // Response to scroll event
-            // Load latest number of CHAT_HISTORY_PAGINATION_SIZE_DEFAULT messages from the server
-            // but specify startAt and endAt key index
-            messageService.getMessageDatabaseRef(chatId)
-                    .orderByKey()
-                    .endAt(startAt)
-                    .limitToLast(Constants.CHAT_HISTORY_PAGINATION_SIZE_DEFAULT)
-                    .addListenerForSingleValueEvent(valueEventListener);
-        }
-    }
-
     private void listenOnIncomingMessage() {
 
         if (incomingMessageEventListener == null) {
@@ -310,13 +244,8 @@ public class ChatActivity extends SimpleActivity {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                     Message message = dataSnapshot.getValue(Message.class);
-                    if (message.isMe()) {
-                        // we know that we just receive a message of current user, so it means user successfully sent message to the server
-                        // show signal to the user to indicate "Sent" status
-                        AppLog.d("Received message of myself!");
-                    } else {
-                        displayMessage(message); // display others incoming message
-                    }
+                    message.setId(dataSnapshot.getKey());
+                    displayMessage(message, true); // display others incoming message
                 }
 
                 @Override
@@ -340,6 +269,8 @@ public class ChatActivity extends SimpleActivity {
                 }
             };
             messageService.getMessageDatabaseRef(chat.getId())
+                    .orderByKey()
+                    .limitToLast(Constants.CHAT_HISTORY_PAGINATION_SIZE_DEFAULT)
                     .addChildEventListener(incomingMessageEventListener);
         }
     }
@@ -392,31 +323,28 @@ public class ChatActivity extends SimpleActivity {
         message.setUserId(currentUser.getId());
         message.setChat(chat);
         message.setUserName(currentUser.getName());
-        message.setTimestamp(DateTime.now());
-
-        latestMessage = message;
-
-        // Save to the local database
-
 
         // Send to Firebase
-        messageService.send(message);
+        myLatestLocalMessage = messageService.send(message);
 
         // Reset input field
         messageEdt.setText("");
 
         // Display message
-        displayMessage(message);
+        displayMessage(myLatestLocalMessage, false);
     }
 
-    public void displayMessage(Message message) {
-        adapter.add(message);
-        adapter.notifyDataSetChanged();
-        scroll();
-    }
-
-    private void scroll() {
-        messagesContainer.setSelection(messagesContainer.getCount() - 1);
+    private synchronized void displayMessage(Message message, boolean isServerMessage) {
+        if (message.isMe() && isServerMessage && chatAdapter.getDataSource().contains(message)) {
+            // I just received a new sending message of myself, I don't want to display duplicate it
+            int i = chatAdapter.getDataSource().indexOf(message);
+            Message localMessageWithServerValue = chatAdapter.getDataSource().get(i);
+            localMessageWithServerValue.setTimestamp(message.getTimestampMillis());
+            chatAdapter.getDataSource().set(i, localMessageWithServerValue);
+        } else {
+            chatAdapter.add(message);
+            recyclerView.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
+        }
     }
 
     private void showSendingIndicator() {

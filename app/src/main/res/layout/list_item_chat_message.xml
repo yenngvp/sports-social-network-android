@@ -16,13 +16,13 @@
             android:layout_gravity="right"
             android:textSize="12sp"
             android:textColor="@android:color/darker_gray" />
+        <!--android:background="@drawable/in_message_bg"-->
 
         <LinearLayout
             android:id="@+id/contentWithBackground"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:background="@drawable/in_message_bg"
             android:paddingLeft="10dp"
             android:paddingBottom="10dp"
             android:orientation="vertical">
