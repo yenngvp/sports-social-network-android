@@ -47,6 +47,7 @@ public class Group implements Searchable, Parcelable {
         type = in.readInt();
         name = in.readString();
         city = in.readString();
+        logoUrl = in.readString();
         phones = in.createStringArrayList();
         favouriteFields = in.createStringArrayList();
     }

@@ -86,14 +86,15 @@ public class NewGroupActivity extends SimpleActivity {
         if (group != null) {
 //            SimpleProgress.show(NewGroupActivity.this, "Tạo FC..");
             if (avatarBitmap != null) {
+                final String groupKey = GroupManager.getInstance().getNewKey();
                 AppCloudDataManager.getInstance().uploadImage(avatarBitmap,
-                        group.getId() + "/avatar.png", new CallBack.OnResultReceivedListener() {
+                        groupKey + "/avatar.png", new CallBack.OnResultReceivedListener() {
                             @Override
                             public void onResultReceived(Object result) {
                                 String imageUrl = (String) result;
                                 if (imageUrl != null) {
                                     group.setLogoUrl(imageUrl);
-                                    doAddNewGroup(group);
+                                    doAddNewGroup(group, groupKey);
                                 } else {
                                     SimpleProgress.dismiss();
                                     SimpleAlert.showAlert(NewGroupActivity.this, getString(R.string.error),
@@ -102,13 +103,13 @@ public class NewGroupActivity extends SimpleActivity {
                             }
                         });
             } else {
-                doAddNewGroup(group);
+                doAddNewGroup(group, null);
             }
         }
     }
 
-    private void doAddNewGroup(Group group) {
-        GroupManager.getInstance().addGroup(group, new DatabaseReference.CompletionListener() {
+    private void doAddNewGroup(Group group, String key) {
+        GroupManager.getInstance().addGroup(group, key, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
 //                SimpleProgress.dismiss();

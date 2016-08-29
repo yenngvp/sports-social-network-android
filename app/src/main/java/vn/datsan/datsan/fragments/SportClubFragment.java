@@ -11,7 +11,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +62,18 @@ public class SportClubFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_club, null);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new FlexListAdapter(getActivity());
+        adapter = new FlexListAdapter(getActivity()) {
+
+            @Override
+            public void setImage(Context context, ImageView imageView, String url) {
+                AppLog.log(AppLog.LogType.LOG_ERROR, "Loadurl", url);
+                Picasso.with(getActivity())
+                        .load(url).error(R.drawable.ball).placeholder(R.drawable.ball)
+                        .resize(100, 100)
+                        .centerCrop()
+                        .into(imageView);
+            }
+        };
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(adapter);
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), recyclerView, new RecyclerTouchListener.ClickListener() {
@@ -67,7 +81,8 @@ public class SportClubFragment extends Fragment {
             public void onClick(View view, int position) {
                 Toast.makeText(getActivity(), "Touch " + position, Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getActivity(), GroupDetailActivity.class);
-                intent.putExtra("data", groupList.get(position));
+                Group group = groupList.get(position);
+                intent.putExtra("data", group);
                 startActivity(intent);
             }
 

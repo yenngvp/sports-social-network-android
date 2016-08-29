@@ -60,19 +60,14 @@ public class GroupDetailFragment extends Fragment {
 
     private void populateData(Group group) {
         fcName.setText(group.getName());
-        AppCloudDataManager.getInstance().getFileUrl(group.getId() + "/avatar.png", DataType.IMAGE, new CallBack.OnResultReceivedListener() {
-            @Override
-            public void onResultReceived(Object result) {
-                if (result != null) {
-                    Uri avatarUri = (Uri) result;
-                    AppLog.log(AppLog.LogType.LOG_ERROR, "avatar", avatarUri.toString());
-                    Picasso.with(getActivity())
-                            .load(avatarUri.toString())
-                            .resize(100, 100)
-//                            .centerCrop()
-                            .into(fcAvatar);
-                }
-            }
-        });
+        AppLog.log(AppLog.LogType.LOG_ERROR, "avatar", group.getLogoUrl());
+        if (group.getLogoUrl() != null) {
+
+            Picasso.with(getActivity())
+                    .load(group.getLogoUrl()).error(R.drawable.ball).placeholder(R.drawable.ball)
+//                    .resize(100, 100)
+//                    .centerCrop()
+                    .into(fcAvatar);
+        }
     }
 }

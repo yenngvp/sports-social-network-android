@@ -1,11 +1,13 @@
 package vn.datsan.datsan.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -46,7 +48,13 @@ public class ChatRecentActivity extends SimpleActivity {
         super.initToolBar();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new FlexListAdapter(ChatRecentActivity.this);
+        adapter = new FlexListAdapter(ChatRecentActivity.this) {
+
+            @Override
+            public void setImage(Context context, ImageView imageView, String url) {
+
+            }
+        };
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(adapter);
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new RecyclerTouchListener.ClickListener() {

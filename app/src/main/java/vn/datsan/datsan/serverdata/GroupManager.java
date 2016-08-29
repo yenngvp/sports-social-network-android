@@ -50,8 +50,15 @@ public class GroupManager {
         return instance;
     }
 
-    public void addGroup(Group group, DatabaseReference.CompletionListener listener) {
-        String key = groupDatabaseRef.push().getKey();
+    public String getNewKey() {
+        return groupDatabaseRef.push().getKey();
+    }
+
+
+    public void addGroup(Group group, String groupKey, DatabaseReference.CompletionListener listener) {
+        String key = groupKey;
+        if (key == null || key.isEmpty())
+            groupDatabaseRef.push().getKey();
         group.setId(key);
         groupDatabaseRef.child(key).setValue(group, listener);
     }

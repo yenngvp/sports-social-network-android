@@ -17,11 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vn.datsan.datsan.R;
+import vn.datsan.datsan.utils.AppLog;
 
 /**
  * Created by xuanpham on 7/28/16.
  */
-public class FlexListAdapter extends RecyclerView.Adapter<FlexListAdapter.FlexViewHolder>{
+public abstract class FlexListAdapter extends RecyclerView.Adapter<FlexListAdapter.FlexViewHolder>{
 
     private List<FlexItem> dataSource;
     private Context context;
@@ -59,13 +60,17 @@ public class FlexListAdapter extends RecyclerView.Adapter<FlexListAdapter.FlexVi
         holder.getContent().setText(item.getRowContent());
 
         String imageUrl = dataSource.get(position).getImageUrl();
-        if (imageUrl != null && !imageUrl.isEmpty())
-            Picasso.with(context)
-                .load(dataSource.get(position).getImageUrl())
+//        if (imageUrl != null && !imageUrl.isEmpty()) {
+//            AppLog.log(AppLog.LogType.LOG_ERROR, "flex", dataSource.get(position).getImageUrl());
+//            Picasso.with(context)
+//                    .load(dataSource.get(position).getImageUrl())
 //                .resize(100, 100)
-//                .centerCrop()
-                .into(holder.getThumb());
+//                .centerCrop().into(holder.getThumb());
+//        }
+        setImage(context, holder.getThumb(), imageUrl);
     }
+
+    public abstract void setImage(Context context, ImageView imageView, String url);
 
     @Override
     public int getItemCount() {

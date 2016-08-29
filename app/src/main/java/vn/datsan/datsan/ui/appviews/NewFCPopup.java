@@ -40,7 +40,7 @@ public class NewFCPopup extends BasePopup {
             public void onClick(View view) {
                 Group group = createGroup();
                 if (group != null)
-                    GroupManager.getInstance().addGroup(group, new DatabaseReference.CompletionListener() {
+                    GroupManager.getInstance().addGroup(group, null, new DatabaseReference.CompletionListener() {
                         @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                             
