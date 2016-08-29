@@ -65,4 +65,8 @@
         <item name="android:paddingRight">@dimen/search_icon_padding</item>
     </style>
 
+    <style name="SearchViewTheme" >
+        <item name="colorControlActivated">@color/blue</item>
+        <item name="colorControlNormal">@color/blueSea</item>
+    </style>
 </resources>

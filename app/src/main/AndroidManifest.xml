@@ -50,6 +50,9 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <!--<meta-data-->
+                <!--android:name="android.app.default_searchable"-->
+                <!--android:value=".activities.NewChatActivity" />-->
         </activity>
         <activity
             android:name=".activities.NewAccountActivity"
@@ -112,7 +115,15 @@
             android:label="@string/chats" />
         <activity
             android:name=".activities.NewChatActivity"
-            android:label="@string/new_chat" />
+            android:label="@string/new_chat"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/searchable"/>
+        </activity>
+
     </application>
 
 </manifest>

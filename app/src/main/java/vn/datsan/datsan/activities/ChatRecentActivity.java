@@ -11,8 +11,6 @@ import android.widget.ImageView;
 
 import com.google.firebase.auth.FirebaseAuth;
 
-import org.joda.time.format.DateTimeFormat;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +25,6 @@ import vn.datsan.datsan.serverdata.chat.ChatService;
 import vn.datsan.datsan.ui.adapters.DividerItemDecoration;
 import vn.datsan.datsan.ui.adapters.FlexListAdapter;
 import vn.datsan.datsan.ui.adapters.RecyclerTouchListener;
-import vn.datsan.datsan.utils.Constants;
 
 /**
  * Created by yennguyen on 8/17/16.
@@ -42,7 +39,7 @@ public class ChatRecentActivity extends SimpleActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat_history);
+        setContentView(R.layout.activity_chat_recent);
         ButterKnife.bind(this);
 
         super.initToolBar();
@@ -82,15 +79,15 @@ public class ChatRecentActivity extends SimpleActivity {
             @Override
             public void onClick(View view) {
                 // Create chat
-                User currentUser = UserManager.getInstance().getCurrentUser();
-                User dummyBuddy = new User();
-                dummyBuddy.setId("2XkzZSN3syR5ztej5nsCk2BQmKA2"); //xuancong
-                dummyBuddy.setName("xuancong");
-
-                Chat chat = ChatService.getInstance().createOneToOneChat(currentUser, dummyBuddy);
+//                User currentUser = UserManager.getInstance().getCurrentUser();
+//                User dummyBuddy = new User();
+//                dummyBuddy.setId("2XkzZSN3syR5ztej5nsCk2BQmKA2"); //xuancong
+//                dummyBuddy.setName("xuancong");
+//
+//                Chat chat = ChatService.getInstance().createOneToOneChat(currentUser, dummyBuddy);
                 // Starting chat
-                Intent intent = new Intent(view.getContext(), ChatActivity.class);
-                intent.putExtra("chat", chat);
+                Intent intent = new Intent(view.getContext(), NewChatActivity.class);
+//                intent.putExtra("chat", chat);
                 startActivity(intent);
             }
         });
