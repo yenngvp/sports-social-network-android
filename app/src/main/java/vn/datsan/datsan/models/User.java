@@ -34,6 +34,11 @@ public class User implements Searchable {
 
     public User() {}
 
+    public User(String id, String name) {
+        this.email = id;
+        this.name = name;
+    }
+
     public User(String name, String email, String phone, String address, List<BaseDto> groups, String location) {
         this.name = name;
         this.email = email;

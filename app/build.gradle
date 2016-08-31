@@ -89,7 +89,7 @@ dependencies {
     compile 'com.androidmapsextensions:android-maps-extensions:2.2.1'
 
     compile 'net.zetetic:android-database-sqlcipher:3.5.3@aar'
-
+    compile "com.splitwise:tokenautocomplete:2.0.7@aar"
 }
 
 apply plugin: 'com.google.gms.google-services'

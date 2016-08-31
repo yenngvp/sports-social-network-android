@@ -14,7 +14,9 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+
     <uses-feature android:name="android.hardware.camera" />
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
@@ -50,9 +52,9 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <!--<meta-data-->
-                <!--android:name="android.app.default_searchable"-->
-                <!--android:value=".activities.NewChatActivity" />-->
+            <!-- <meta-data -->
+            <!-- android:name="android.app.default_searchable" -->
+            <!-- android:value=".activities.NewChatActivity" /> -->
         </activity>
         <activity
             android:name=".activities.NewAccountActivity"
@@ -109,7 +111,7 @@
             android:name=".activities.NewFriendlyMatchActivity"
             android:label="@string/create_friendly_match" />
         <activity android:name=".activities.FriendlyMatchDetailActivity" />
-        <activity android:name=".activities.NewGroupActivity"></activity>
+        <activity android:name=".activities.NewGroupActivity" />
         <activity
             android:name=".activities.ChatRecentActivity"
             android:label="@string/chats" />
@@ -120,10 +122,12 @@
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
-            <meta-data android:name="android.app.searchable"
-                android:resource="@xml/searchable"/>
-        </activity>
 
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
+        <activity android:name=".activities.CreateChatActivity"></activity>
     </application>
 
 </manifest>

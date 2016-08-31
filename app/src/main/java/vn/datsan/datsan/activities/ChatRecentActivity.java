@@ -86,7 +86,7 @@ public class ChatRecentActivity extends SimpleActivity {
 //
 //                Chat chat = ChatService.getInstance().createOneToOneChat(currentUser, dummyBuddy);
                 // Starting chat
-                Intent intent = new Intent(view.getContext(), NewChatActivity.class);
+                Intent intent = new Intent(view.getContext(), CreateChatActivity.class);
 //                intent.putExtra("chat", chat);
                 startActivity(intent);
             }
