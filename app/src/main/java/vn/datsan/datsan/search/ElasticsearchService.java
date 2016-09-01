@@ -41,7 +41,7 @@ public class ElasticsearchService {
         new Elasticsearch().execute(param);
     }
 
-    public void search(SearchOption searchOption, CallBack.OnSearchResultListener searchResultListener) {
+    public void search(SearchOption searchOption, CallBack.OnResultReceivedListener searchResultListener) {
         ElasticsearchParam param = new ElasticsearchParam();
         param.setEventType(ElasticsearchEvent.SEARCH);
         param.setIndexName(Constants.ELASTICSEARCH_INDEX);

@@ -2,6 +2,8 @@ package vn.datsan.datsan.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -13,14 +15,20 @@ import android.widget.TextView;
 import com.tokenautocomplete.FilteredArrayAdapter;
 import com.tokenautocomplete.TokenCompleteTextView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import io.searchbox.core.SearchResult;
 import vn.datsan.datsan.R;
+import vn.datsan.datsan.models.Field;
 import vn.datsan.datsan.models.User;
+import vn.datsan.datsan.search.AppSearch;
+import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.ui.appviews.ContactsCompletionView;
+import vn.datsan.datsan.utils.AppLog;
 
-public class CreateChatActivity extends SimpleActivity implements TokenCompleteTextView.TokenListener<User> {
+public class CreateChatActivity extends SimpleActivity implements TokenCompleteTextView.TokenListener<User>, TextWatcher {
     ContactsCompletionView completionView;
     User[] people;
     ArrayAdapter<User> adapter;
@@ -70,7 +78,7 @@ public class CreateChatActivity extends SimpleActivity implements TokenCompleteT
         completionView.setAdapter(adapter);
         completionView.setTokenListener(this);
         completionView.setTokenClickStyle(TokenCompleteTextView.TokenClickStyle.Select);
-
+        completionView.addTextChangedListener(this);
 
         if (savedInstanceState == null) {
             completionView.setPrefix("To: ");
@@ -125,6 +133,48 @@ public class CreateChatActivity extends SimpleActivity implements TokenCompleteT
     public void onTokenRemoved(User token) {
         ((TextView)findViewById(R.id.lastEvent)).setText("Removed: " + token);
         updateTokenConfirmation();
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        AppLog.d("ADD_USER_TO_CHAT", charSequence.toString());
+
+        String keyword = charSequence.toString();
+
+
+        AppSearch.searchUser(keyword, null, null, null, new CallBack.OnResultReceivedListener() {
+            @Override
+            public void onResultReceived(Object result) {
+
+                SearchResult searchResult = (SearchResult) result;
+                if (searchResult == null || searchResult.getTotal() == 0) {
+                    AppLog.d("ADD_USER_TO_CHAT", "Not found any user");
+                    return;
+                }
+
+                // Get search result type fields
+                List<SearchResult.Hit<User, Void>> hits = searchResult.getHits(User.class);
+                List<User> users = new ArrayList<>();
+                for (SearchResult.Hit hit : hits) {
+                    String type = hit.type;
+                    User source = (User) hit.source;
+                    users.add(source);
+
+                    AppLog.d( "ADD_USER_TO_CHAT", "Found a " + type + " : " + source.toString());
+                }
+
+            }
+        });
+    }
+
+    @Override
+    public void afterTextChanged(Editable editable) {
+
     }
 }
 

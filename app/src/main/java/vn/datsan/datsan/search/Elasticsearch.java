@@ -31,7 +31,7 @@ public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, Object> {
     private static final String TAG = Elasticsearch.class.getName();
 
     private static JestClient jestClient;
-    private CallBack.OnSearchResultListener callback;
+    private CallBack.OnResultReceivedListener callback;
     public Elasticsearch() {
 
         // JestClient is designed to be singleton, don't construct it for each request!
@@ -67,9 +67,12 @@ public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, Object> {
     @Override
     protected Object doInBackground(ElasticsearchParam... elasticsearchParams) {
 
+        Object result = null;
         ElasticsearchParam param;
         for (ElasticsearchParam elasticsearchParam : elasticsearchParams) {
             param = elasticsearchParam;
+            callback = param.getSearchResultListener();
+
             switch (param.getType()) {
                 case CREATE_INDEX:
                     createIndexIfNotExists(param.getIndexName());
@@ -90,25 +93,20 @@ public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, Object> {
                     delete(param.getIndexName(), param.getIndexType(), param.getSource());
                     break;
                 case SEARCH:
-                    callback = param.getSearchResultListener();
-                    return search(param.getSearchOption(), param.getSearchResultListener());
+                    result = search(param.getSearchOption());
                 default:
                     break;
             }
         }
 
-        return null;
+        return result;
     }
 
     @Override
     protected void onPostExecute(Object result) {
         super.onPostExecute(result);
         if (callback != null) {
-            if (result == null) {
-                callback.onSearchResult(null);
-            } else {
-                callback.onSearchResult((SearchResult) result);
-            }
+            callback.onResultReceived(result);
         }
     }
 
@@ -225,7 +223,7 @@ public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, Object> {
     /**
      * Search
      */
-    private SearchResult search(SearchOption searchOption, CallBack.OnSearchResultListener searchResultListener) {
+    private SearchResult search(SearchOption searchOption) {
 
         try {
             String query;
@@ -292,20 +290,7 @@ public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, Object> {
                     .build();
 
             SearchResult result = jestClient.execute(search);
-//            return result;
-            if (result.isSucceeded()) {
-                AppLog.d(TAG, "Search result for keyword \"" + searchOption.getKeyword() + "\"" + " found " + result.getTotal());
-
-                if (searchResultListener != null) {
-                    searchResultListener.onSearchResult(result);
-                }
-            } else {
-                AppLog.e(TAG, "Search result for keyword \"" + searchOption.getKeyword() + "\"" + " error: " + result.getErrorMessage());
-
-                if (searchResultListener != null) {
-                    searchResultListener.onSearchResult(null);
-                }
-            }
+            return result;
 
         } catch (Exception e) {
             AppLog.log(e);

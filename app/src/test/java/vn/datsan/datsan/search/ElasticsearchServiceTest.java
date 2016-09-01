@@ -41,27 +41,5 @@ public class ElasticsearchServiceTest {
         List<String> searchTypes = new ArrayList<>();
         searchTypes.add(User.class.getSimpleName());
         SearchOption searchOption = new SearchOption(keyword, searchTypes);
-        ElasticsearchService.getInstance().search(searchOption, new CallBack.OnSearchResultListener() {
-            @Override
-            public void onSearchResult(SearchResult searchResult) {
-                if (searchResult == null) {
-                    // No search result found
-                    return;
-                }
-
-                assertEquals(3, searchResult.getTotal().intValue());
-
-                AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "Search result callback returns: " + searchResult.getTotal());
-
-                // Get search result type fields
-                List<SearchResult.Hit<User, Void>> fieldHits = searchResult.getHits(User.class);
-                for (SearchResult.Hit hit : fieldHits) {
-                    String type = hit.type;
-                    Object source = hit.source;
-
-                    AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "Found a " + type + " : " + source);
-                }
-            }
-        });
     }
 }

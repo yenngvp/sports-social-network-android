@@ -51,33 +51,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         SimpleProgress.show(ProfileActivity.this, null);
         UserManager.getInstance().getCurrentUserInfo(profileFetchCallBack);
-
-        String keyword = "san bong da";
-        List<String> searchTypes = new ArrayList<>();
-        searchTypes.add(Field.class.getSimpleName());
-        SearchOption searchOption = new SearchOption(keyword, searchTypes);
-        searchOption.setFilteredDistance("1km");
-        searchOption.setLatLon("10.77533", "106.69453");
-        ElasticsearchService.getInstance().search(searchOption, new CallBack.OnSearchResultListener() {
-            @Override
-            public void onSearchResult(SearchResult searchResult) {
-                if (searchResult == null) {
-                    // No search result found
-                    return;
-                }
-
-                AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "Search result callback returns: " + searchResult.getTotal());
-
-                // Get search result type fields
-                List<SearchResult.Hit<Field, Void>> fieldHits = searchResult.getHits(Field.class);
-                for (SearchResult.Hit hit : fieldHits) {
-                    String type = hit.type;
-                    Object source = hit.source;
-
-                    AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "Found a " + type + " : " + source);
-                }
-            }
-        });
     }
 
     CallBack.OnResultReceivedListener profileFetchCallBack = new CallBack.OnResultReceivedListener() {
