@@ -239,6 +239,7 @@ public class ChatActivity extends SimpleActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        // Back to Recent Chat
         startActivity(new Intent(this, ChatRecentActivity.class));
         finish();
     }
