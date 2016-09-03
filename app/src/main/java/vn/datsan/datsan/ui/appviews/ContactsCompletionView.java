@@ -42,13 +42,7 @@ public class ContactsCompletionView extends TokenCompleteTextView<User> {
 
     @Override
     protected User defaultObject(String completionText) {
-        //Stupid simple example of guessing if we have an email or not
-        int index = completionText.indexOf('@');
-        if (index == -1) {
-            return new User(completionText, completionText.replace(" ", "") + "@example.com");
-        } else {
-            return new User(completionText.substring(0, index), completionText);
-        }
+        return null;
     }
 
 }

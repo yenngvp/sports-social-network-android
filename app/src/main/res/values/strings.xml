@@ -99,6 +99,7 @@
     <string name="search_club_hint">Tìm nhóm</string>
     <string name="search_match_hint">Tìm kèo</string>
     <string name="create_friendly_match">Tạo kèo giao hữu</string>
+    <string name="search_user_hint">Tìm kiếm theo tên</string>
 
     <string name="select_avatar">Chọn ảnh đại diện</string>
     <string name="failed_doagain">Thất bại, vui lòng thử lại !</string>
@@ -172,5 +173,8 @@
     <!-- Chats -->
     <string name="chats">Tin nhắn</string>
     <string name="new_chat">Tin nhắn mới</string>
+    <string name="message_to">Tới: </string>
+    <string name="enter_chat">Vào Chat</string>
+    <string name="max_user_exceed">Số thành viên tối đa một nhóm là %d!</string>
 
 </resources>

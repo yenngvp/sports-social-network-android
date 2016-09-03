@@ -1,5 +1,6 @@
 package vn.datsan.datsan.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -116,8 +117,10 @@ public class ChatActivity extends SimpleActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
         chat = getIntent().getParcelableExtra("chat");
+        getSupportActionBar().setTitle(chat.getDynamicChatTitle());
 
         final String chatId = chat.getId();
+
         // Listen on message input
         messageEdt.addTextChangedListener(new TextWatcher() {
             @Override
@@ -231,6 +234,13 @@ public class ChatActivity extends SimpleActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(this, ChatRecentActivity.class));
+        finish();
     }
 
     private void listenOnIncomingMessage() {

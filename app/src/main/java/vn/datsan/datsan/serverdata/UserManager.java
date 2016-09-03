@@ -127,7 +127,19 @@ public class UserManager {
      * Get Chat history of the current user
      * @return
      */
-    public DatabaseReference getUserChatDatabaseRef() {
+    public DatabaseReference getCurrentUserChatDatabaseRef() {
         return userDatabaseRef.child(currentUser.getId()).child("chats");
+    }
+
+    /**
+     * Get Chat list of a user
+     * @return
+     */
+    public DatabaseReference getUserChatDatabaseRef(String userId) {
+        return userDatabaseRef.child(userId).child("chats");
+    }
+
+    public DatabaseReference getUserDatabaseRef() {
+        return userDatabaseRef;
     }
 }

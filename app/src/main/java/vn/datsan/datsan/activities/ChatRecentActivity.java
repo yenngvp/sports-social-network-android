@@ -79,15 +79,7 @@ public class ChatRecentActivity extends SimpleActivity {
             @Override
             public void onClick(View view) {
                 // Create chat
-//                User currentUser = UserManager.getInstance().getCurrentUser();
-//                User dummyBuddy = new User();
-//                dummyBuddy.setId("2XkzZSN3syR5ztej5nsCk2BQmKA2"); //xuancong
-//                dummyBuddy.setName("xuancong");
-//
-//                Chat chat = ChatService.getInstance().createOneToOneChat(currentUser, dummyBuddy);
-                // Starting chat
                 Intent intent = new Intent(view.getContext(), CreateChatActivity.class);
-//                intent.putExtra("chat", chat);
                 startActivity(intent);
             }
         });

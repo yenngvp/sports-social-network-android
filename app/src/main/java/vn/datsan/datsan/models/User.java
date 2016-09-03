@@ -34,9 +34,10 @@ public class User implements Searchable {
 
     public User() {}
 
-    public User(String id, String name) {
-        this.email = id;
+    public User(String id, String name, String email) {
+        this.id = id;
         this.name = name;
+        this.email = email;
     }
 
     public User(String name, String email, String phone, String address, List<BaseDto> groups, String location) {
@@ -150,5 +151,23 @@ public class User implements Searchable {
 
     public void setRole(int role) {
         this.role = role;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("User (%s, %s, %s)", getId(), getName(), getEmail());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        User other = (User) obj;
+        if (other == null || other.getId() == null || this.getId() == null) {
+            return false;
+        }
+        if (this.getId().equals(other.getId())) {
+            return true;
+        }
+
+        return false;
     }
 }

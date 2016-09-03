@@ -53,4 +53,6 @@ public class Constants {
 
     public static final int TYPING_SIGNAL_KEEP_ALIVE_MILLIS = 5000; // milliseconds
     public static final int TYPING_SIGNAL_TIMEOUT_MILLIS = 10000;   // milliseconds
+
+    public static final int MAX_MEMBERS_IN_A_CHAT = 50;
 }

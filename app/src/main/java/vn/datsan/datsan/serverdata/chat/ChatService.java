@@ -1,8 +1,11 @@
 package vn.datsan.datsan.serverdata.chat;
 
+import android.os.AsyncTask;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Exclude;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
@@ -14,6 +17,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import vn.datsan.datsan.models.Group;
 import vn.datsan.datsan.models.User;
@@ -53,10 +65,6 @@ public class ChatService {
         DatabaseReference newGroupRef = chatDatabaseRef.push();
         String generatedKey = newGroupRef.getKey();
         newGroupRef.setValue(new Group().toMap());
-    }
-
-    public void createChatGroup(Group group) {
-        chatDatabaseRef.push().setValue(group.toMap());
     }
 
     public DatabaseReference getChatDatabaseRef(String chatId) {
@@ -103,6 +111,125 @@ public class ChatService {
         return createChat(title, Chat.TYPE_ONE_TO_ONE_CHAT, members, null);
     }
 
+    public void createChatGroup(Group group) {
+        chatDatabaseRef.push().setValue(group.toMap());
+    }
+
+    public Chat createChatGroup(List<User> users) {
+
+        User me = UserManager.getInstance().getCurrentUser();
+        if (!users.contains(me)) {
+            users.add(me);
+        }
+
+        // Create chat has two members me and other
+        List<Member> members = new ArrayList<>();
+        List<String> names = new ArrayList<>();
+        for (User user : users) {
+            if (user.equals(me)) {
+                members.add(new Member(user.getId(), UserRole.ADMIN));
+            } else {
+                members.add(new Member(user.getId(), UserRole.MEMBER));
+            }
+            names.add(user.getName());
+        }
+
+        String title = buildChatTitle(names);
+        Chat chat = createChat(title, Chat.TYPE_GROUP_CHAT, members, null);
+
+        AppLog.d(TAG, "Create new chat: " + chat.getTitle());
+        return chat;
+    }
+
+    /**
+     * Search for existed chat group from the list of users
+     *
+     * @param users
+     * @return
+     */
+    public void searchChatFromUsers(final List<User> users, final CallBack.OnResultReceivedListener callback) {
+
+        if (users.size() < 2) {
+            // not sure what you mean
+            if (callback != null) {
+                callback.onResultReceived(null);
+            }
+            return;
+        }
+
+        final int numberOfUsers = users.size();
+        final BlockingQueue<String> chatIdsQueue = new LinkedBlockingQueue();
+        final BlockingQueue<User> processedUser = new LinkedBlockingQueue(numberOfUsers);
+
+        for (final User user : users) {
+
+            UserManager.getInstance().getUserChatDatabaseRef(user.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    List<String> currentChatIds = new ArrayList<>();
+                    for (DataSnapshot data : dataSnapshot.getChildren()) {
+                        String chatId = data.getKey();
+                        currentChatIds.add(chatId);
+                    }
+
+                    if (processedUser.size() == 0) {
+                        chatIdsQueue.addAll(currentChatIds);
+                    } else {
+                        if (currentChatIds.size() > 0 && chatIdsQueue.size() > 0) {
+                            for (String chatId : chatIdsQueue) {
+                                if (!currentChatIds.contains(chatId)) {
+                                    chatIdsQueue.remove(chatId);
+                                }
+                            }
+                        } else {
+                            chatIdsQueue.removeAll(chatIdsQueue);
+                        }
+                    }
+
+                    processedUser.add(user);
+
+                    // we are done
+                    if (processedUser.size() == numberOfUsers) {
+                        if (chatIdsQueue.size() == 0) {
+                            callback.onResultReceived(null);
+                        } else {
+                            try {
+                                if (chatIdsQueue.size() > 1) {
+                                    AppLog.e(TAG, "The group of users has more than one chat group");
+                                }
+
+                                String existedChatId = (String) chatIdsQueue.take();
+                                ChatService.getInstance().getChatDatabaseRef(existedChatId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        Chat chat = dataSnapshot.getValue(Chat.class);
+                                        chat.setId(dataSnapshot.getKey());
+                                        callback.onResultReceived(chat);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+                                        callback.onResultReceived(null);
+                                    }
+                                });
+                            } catch (InterruptedException e) {
+                                AppLog.t(e);
+                                callback.onResultReceived(null);
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+
+    }
+
     public void updateChatTitle(String chatId, String title) {
 
     }
@@ -136,7 +263,7 @@ public class ChatService {
     }
 
     private String buildChatTitle(List<String> names) {
-        return StringUtils.join(names, ",");
+        return StringUtils.join(names, Constants.GROUP_NAME_SEPARATOR);
     }
 
     /**
@@ -179,7 +306,7 @@ public class ChatService {
 
             }
         };
-        UserManager.getInstance().getUserChatDatabaseRef()
+        UserManager.getInstance().getCurrentUserChatDatabaseRef()
                 .orderByChild("lastModifiedTimestamp")
                 .limitToLast(Constants.CHAT_HISTORY_PAGINATION_SIZE_DEFAULT)
                 .addValueEventListener(valueEventListener);
