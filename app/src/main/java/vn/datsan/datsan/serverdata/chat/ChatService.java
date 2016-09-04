@@ -1,11 +1,8 @@
 package vn.datsan.datsan.serverdata.chat;
 
-import android.os.AsyncTask;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.Exclude;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
@@ -17,15 +14,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
 
 import vn.datsan.datsan.models.Group;
 import vn.datsan.datsan.models.User;
@@ -98,7 +88,6 @@ public class ChatService {
 
     /**
      * Start chat with someone
-     * @param buddy
      * @return
      */
     public Chat createOneToOneChat(User me, User buddy) {
@@ -159,7 +148,7 @@ public class ChatService {
 
         final int numberOfUsers = users.size();
         final BlockingQueue<String> chatIdsQueue = new LinkedBlockingQueue();
-        final BlockingQueue<User> processedUser = new LinkedBlockingQueue(numberOfUsers);
+        final BlockingQueue<String> processedUser = new LinkedBlockingQueue(numberOfUsers);
 
         for (final User user : users) {
 
@@ -186,7 +175,7 @@ public class ChatService {
                         }
                     }
 
-                    processedUser.add(user);
+                    processedUser.add(user.getId());
 
                     // we are done
                     if (processedUser.size() == numberOfUsers) {
@@ -198,18 +187,43 @@ public class ChatService {
                                     AppLog.e(TAG, "The group of users has more than one chat group");
                                 }
 
-                                String existedChatId = (String) chatIdsQueue.take();
-                                ChatService.getInstance().getChatDatabaseRef(existedChatId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                final String existedChatId = chatIdsQueue.take();
+                                // Get the actual members list of the chatId
+                                MemberService.getInstance().getMembers(existedChatId, new CallBack.OnResultReceivedListener() {
                                     @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        Chat chat = dataSnapshot.getValue(Chat.class);
-                                        chat.setId(dataSnapshot.getKey());
-                                        callback.onResultReceived(chat);
-                                    }
+                                    public void onResultReceived(Object result) {
+                                        List<Member> members = (List<Member>) result;
 
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-                                        callback.onResultReceived(null);
+                                        if (members == null || members.size() != numberOfUsers) {
+                                            callback.onResultReceived(null);
+                                        } else {
+                                            // Verify all processed users are real members
+                                            boolean matched = true;
+                                            for (Member member : members) {
+                                                if (!processedUser.contains(member.getUserId())) {
+                                                    matched = false;
+                                                    break;
+                                                }
+                                            }
+                                            if (!matched) {
+                                                callback.onResultReceived(null);
+                                            } else {
+                                                // Found the correct chat
+                                                ChatService.getInstance().getChatDatabaseRef(existedChatId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                                        Chat chat = dataSnapshot.getValue(Chat.class);
+                                                        chat.setId(dataSnapshot.getKey());
+                                                        callback.onResultReceived(chat);
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(DatabaseError databaseError) {
+                                                        callback.onResultReceived(null);
+                                                    }
+                                                });
+                                            }
+                                        }
                                     }
                                 });
                             } catch (InterruptedException e) {
@@ -236,30 +250,6 @@ public class ChatService {
 
     public void updateLastMessage(String chatId, Message lastMessage) {
 
-    }
-
-    public void addMember(String chatId, Member member) {
-        memberService.add(chatId, member);
-    }
-
-    public String getDisplayTitle(Chat chat) {
-        if (!TextUtils.isBlank(chat.getTitle())) {
-            return chat.getTitle();
-        }
-
-        // Build dynamic title for display
-        // if this is a group chat, display chat title as the group name
-        if (chat.getLinkedGroup() != null) {
-            // Find the group
-            Group group = GroupManager.getInstance().getGroup(chat.getLinkedGroup());
-            if (group != null && group.getName() != null) {
-                return  group.getName();
-            }
-        }
-
-        // Create chat title from name members in the group
-        List<String> members = MemberService.getInstance().getMembers(chat.getId());
-        return buildChatTitle(members);
     }
 
     private String buildChatTitle(List<String> names) {
@@ -316,5 +306,46 @@ public class ChatService {
         if (valueEventListener != null) {
             chatDatabaseRef.removeEventListener(valueEventListener);
         }
+    }
+
+    /**
+     * Delete chat for of current user
+     * @param chatId
+     */
+    public void deleteChat(String chatId) {
+
+        User currentUser = UserManager.getInstance().getCurrentUser();
+        String userId = currentUser.getId();
+
+        // NOT actually remove the chat, just:
+        // Remove the current user from the Members list, and
+        // Remove the chat entry off the user chats list
+
+        Map<String, Object> childUpdates = new HashMap<>();
+
+        childUpdates.put(Constants.FIREBASE_MEMBERS + "/" + chatId + "/" + userId,  null);
+        childUpdates.put(Constants.FIREBASE_USERS + "/" + userId + "/chats/" + chatId, null);
+
+        FirebaseDatabase.getInstance().getReference().updateChildren(childUpdates);
+    }
+
+    /**
+     * Delete chat for of current user
+     * @param chat
+     */
+    public void addMemberChat(Chat chat, User user) {
+
+        final String userId = user.getId();
+        final Member member = new Member(userId, UserRole.MEMBER);
+
+        // Add the user to the Members list, and
+        // Add the chat entry on the user chats list
+
+        Map<String, Object> childUpdates = new HashMap<>();
+
+        childUpdates.put(Constants.FIREBASE_MEMBERS + "/" + chat.getId() + "/" + userId,  member.toUserRoleMap());
+        childUpdates.put(Constants.FIREBASE_USERS + "/" + userId + "/chats/" + chat.getId(), chat.toSimpleMap());
+
+        FirebaseDatabase.getInstance().getReference().updateChildren(childUpdates);
     }
 }

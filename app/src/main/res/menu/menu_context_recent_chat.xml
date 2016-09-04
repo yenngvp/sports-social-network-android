@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activities.NewChatActivity">
+
+    <item
+        android:id="@+id/delete"
+        android:icon="@android:drawable/ic_delete"
+        android:orderInCategory="100"
+        android:title="@string/delete_chat"
+        app:showAsAction="always|collapseActionView"/>
+</menu>

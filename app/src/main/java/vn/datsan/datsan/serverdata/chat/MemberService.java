@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import vn.datsan.datsan.models.chat.Member;
+import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.utils.Constants;
 
 /**
@@ -37,17 +38,19 @@ public class MemberService {
     }
 
     // Get members uid for a chat
-    public List<String> getMembers(String chatId) {
+    public void getMembers(String chatId, final CallBack.OnResultReceivedListener callback) {
 
-        final List<String> members = new ArrayList<>();
         getMemberDatabaseRef(chatId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue() == null) return;
 
-                HashMap<String, String> memberMap = (HashMap<String, String>) dataSnapshot.getValue();
-                for (Map.Entry<String, String> entry : memberMap.entrySet()) {
-                    members.add(entry.getKey());
+                List<Member> members = new ArrayList<>();
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    Member member = new Member(data.getKey(), (String) data.getValue());
+                    members.add(member);
+                }
+                if (callback != null) {
+                    callback.onResultReceived(members);
                 }
             }
 
@@ -57,6 +60,5 @@ public class MemberService {
             }
         });
 
-        return members;
     }
 }

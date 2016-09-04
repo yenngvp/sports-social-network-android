@@ -176,5 +176,6 @@
     <string name="message_to">Tới: </string>
     <string name="enter_chat">Vào Chat</string>
     <string name="max_user_exceed">Số thành viên tối đa một nhóm là %d!</string>
+    <string name="delete_chat">Xoá trò chuyện</string>
 
 </resources>
