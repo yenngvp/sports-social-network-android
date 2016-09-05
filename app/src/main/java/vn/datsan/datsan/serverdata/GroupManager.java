@@ -24,23 +24,13 @@ public class GroupManager {
     private DatabaseReference groupDatabaseRef = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_GROUPS);
     private List<Group> userGroups;
 
-    private FirebaseChildEventListener firebaseChildEventListener;
+//    private FirebaseChildEventListener firebaseChildEventListener;
 
     public GroupManager() {
         // Enable 'Searchable' put mapping for the managed underline User
-        ElasticsearchService.getInstance().putMapping(Group.getPutMapping(), Group.class);
-        firebaseChildEventListener = new FirebaseChildEventListener(Group.class);
-        groupDatabaseRef.addChildEventListener(firebaseChildEventListener);
-    }
-
-    @Override
-    public void finalize() throws Throwable {
-
-        AppLog.i(TAG, "Going finalize(). Detaching firebaseChildEventListener");
-        // Detach the FirebaseChildEventListener when the database reference detached
-        groupDatabaseRef.removeEventListener(firebaseChildEventListener);
-
-        super.finalize();
+//        ElasticsearchService.getInstance().putMapping(Group.getPutMapping(), Group.class);
+//        firebaseChildEventListener = new FirebaseChildEventListener(Group.class);
+//        groupDatabaseRef.addChildEventListener(firebaseChildEventListener);
     }
 
     public static GroupManager getInstance() {

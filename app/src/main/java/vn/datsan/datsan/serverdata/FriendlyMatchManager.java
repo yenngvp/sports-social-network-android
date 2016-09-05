@@ -25,26 +25,16 @@ public class FriendlyMatchManager {
     private DatabaseReference matchDatabaseRef;
     private List<FriendlyMatch> friendlyMatches;
 
-    private FirebaseChildEventListener firebaseChildEventListener;
+//    private FirebaseChildEventListener firebaseChildEventListener;
 
     private FriendlyMatchManager() {
         matchDatabaseRef = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_MATCHS);
 
         // Enable 'Searchable' put mapping for the managed underline User
-        ElasticsearchService.getInstance().putMapping(Field.getPutMapping(), Field.class);
-        // Listening on the field object change
-        firebaseChildEventListener = new FirebaseChildEventListener(Field.class);
-        matchDatabaseRef.addChildEventListener(firebaseChildEventListener);
-    }
-
-    @Override
-    public void finalize() throws Throwable {
-
-        AppLog.i(TAG, "Going finalize(). Detaching firebaseChildEventListener");
-        // Detach the FirebaseChildEventListener when the database reference detached
-        matchDatabaseRef.removeEventListener(firebaseChildEventListener);
-
-        super.finalize();
+//        ElasticsearchService.getInstance().putMapping(Field.getPutMapping(), Field.class);
+//        // Listening on the field object change
+//        firebaseChildEventListener = new FirebaseChildEventListener(Field.class);
+//        matchDatabaseRef.addChildEventListener(firebaseChildEventListener);
     }
 
     public static FriendlyMatchManager getInstance() {

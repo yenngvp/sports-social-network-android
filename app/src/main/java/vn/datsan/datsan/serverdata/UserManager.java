@@ -33,26 +33,15 @@ public class UserManager {
     private User userInfo;
     private User currentUser;
 
-    private FirebaseChildEventListener firebaseChildEventListener;
+//    private FirebaseChildEventListener firebaseChildEventListener;
 
     private  UserManager() {
         userDatabaseRef = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_USERS);
 
-        // Enable 'Searchable' put mapping for the managed underline User
-        ElasticsearchService.getInstance().putMapping(User.getPutMapping(), User.class);
-        // Listening on user object change
-        firebaseChildEventListener = new FirebaseChildEventListener(User.class);
-        userDatabaseRef.addChildEventListener(firebaseChildEventListener);
-    }
-
-    @Override
-    public void finalize() throws Throwable {
-
-        AppLog.i(TAG, "Going finalize(). Detaching firebaseChildEventListener");
-        // Detach the FirebaseChildEventListener when the database reference detached
-        userDatabaseRef.removeEventListener(firebaseChildEventListener);
-
-        super.finalize();
+//        ElasticsearchService.getInstance().putMapping(User.getPutMapping(), User.class);
+//        // Listening on user object change
+//        firebaseChildEventListener = new FirebaseChildEventListener(User.class);
+//        userDatabaseRef.addChildEventListener(firebaseChildEventListener);
     }
 
     public static UserManager getInstance() {

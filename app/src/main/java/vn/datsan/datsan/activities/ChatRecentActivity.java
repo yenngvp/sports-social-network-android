@@ -96,14 +96,6 @@ public class ChatRecentActivity extends SimpleActivity {
             }
         }));
 
-        deleteChatButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast toast = Toast.makeText(view.getContext(), "detelte", Toast.LENGTH_LONG);
-                toast.show();
-            }
-        });
-
         FloatingActionButton createChatBtn = (FloatingActionButton) findViewById(R.id.create);
         createChatBtn.setOnClickListener(new View.OnClickListener() {
             @Override

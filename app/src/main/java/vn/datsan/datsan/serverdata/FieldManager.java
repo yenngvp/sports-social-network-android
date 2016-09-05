@@ -31,26 +31,16 @@ public class FieldManager {
     private DatabaseReference fieldDatabaseRef;
     private List<Field> fields;
 
-    private FirebaseChildEventListener firebaseChildEventListener;
+//    private FirebaseChildEventListener firebaseChildEventListener;
 
     private FieldManager() {
         fieldDatabaseRef = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_FIELDS);
 
         // Enable 'Searchable' put mapping for the managed underline User
-        ElasticsearchService.getInstance().putMapping(Field.getPutMapping(), Field.class);
-        // Listening on the field object change
-        firebaseChildEventListener = new FirebaseChildEventListener(Field.class);
-        fieldDatabaseRef.addChildEventListener(firebaseChildEventListener);
-    }
-
-    @Override
-    public void finalize() throws Throwable {
-
-        AppLog.i(TAG, "Going finalize(). Detaching firebaseChildEventListener");
-        // Detach the FirebaseChildEventListener when the database reference detached
-        fieldDatabaseRef.removeEventListener(firebaseChildEventListener);
-
-        super.finalize();
+//        ElasticsearchService.getInstance().putMapping(Field.getPutMapping(), Field.class);
+//        // Listening on the field object change
+//        firebaseChildEventListener = new FirebaseChildEventListener(Field.class);
+//        fieldDatabaseRef.addChildEventListener(firebaseChildEventListener);
     }
 
     public static FieldManager getInstance() {
