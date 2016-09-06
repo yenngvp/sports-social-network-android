@@ -60,7 +60,11 @@ public abstract class FlexListAdapter extends RecyclerView.Adapter<FlexListAdapt
         holder.getContent().setText(item.getRowContent());
         holder.getNote().setText(item.getRowNote());
         holder.getNote().setText(item.getRowNote());
-        holder.getBadge().setText(item.getRowBadge());
+        if (item.getRowBadge() == null) {
+            holder.getBadge().setVisibility(View.INVISIBLE);
+        } else {
+            holder.getBadge().setText(item.getRowBadge());
+        }
 
         String imageUrl = dataSource.get(position).getImageUrl();
 //        if (imageUrl != null && !imageUrl.isEmpty()) {
