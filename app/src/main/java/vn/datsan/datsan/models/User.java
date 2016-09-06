@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.firebase.database.Exclude;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +16,7 @@ import vn.datsan.datsan.utils.localization.VietnameseUnsignedTranslator;
  * Created by xuanpham on 6/13/16.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class User implements Searchable {
+public class User implements Searchable, Serializable {
 
     public static final int ROLE_MEMBER = 0;
     public static final int ROLE_GROUP_ADMIN = 1;

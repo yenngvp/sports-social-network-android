@@ -5,14 +5,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.ServerValue;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormatter;
-
 import java.util.HashMap;
 import java.util.Map;
 
-import vn.datsan.datsan.utils.Constants;
+import vn.datsan.datsan.utils.AppUtils;
 
 public class Message {
 
@@ -120,10 +116,7 @@ public class Message {
 
     @Exclude
     public String getTimestampAsDatetime() {
-        int offset = Constants.VN_TIMEZONE_OFFSET_HOUR;
-        DateTime dateTime = new DateTime(this.timestamp, DateTimeZone.forOffsetHours(offset));
-        DateTimeFormatter formatter = Constants.DATETIME_FORMATTER;
-        return formatter.print(dateTime);
+        return AppUtils.getDateTimeAsString(this.timestamp, AppUtils.DATETIME_FORMATTER);
     }
 
     /**

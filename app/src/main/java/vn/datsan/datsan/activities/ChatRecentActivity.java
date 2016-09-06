@@ -1,6 +1,5 @@
 package vn.datsan.datsan.activities;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,12 +13,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,6 +32,7 @@ import vn.datsan.datsan.ui.adapters.DividerItemDecoration;
 import vn.datsan.datsan.ui.adapters.FlexListAdapter;
 import vn.datsan.datsan.ui.adapters.RecyclerTouchListener;
 import vn.datsan.datsan.ui.customwidgets.SimpleProgress;
+import vn.datsan.datsan.utils.AppUtils;
 
 /**
  * Created by yennguyen on 8/17/16.
@@ -108,8 +108,26 @@ public class ChatRecentActivity extends SimpleActivity {
             }
         });
 
-        // Load chat history
-        populateData();
+        if (UserManager.getInstance().getCurrentUser() == null
+                && FirebaseAuth.getInstance().getCurrentUser() != null) {
+
+            final SimpleProgress progress = new SimpleProgress(this, getString(R.string.loading_recent_chat));
+            progress.show();
+
+            UserManager.getInstance().getCurrentUserInfo(new CallBack.OnResultReceivedListener() {
+                @Override
+                public void onResultReceived(Object result) {
+                    UserManager.getInstance().setCurrentUser((User) result);
+                    // Load chat history
+                    loadRecentChat();
+
+                    progress.dismiss();
+                }
+            });
+        } else {
+            // Load chat history
+            loadRecentChat();
+        }
     }
 
     @Override
@@ -127,23 +145,9 @@ public class ChatRecentActivity extends SimpleActivity {
     protected void onResume() {
         super.onResume();
 
-        if (UserManager.getInstance().getCurrentUser() == null
-                && FirebaseAuth.getInstance().getCurrentUser() != null) {
-
-            final SimpleProgress progress = new SimpleProgress(this, getString(R.string.loading_recent_chat));
-            progress.show();
-
-            UserManager.getInstance().getCurrentUserInfo(new CallBack.OnResultReceivedListener() {
-                @Override
-                public void onResultReceived(Object result) {
-                    UserManager.getInstance().setCurrentUser((User) result);
-                    progress.dismiss();
-                }
-            });
-        }
     }
 
-    private void populateData() {
+    private void loadRecentChat() {
         final SimpleProgress progress = new SimpleProgress(this, getString(R.string.loading_recent_chat));
         progress.show();
 
@@ -158,12 +162,21 @@ public class ChatRecentActivity extends SimpleActivity {
                 }
 
                 List<FlexListAdapter.FlexItem> list = new ArrayList<>();
+                Random random = new Random();
                 // Get history in order of latest on top of the list
                 for (Chat chat : chatHistory) {
                     String title = chat.getDynamicChatTitle();
                     String content = chat.getLastMessage() == null ? "" : chat.getLastMessage();
-                    String date = null;
-                    FlexListAdapter.FlexItem item = adapter.createItem(null, title, content, date);
+                    String timestamp = AppUtils.getDateTimeAsString(chat.getLastModifiedTimestampMillis(),
+                            AppUtils.DATETIME_ddMMyy_FORMATTER);
+                    int number = random.nextInt(100);
+                    String badge;
+                    if (number > 35 || number < 1) {
+                        badge = null;
+                    } else {
+                        badge = String.valueOf(number);
+                    }
+                    FlexListAdapter.FlexItem item = adapter.createItemWithBadge(null, title, content, timestamp, badge);
                     list.add(item);
                 }
 

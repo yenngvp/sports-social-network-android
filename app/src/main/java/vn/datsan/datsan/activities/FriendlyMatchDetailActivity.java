@@ -9,7 +9,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import vn.datsan.datsan.R;
 import vn.datsan.datsan.models.FriendlyMatch;
-import vn.datsan.datsan.utils.DateUtils;
+import vn.datsan.datsan.utils.AppUtils;
 
 public class FriendlyMatchDetailActivity extends SimpleActivity {
 
@@ -41,8 +41,9 @@ public class FriendlyMatchDetailActivity extends SimpleActivity {
     private void populateData(FriendlyMatch data) {
         DateTime startTime = new DateTime(data.getStartTime());
         DateTime endTime = new DateTime(data.getEndTime());
-        String dayWeek = DateUtils.convertWeekDayToString(startTime.getDayOfWeek());
-        String dayMonth = " Ngày " + DateUtils.DAYMONTH_FORMAT.print(startTime);
+        String dayWeek = AppUtils.getWeekDayAsText(startTime);
+        String dayMonth = AppUtils.getMonthDayAsText(startTime);
+        // TODO: Shouldn't do it manually. Use Joda Duration/Period to calculate the time period
         String timeRange = "Thời gian " + startTime.getHourOfDay() + "h:" + startTime.getMinuteOfHour() + " - " +
                 endTime.getHourOfDay() + "h:" + endTime.getMinuteOfHour();
         String timeString = dayWeek + "," + dayMonth + "\n" + timeRange;

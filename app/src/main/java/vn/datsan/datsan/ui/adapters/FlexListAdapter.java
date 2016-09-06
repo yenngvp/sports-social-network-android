@@ -58,6 +58,9 @@ public abstract class FlexListAdapter extends RecyclerView.Adapter<FlexListAdapt
         FlexItem item = dataSource.get(position);
         holder.getTitle().setText(item.getRowTitle());
         holder.getContent().setText(item.getRowContent());
+        holder.getNote().setText(item.getRowNote());
+        holder.getNote().setText(item.getRowNote());
+        holder.getBadge().setText(item.getRowBadge());
 
         String imageUrl = dataSource.get(position).getImageUrl();
 //        if (imageUrl != null && !imageUrl.isEmpty()) {
@@ -82,6 +85,7 @@ public abstract class FlexListAdapter extends RecyclerView.Adapter<FlexListAdapt
         private TextView title;
         private TextView content;
         private TextView note;
+        private TextView badge;
         public FlexViewHolder(View itemView) {
             super(itemView);
 
@@ -89,6 +93,7 @@ public abstract class FlexListAdapter extends RecyclerView.Adapter<FlexListAdapt
             title = (TextView) itemView.findViewById(R.id.row_main_title);
             content = (TextView) itemView.findViewById(R.id.row_sub_content);
             note = (TextView) itemView.findViewById(R.id.row_extra_note);
+            badge = (TextView) itemView.findViewById(R.id.row_extra_badge);
         }
 
         public ImageView getThumb() {
@@ -106,6 +111,10 @@ public abstract class FlexListAdapter extends RecyclerView.Adapter<FlexListAdapt
         public TextView getNote() {
             return note;
         }
+
+        public TextView getBadge() {
+            return badge;
+        }
     }
 
     public class FlexItem {
@@ -113,12 +122,21 @@ public abstract class FlexListAdapter extends RecyclerView.Adapter<FlexListAdapt
         private String rowTitle;
         private String rowContent;
         private String rowNote;
+        private String rowBadge;
 
         public FlexItem(String imageUrl, String rowTitle, String rowContent, String rowNote) {
             this.imageUrl = imageUrl;
             this.rowTitle = rowTitle;
             this.rowContent = rowContent;
             this.rowNote = rowNote;
+        }
+
+        public FlexItem(String imageUrl, String rowTitle, String rowContent, String rowNote, String rowBadge) {
+            this.imageUrl = imageUrl;
+            this.rowTitle = rowTitle;
+            this.rowContent = rowContent;
+            this.rowNote = rowNote;
+            this.rowBadge = rowBadge;
         }
 
         public String getImageUrl() {
@@ -152,9 +170,21 @@ public abstract class FlexListAdapter extends RecyclerView.Adapter<FlexListAdapt
         public void setRowNote(String rowNote) {
             this.rowNote = rowNote;
         }
+
+        public String getRowBadge() {
+            return rowBadge;
+        }
+
+        public void setRowBadge(String rowBadge) {
+            this.rowBadge = rowBadge;
+        }
     }
 
     public FlexItem createItem(String imageUrl, String rowTitle, String rowContent, String rowNote) {
         return new FlexItem(imageUrl, rowTitle, rowContent, rowNote);
+    }
+
+    public FlexItem createItemWithBadge(String imageUrl, String rowTitle, String rowContent, String rowNote, String badge) {
+        return new FlexItem(imageUrl, rowTitle, rowContent, rowNote, badge);
     }
 }

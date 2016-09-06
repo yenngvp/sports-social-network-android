@@ -45,10 +45,6 @@ public class Constants {
     public static final int ELASTICSEARCH_PAGINATION_SIZE_DEFAULT = 50;
     public static final int CHAT_HISTORY_PAGINATION_SIZE_DEFAULT = 50;
 
-    public static final String DATETIME_FORMAT = "dd/MM/yy HH:mm:ss";
-    public static final DateTimeFormatter DATETIME_FORMATTER = DateTimeFormat.forPattern(DATETIME_FORMAT);
-    public static final int VN_TIMEZONE_OFFSET_HOUR = 7;
-
     public static final String GROUP_NAME_SEPARATOR = ", ";
 
     public static final int TYPING_SIGNAL_KEEP_ALIVE_MILLIS = 5000; // milliseconds

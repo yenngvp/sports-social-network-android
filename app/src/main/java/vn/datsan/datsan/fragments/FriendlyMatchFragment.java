@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import org.joda.time.DateTime;
 
@@ -20,7 +19,6 @@ import java.util.List;
 
 import vn.datsan.datsan.R;
 import vn.datsan.datsan.activities.FriendlyMatchDetailActivity;
-import vn.datsan.datsan.activities.GroupDetailActivity;
 import vn.datsan.datsan.activities.NewFriendlyMatchActivity;
 import vn.datsan.datsan.models.FriendlyMatch;
 import vn.datsan.datsan.serverdata.CallBack;
@@ -28,7 +26,7 @@ import vn.datsan.datsan.serverdata.FriendlyMatchManager;
 import vn.datsan.datsan.ui.adapters.DividerItemDecoration;
 import vn.datsan.datsan.ui.adapters.FlexListAdapter;
 import vn.datsan.datsan.ui.adapters.RecyclerTouchListener;
-import vn.datsan.datsan.utils.DateUtils;
+import vn.datsan.datsan.utils.AppUtils;
 
 /**
  * Created by xuanpham on 7/25/16.
@@ -110,8 +108,9 @@ public class FriendlyMatchFragment extends Fragment {
 
                         DateTime startTime = new DateTime(match.getStartTime());
                         DateTime endTime = new DateTime(match.getEndTime());
-                        String dayWeek = DateUtils.convertWeekDayToString(startTime.getDayOfWeek());
-                        String dayMonth = " Ngày " + DateUtils.DAYMONTH_FORMAT.print(startTime);
+                        String dayWeek = AppUtils.getWeekDayAsText(startTime);
+                        String dayMonth = AppUtils.getMonthDayAsText(startTime);
+                        // TODO: Shouldn't do it manually. Use Joda Duration/Period to calculate the time period
                         String timeRange = "Thời gian " + startTime.getHourOfDay() + "h:" + startTime.getMinuteOfHour() + " - " +
                                 endTime.getHourOfDay() + "h:" + endTime.getMinuteOfHour();
                         String field = "\nSân : ";
