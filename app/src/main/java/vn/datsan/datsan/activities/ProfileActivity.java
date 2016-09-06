@@ -1,30 +1,19 @@
 package vn.datsan.datsan.activities;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.searchbox.core.SearchResult;
 import vn.datsan.datsan.R;
-import vn.datsan.datsan.models.Field;
 import vn.datsan.datsan.models.User;
-import vn.datsan.datsan.search.ElasticsearchService;
-import vn.datsan.datsan.search.SearchOption;
 import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.serverdata.UserManager;
 import vn.datsan.datsan.ui.customwidgets.SimpleProgress;
-import vn.datsan.datsan.utils.AppLog;
 
 public class ProfileActivity extends AppCompatActivity {
 

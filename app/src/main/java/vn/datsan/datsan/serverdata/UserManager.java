@@ -1,11 +1,6 @@
 package vn.datsan.datsan.serverdata;
 
-import android.support.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -16,11 +11,8 @@ import java.util.ArrayList;
 
 import vn.datsan.datsan.models.BaseDto;
 import vn.datsan.datsan.models.User;
-import vn.datsan.datsan.search.ElasticsearchService;
-import vn.datsan.datsan.search.interfaces.Searchable;
 import vn.datsan.datsan.utils.AppLog;
 import vn.datsan.datsan.utils.Constants;
-import vn.datsan.datsan.utils.listeners.FirebaseChildEventListener;
 
 /**
  * Created by xuanpham on 6/20/16.
@@ -33,15 +25,8 @@ public class UserManager {
     private User userInfo;
     private User currentUser;
 
-//    private FirebaseChildEventListener firebaseChildEventListener;
-
     private  UserManager() {
         userDatabaseRef = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_USERS);
-
-//        ElasticsearchService.getInstance().putMapping(User.getPutMapping(), User.class);
-//        // Listening on user object change
-//        firebaseChildEventListener = new FirebaseChildEventListener(User.class);
-//        userDatabaseRef.addChildEventListener(firebaseChildEventListener);
     }
 
     public static UserManager getInstance() {

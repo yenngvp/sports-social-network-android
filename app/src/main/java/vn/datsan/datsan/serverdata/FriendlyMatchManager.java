@@ -11,10 +11,8 @@ import java.util.List;
 
 import vn.datsan.datsan.models.Field;
 import vn.datsan.datsan.models.FriendlyMatch;
-import vn.datsan.datsan.search.ElasticsearchService;
 import vn.datsan.datsan.utils.AppLog;
 import vn.datsan.datsan.utils.Constants;
-import vn.datsan.datsan.utils.listeners.FirebaseChildEventListener;
 
 /**
  * Created by xuanpham on 8/12/16.
@@ -25,16 +23,8 @@ public class FriendlyMatchManager {
     private DatabaseReference matchDatabaseRef;
     private List<FriendlyMatch> friendlyMatches;
 
-//    private FirebaseChildEventListener firebaseChildEventListener;
-
     private FriendlyMatchManager() {
         matchDatabaseRef = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_MATCHS);
-
-        // Enable 'Searchable' put mapping for the managed underline User
-//        ElasticsearchService.getInstance().putMapping(Field.getPutMapping(), Field.class);
-//        // Listening on the field object change
-//        firebaseChildEventListener = new FirebaseChildEventListener(Field.class);
-//        matchDatabaseRef.addChildEventListener(firebaseChildEventListener);
     }
 
     public static FriendlyMatchManager getInstance() {

@@ -10,10 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vn.datsan.datsan.models.Group;
-import vn.datsan.datsan.search.ElasticsearchService;
 import vn.datsan.datsan.utils.AppLog;
 import vn.datsan.datsan.utils.Constants;
-import vn.datsan.datsan.utils.listeners.FirebaseChildEventListener;
 
 /**
  * Created by xuanpham on 7/29/16.
@@ -24,13 +22,7 @@ public class GroupManager {
     private DatabaseReference groupDatabaseRef = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_GROUPS);
     private List<Group> userGroups;
 
-//    private FirebaseChildEventListener firebaseChildEventListener;
-
     public GroupManager() {
-        // Enable 'Searchable' put mapping for the managed underline User
-//        ElasticsearchService.getInstance().putMapping(Group.getPutMapping(), Group.class);
-//        firebaseChildEventListener = new FirebaseChildEventListener(Group.class);
-//        groupDatabaseRef.addChildEventListener(firebaseChildEventListener);
     }
 
     public static GroupManager getInstance() {
