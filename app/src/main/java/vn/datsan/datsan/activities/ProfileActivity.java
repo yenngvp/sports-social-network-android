@@ -49,23 +49,25 @@ public class ProfileActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        SimpleProgress.show(ProfileActivity.this, null);
-        UserManager.getInstance().getCurrentUserInfo(profileFetchCallBack);
-    }
+        if (UserManager.getInstance().getCurrentUser() == null) {
+            final SimpleProgress progress = new SimpleProgress(ProfileActivity.this, null);
+            progress.show();
 
-    CallBack.OnResultReceivedListener profileFetchCallBack = new CallBack.OnResultReceivedListener() {
-        @Override
-        public void onResultReceived(Object result) {
-            SimpleProgress.dismiss();
+            UserManager.getInstance().getCurrentUserInfo(new CallBack.OnResultReceivedListener() {
+                @Override
+                public void onResultReceived(Object result) {
+                    progress.dismiss();
 
-            // reload view
-            if (result != null) {
-                reloadView((User) result);
-            } else {
-                Toast.makeText(ProfileActivity.this, "Error !!!", Toast.LENGTH_SHORT).show();
-            }
+                    // reload view
+                    if (result != null) {
+                        reloadView((User) result);
+                    } else {
+                        Toast.makeText(ProfileActivity.this, "Error !!!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
         }
-    };
+    }
 
     private void reloadView(User user) {
         name.setText(user.getName());

@@ -201,13 +201,16 @@ public class LoginFragment extends Fragment {
     }
 
     private void signInGoogle() {
-        SimpleProgress.show(getActivity(), null);
+        final SimpleProgress progress = new SimpleProgress(getActivity(), null);
+        progress.show();
+
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, Constants.GOOGLE_SIGN_IN_CODE);
     }
 
     private void handleFacebookAccessToken(AccessToken token) {
-        SimpleProgress.show(getActivity(), null);
+        final SimpleProgress progress = new SimpleProgress(getActivity(), "Tạo tài khoản mới..");
+        progress.show();
 
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         FirebaseAuth.getInstance().signInWithCredential(credential)
@@ -215,7 +218,7 @@ public class LoginFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
-                        SimpleProgress.dismiss();
+                        progress.dismiss();
                         if (!task.isSuccessful()) {
                             Toast.makeText(getActivity(), "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
@@ -253,13 +256,14 @@ public class LoginFragment extends Fragment {
     }
 
     private void loginEmail(final String email, String password) {
-        SimpleProgress.show(getActivity(), null);
+        final SimpleProgress progress = new SimpleProgress(getActivity(), null);
+        progress.show();
 
         FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        SimpleProgress.dismiss();
+                        progress.dismiss();
                         if (!task.isSuccessful()) {
                             Toast.makeText(getActivity(), "Login Failed !",
                                     Toast.LENGTH_SHORT).show();

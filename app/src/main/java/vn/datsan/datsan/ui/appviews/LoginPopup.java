@@ -71,7 +71,6 @@ public class LoginPopup {
     public void hidePopUp() {
         if (popup.isShowing()) {
             popup.dismiss();
-            SimpleProgress.dismiss();
         }
     }
 

@@ -120,7 +120,9 @@ public class CreateChatActivity extends SimpleActivity implements TokenCompleteT
                     }
 
                     final Context context = v.getContext();
-                    SimpleProgress.show(context, null);
+                    final SimpleProgress progress = new SimpleProgress(context, getString(R.string.enter_chat));
+                    progress.show();
+
                     // Search existed chat group from the users list
                     ChatService.getInstance().searchChatFromUsers(usersInChat, new CallBack.OnResultReceivedListener() {
                         @Override
@@ -136,7 +138,7 @@ public class CreateChatActivity extends SimpleActivity implements TokenCompleteT
                             intent.putExtra("chat", chat);
                             startActivity(intent);
 
-                            SimpleProgress.dismiss();
+                            progress.dismiss();
                         }
                     });
                 }

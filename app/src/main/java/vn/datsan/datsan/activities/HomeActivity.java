@@ -340,12 +340,13 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
     private void searchLocation(String searchText) {
-        SimpleProgress.show(HomeActivity.this, "Đang tìm...");
+        final SimpleProgress progress = new SimpleProgress(this, "Đang tìm...");
+        progress.show();
         AppSearch.searchField(searchText, "40km", 1, 1, new CallBack.OnResultReceivedListener() {
             @Override
             public void onResultReceived(Object result) {
                 sportFieldFragment.showSearchResult(result);
-                SimpleProgress.dismiss();
+                progress.dismiss();
             }
         });
     }

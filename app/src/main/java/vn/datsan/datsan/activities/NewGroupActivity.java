@@ -84,19 +84,23 @@ public class NewGroupActivity extends SimpleActivity {
     public void onRegisterBtnClicked() {
         final Group group = createGroupObject();
         if (group != null) {
-//            SimpleProgress.show(NewGroupActivity.this, "Tạo FC..");
+
             if (avatarBitmap != null) {
+                final SimpleProgress progress = new SimpleProgress(this, null);
+                progress.show();
+
                 final String groupKey = GroupManager.getInstance().getNewKey();
                 AppCloudDataManager.getInstance().uploadImage(avatarBitmap,
                         groupKey + "/avatar.png", new CallBack.OnResultReceivedListener() {
                             @Override
                             public void onResultReceived(Object result) {
+                                progress.dismiss();
+
                                 String imageUrl = (String) result;
                                 if (imageUrl != null) {
                                     group.setLogoUrl(imageUrl);
                                     doAddNewGroup(group, groupKey);
                                 } else {
-                                    SimpleProgress.dismiss();
                                     SimpleAlert.showAlert(NewGroupActivity.this, getString(R.string.error),
                                             getString(R.string.failed_doagain), getString(R.string.close));
                                 }
@@ -112,7 +116,6 @@ public class NewGroupActivity extends SimpleActivity {
         GroupManager.getInstance().addGroup(group, key, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-//                SimpleProgress.dismiss();
                 if (databaseError == null) {
                     SimpleAlert.showAlert(NewGroupActivity.this, "Đăng ký thành công",
                             getString(R.string.close), null, new AlertInterface.OnTapListener() {

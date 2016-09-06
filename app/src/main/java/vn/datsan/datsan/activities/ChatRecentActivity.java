@@ -1,5 +1,6 @@
 package vn.datsan.datsan.activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -31,6 +32,7 @@ import vn.datsan.datsan.serverdata.chat.ChatService;
 import vn.datsan.datsan.ui.adapters.DividerItemDecoration;
 import vn.datsan.datsan.ui.adapters.FlexListAdapter;
 import vn.datsan.datsan.ui.adapters.RecyclerTouchListener;
+import vn.datsan.datsan.ui.customwidgets.SimpleProgress;
 
 /**
  * Created by yennguyen on 8/17/16.
@@ -125,22 +127,31 @@ public class ChatRecentActivity extends SimpleActivity {
     protected void onResume() {
         super.onResume();
 
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+        if (UserManager.getInstance().getCurrentUser() == null
+                && FirebaseAuth.getInstance().getCurrentUser() != null) {
+
+            final SimpleProgress progress = new SimpleProgress(this, getString(R.string.loading_recent_chat));
+            progress.show();
+
             UserManager.getInstance().getCurrentUserInfo(new CallBack.OnResultReceivedListener() {
                 @Override
                 public void onResultReceived(Object result) {
                     UserManager.getInstance().setCurrentUser((User) result);
+                    progress.dismiss();
                 }
             });
-        } else {
-            UserManager.getInstance().setCurrentUser(null);
         }
     }
 
     private void populateData() {
+        final SimpleProgress progress = new SimpleProgress(this, getString(R.string.loading_recent_chat));
+        progress.show();
+
         ChatService.getInstance().loadChatHistory(new CallBack.OnResultReceivedListener() {
             @Override
             public void onResultReceived(Object result) {
+                progress.dismiss();
+
                 chatHistory = (List<Chat>) result;
                 if (chatHistory == null || chatHistory.size() == 0) {
                     return; // No data found

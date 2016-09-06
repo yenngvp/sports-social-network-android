@@ -123,14 +123,16 @@ public class NewAccountActivity extends AppCompatActivity {
     }
 
     private void createAccount(final User user, String password) {
-        SimpleProgress.show(NewAccountActivity.this, "Tạo tài khoản mới..");
+
+        final SimpleProgress progress = new SimpleProgress(this, "Tạo tài khoản mới..");
+        progress.show();
         String email = user.getEmail();
 
         firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        SimpleProgress.dismiss();
+                        progress.dismiss();
                         if (!task.isSuccessful()) {
                             SimpleAlert.showAlert(NewAccountActivity.this, getString(R.string.error), task.getException().getMessage() + "",
                                     getString(R.string.close));
