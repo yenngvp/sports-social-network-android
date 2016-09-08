@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import org.joda.time.DateTime;
 
@@ -58,7 +59,8 @@ public class ChatActivity extends SimpleActivity {
     private ChatService chatService = ChatService.getInstance();
     private MessageService messageService = MessageService.getInstance();
     private ChildEventListener incomingMessageEventListener;
-    private Chat chat;
+    private ValueEventListener chatValueEventListener;
+    private volatile Chat chat;
 
     private String startAt;
     private String endAt;
@@ -186,6 +188,11 @@ public class ChatActivity extends SimpleActivity {
             myTypingSignal = null;
         }
 
+        if (chatValueEventListener != null) {
+            chatService.getChatDatabaseRef(chat.getId()).removeEventListener(chatValueEventListener);
+            chatValueEventListener = null;
+        }
+
         MessageService.getInstance().removeTypingSignalListeners(chat.getId());
 
     }
@@ -199,6 +206,9 @@ public class ChatActivity extends SimpleActivity {
 
         // Listen on message incoming typing signals
         listenOnIncomingTypingSignals();
+
+        // Listen on chat update
+        listenOnChatUpdate();
 
         // Start timer handler
         timerHandler.postDelayed(timerRunnable, Constants.TYPING_SIGNAL_TIMEOUT_MILLIS);
@@ -313,6 +323,28 @@ public class ChatActivity extends SimpleActivity {
                 }
             }
         });
+    }
+
+    private void listenOnChatUpdate() {
+        if (chatValueEventListener == null) {
+            chatValueEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    chat = dataSnapshot.getValue(Chat.class);
+                    chat.setId(dataSnapshot.getKey());
+
+                    // Current user has seen the chat, update the user with this
+                    UserManager.getInstance().getCurrentUserChatDatabaseRef(chat.getId()).setValue(chat);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+
+            chatService.getChatDatabaseRef(chat.getId()).addValueEventListener(chatValueEventListener);
+        }
     }
 
     /**

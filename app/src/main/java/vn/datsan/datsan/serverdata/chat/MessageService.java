@@ -1,10 +1,16 @@
 package vn.datsan.datsan.serverdata.chat;
 
+import android.support.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -12,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import vn.datsan.datsan.models.chat.Chat;
 import vn.datsan.datsan.models.chat.Message;
 import vn.datsan.datsan.models.chat.TypingSignal;
 import vn.datsan.datsan.serverdata.CallBack;
@@ -53,12 +60,50 @@ public class MessageService {
      */
     public Message send(Message message) {
 
-        message.getChat().setLastMessage(message.getMessage());
+        message.getChat().setLastMessage(message);
         final String chatId = message.getChat().getId();
 
-        DatabaseReference chatMessgeRef = getMessageDatabaseRef(chatId);
-        String messageId = chatMessgeRef.push().getKey();
+        final DatabaseReference chatMessageRef = getMessageDatabaseRef(chatId);
+        String messageId = chatMessageRef.push().getKey();
         message.setId(messageId);
+
+        // Store the new message to messages object, and
+        // Update the chat with the new last message
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put(Constants.FIREBASE_CHATS + "/" + chatId, message.getChat().toMap());
+        childUpdates.put(Constants.FIREBASE_MESSAGES + "/" + chatId + "/" + message.getId(), message.toMap());
+
+        FirebaseDatabase.getInstance().getReference()
+                .updateChildren(childUpdates)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+
+                        // Increase messageCount on the chat in a managed transaction
+                        DatabaseReference chatRef = ChatService.getInstance().getChatDatabaseRef(chatId);
+                        chatRef.runTransaction(new Transaction.Handler() {
+                            @Override
+                            public Transaction.Result doTransaction(MutableData mutableData) {
+                                Chat chat = mutableData.getValue(Chat.class);
+                                if (chat == null) {
+                                    return Transaction.success(mutableData);
+                                }
+
+                                chat.setMessageCount(chat.getMessageCount() + 1);
+
+                                // Set value and report transaction success
+                                mutableData.setValue(chat);
+                                return Transaction.success(mutableData);
+                            }
+
+                            @Override
+                            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+                                AppLog.e(TAG, "chat.runTransaction:onComplete:" + databaseError);
+                            }
+                        });
+                    }
+                });
+
 
         final Message messageAllParticipants = message;
 

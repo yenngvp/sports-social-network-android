@@ -37,9 +37,10 @@ public class Chat implements Parcelable {
     private String lastModifiedBy;
     private String title;
     private String type;
-    private String lastMessage;
+    private Message lastMessage;
     private String linkedGroup;
     private List<Member> members;
+    private int messageCount;
 
     public Chat() {
 
@@ -50,7 +51,8 @@ public class Chat implements Parcelable {
         title = in.readString();
         type = in.readString();
         linkedGroup = in.readString();
-        lastMessage = in.readString();
+        messageCount = in.readInt();
+//        lastMessage = in.readTypedObject();
 
     }
 
@@ -138,11 +140,11 @@ public class Chat implements Parcelable {
         this.type = type;
     }
 
-    public String getLastMessage() {
+    public Message getLastMessage() {
         return lastMessage;
     }
 
-    public void setLastMessage(String lastMessage) {
+    public void setLastMessage(Message lastMessage) {
         this.lastMessage = lastMessage;
     }
 
@@ -152,6 +154,14 @@ public class Chat implements Parcelable {
 
     public void setLinkedGroup(String linkedGroup) {
         this.linkedGroup = linkedGroup;
+    }
+
+    public int getMessageCount() {
+        return messageCount;
+    }
+
+    public void setMessageCount(int messageCount) {
+        this.messageCount = messageCount;
     }
 
     @Exclude
@@ -176,6 +186,7 @@ public class Chat implements Parcelable {
         result.put("lastModifiedTimestamp", getLastModifiedTimestamp());
         result.put("linkedGroup", getLinkedGroup());
         result.put("lastMessage", getLastMessage());
+        result.put("messageCount", getMessageCount());
 
         return result;
     }
@@ -200,7 +211,8 @@ public class Chat implements Parcelable {
         parcel.writeString(getTitle());
         parcel.writeString(getType());
         parcel.writeString(getLinkedGroup());
-        parcel.writeString(getLastMessage());
+        parcel.writeInt(getMessageCount());
+//        parcel.writeString(getLastMessage());
     }
 
     @Exclude

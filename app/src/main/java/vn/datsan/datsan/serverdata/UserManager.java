@@ -116,4 +116,8 @@ public class UserManager {
     public DatabaseReference getUserDatabaseRef() {
         return userDatabaseRef;
     }
+
+    public DatabaseReference getCurrentUserChatDatabaseRef(String chatId) {
+        return userDatabaseRef.child(getCurrentUser().getId()).child("chats").child(chatId);
+    }
 }
