@@ -79,7 +79,7 @@ public class ChatService {
         childUpdates.put(Constants.FIREBASE_MEMBERS + "/" + chatKey, userRolesMap);
         for (Member member : initialMembers) {
             // Create chat for all users are members
-            childUpdates.put(Constants.FIREBASE_USERS + "/" + member.getUserId() + "/chats/" + chatKey, chat.toSimpleMap());
+            childUpdates.put(Constants.FIREBASE_USERS + "/" + member.getUserId() + "/chats/" + chatKey, chat.toMap());
         }
         FirebaseDatabase.getInstance().getReference().updateChildren(childUpdates);
 
@@ -344,7 +344,7 @@ public class ChatService {
         Map<String, Object> childUpdates = new HashMap<>();
 
         childUpdates.put(Constants.FIREBASE_MEMBERS + "/" + chat.getId() + "/" + userId,  member.toUserRoleMap());
-        childUpdates.put(Constants.FIREBASE_USERS + "/" + userId + "/chats/" + chat.getId(), chat.toSimpleMap());
+        childUpdates.put(Constants.FIREBASE_USERS + "/" + userId + "/chats/" + chat.getId(), chat.toMap());
 
         FirebaseDatabase.getInstance().getReference().updateChildren(childUpdates);
     }

@@ -133,6 +133,7 @@ public class Message {
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
+        result.put("id", getId());
         result.put("type", getType());
         result.put("userId", getUserId());
         result.put("userName", getUserName());

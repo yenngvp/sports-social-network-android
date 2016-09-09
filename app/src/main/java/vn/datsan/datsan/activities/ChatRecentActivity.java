@@ -166,7 +166,7 @@ public class ChatRecentActivity extends SimpleActivity {
                 // Get history in order of latest on top of the list
                 for (Chat chat : chatHistory) {
                     String title = chat.getDynamicChatTitle();
-                    String content = chat.getLastMessage() == null ? "" : chat.getLastMessage();
+                    String content = chat.getLastMessage() == null ? "" : chat.getLastMessage().getMessage();
                     String timestamp = AppUtils.getDateTimeAsString(chat.getLastModifiedTimestampMillis(),
                             AppUtils.DATETIME_ddMMyy_FORMATTER);
                     int number = random.nextInt(100);

@@ -185,17 +185,10 @@ public class Chat implements Parcelable {
         }
         result.put("lastModifiedTimestamp", getLastModifiedTimestamp());
         result.put("linkedGroup", getLinkedGroup());
-        result.put("lastMessage", getLastMessage());
+        if (getLastMessage() != null) {
+            result.put("lastMessage", getLastMessage().toMap());
+        }
         result.put("messageCount", getMessageCount());
-
-        return result;
-    }
-
-    @Exclude
-    public Map<String, Object> toSimpleMap() {
-        HashMap<String, Object> result = new HashMap<>();
-        result.put("title", getTitle());
-        result.put("lastMessage", getLastMessage());
 
         return result;
     }

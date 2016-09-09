@@ -73,68 +73,28 @@ public class MessageService {
         childUpdates.put(Constants.FIREBASE_CHATS + "/" + chatId, message.getChat().toMap());
         childUpdates.put(Constants.FIREBASE_MESSAGES + "/" + chatId + "/" + message.getId(), message.toMap());
 
-        FirebaseDatabase.getInstance().getReference()
-                .updateChildren(childUpdates)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
+        FirebaseDatabase.getInstance().getReference().updateChildren(childUpdates);
 
-                        // Increase messageCount on the chat in a managed transaction
-                        DatabaseReference chatRef = ChatService.getInstance().getChatDatabaseRef(chatId);
-                        chatRef.runTransaction(new Transaction.Handler() {
-                            @Override
-                            public Transaction.Result doTransaction(MutableData mutableData) {
-                                Chat chat = mutableData.getValue(Chat.class);
-                                if (chat == null) {
-                                    return Transaction.success(mutableData);
-                                }
-
-                                chat.setMessageCount(chat.getMessageCount() + 1);
-
-                                // Set value and report transaction success
-                                mutableData.setValue(chat);
-                                return Transaction.success(mutableData);
-                            }
-
-                            @Override
-                            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
-                                AppLog.e(TAG, "chat.runTransaction:onComplete:" + databaseError);
-                            }
-                        });
-                    }
-                });
-
-
-        final Message messageAllParticipants = message;
-
-        // Get list of all participants of the chat
-        MemberService.getInstance().getMemberDatabaseRef(chatId).addListenerForSingleValueEvent(new ValueEventListener() {
+        // Increase messageCount on the chat in a managed transaction
+        DatabaseReference chatRef = ChatService.getInstance().getChatDatabaseRef(chatId);
+        chatRef.runTransaction(new Transaction.Handler() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                if (dataSnapshot.getValue() == null) {
-                    // Chat no member, should never happened
-                    AppLog.e(TAG, "Chat " + chatId + " has no member");
-                    return;
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                Chat chat = mutableData.getValue(Chat.class);
+                if (chat == null) {
+                    return Transaction.success(mutableData);
                 }
 
-                Map<String, Object> childUpdates = new HashMap<>();
+                chat.setMessageCount(chat.getMessageCount() + 1);
 
-                // Add all participants to the message broadcast list
-                for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    String memberId = data.getKey();
-                    childUpdates.put(Constants.FIREBASE_USERS + "/" + memberId + "/chats/" + chatId, messageAllParticipants.getChat().toMap());
-                }
-
-                childUpdates.put(Constants.FIREBASE_CHATS + "/" + chatId, messageAllParticipants.getChat().toMap());
-                childUpdates.put(Constants.FIREBASE_MESSAGES + "/" + chatId + "/" + messageAllParticipants.getId(), messageAllParticipants.toMap());
-
-                FirebaseDatabase.getInstance().getReference().updateChildren(childUpdates);
+                // Set value and report transaction success
+                mutableData.setValue(chat);
+                return Transaction.success(mutableData);
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+                AppLog.e(TAG, "chat.runTransaction:onComplete:" + databaseError);
             }
         });
 
