@@ -11,8 +11,8 @@ import java.util.ArrayList;
 
 import vn.datsan.datsan.models.BaseDto;
 import vn.datsan.datsan.models.User;
+import vn.datsan.datsan.utils.AppConstants;
 import vn.datsan.datsan.utils.AppLog;
-import vn.datsan.datsan.utils.Constants;
 
 /**
  * Created by xuanpham on 6/20/16.
@@ -26,7 +26,7 @@ public class UserManager {
     private User currentUser;
 
     private  UserManager() {
-        userDatabaseRef = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_USERS);
+        userDatabaseRef = FirebaseDatabase.getInstance().getReference(AppConstants.FIREBASE_USERS);
     }
 
     public static UserManager getInstance() {

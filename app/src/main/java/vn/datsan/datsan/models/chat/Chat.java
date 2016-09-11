@@ -8,17 +8,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.ServerValue;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import vn.datsan.datsan.models.User;
 import vn.datsan.datsan.serverdata.UserManager;
-import vn.datsan.datsan.utils.Constants;
+import vn.datsan.datsan.utils.AppConstants;
 
 /**
  * Created by yennguyen on 8/2/16.
@@ -41,6 +37,8 @@ public class Chat implements Parcelable {
     private String linkedGroup;
     private List<Member> members;
     private int messageCount;
+    private int unreadMessageCount;
+    private boolean removed;
 
     public Chat() {
 
@@ -165,12 +163,30 @@ public class Chat implements Parcelable {
     }
 
     @Exclude
+    public boolean isRemoved() {
+        return removed;
+    }
+
+    public void setRemoved(boolean removed) {
+        this.removed = removed;
+    }
+
+    @Exclude
     public List<Member> getMembers() {
         return members;
     }
 
     public void setMembers(List<Member> members) {
         this.members = members;
+    }
+
+    @Exclude
+    public int getUnreadMessageCount() {
+        return unreadMessageCount;
+    }
+
+    public void setUnreadMessageCount(int unreadMessageCount) {
+        this.unreadMessageCount = unreadMessageCount;
     }
 
     @Exclude
@@ -278,7 +294,7 @@ public class Chat implements Parcelable {
 
         // The removed string leaves behind the dirty separator characters,
         // do remove them now to get clean string
-        String dirtySeparator = Constants.GROUP_NAME_SEPARATOR;
+        String dirtySeparator = AppConstants.GROUP_NAME_SEPARATOR;
 
         if (dynamicTitle.indexOf(dirtySeparator) == 0) {
             dynamicTitle = dynamicTitle.substring(1);
@@ -290,5 +306,14 @@ public class Chat implements Parcelable {
         }
 
         return dynamicTitle.trim();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        Chat that = (Chat) obj;
+        if (that == null || that.getId() == null || this.getId() == null) {
+            return false;
+        }
+        return that.getId().equals(this.getId());
     }
 }

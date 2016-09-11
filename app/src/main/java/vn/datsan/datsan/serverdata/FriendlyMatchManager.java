@@ -12,7 +12,7 @@ import java.util.List;
 import vn.datsan.datsan.models.Field;
 import vn.datsan.datsan.models.FriendlyMatch;
 import vn.datsan.datsan.utils.AppLog;
-import vn.datsan.datsan.utils.Constants;
+import vn.datsan.datsan.utils.AppConstants;
 
 /**
  * Created by xuanpham on 8/12/16.
@@ -24,7 +24,7 @@ public class FriendlyMatchManager {
     private List<FriendlyMatch> friendlyMatches;
 
     private FriendlyMatchManager() {
-        matchDatabaseRef = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_MATCHS);
+        matchDatabaseRef = FirebaseDatabase.getInstance().getReference(AppConstants.FIREBASE_MATCHS);
     }
 
     public static FriendlyMatchManager getInstance() {

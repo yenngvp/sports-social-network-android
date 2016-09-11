@@ -16,19 +16,14 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.tokenautocomplete.FilteredArrayAdapter;
 import com.tokenautocomplete.TokenCompleteTextView;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,8 +38,8 @@ import vn.datsan.datsan.serverdata.UserManager;
 import vn.datsan.datsan.serverdata.chat.ChatService;
 import vn.datsan.datsan.ui.appviews.ContactsCompletionView;
 import vn.datsan.datsan.ui.customwidgets.SimpleProgress;
+import vn.datsan.datsan.utils.AppConstants;
 import vn.datsan.datsan.utils.AppLog;
-import vn.datsan.datsan.utils.Constants;
 
 public class CreateChatActivity extends SimpleActivity implements TokenCompleteTextView.TokenListener<User>, TextWatcher {
 
@@ -168,15 +163,15 @@ public class CreateChatActivity extends SimpleActivity implements TokenCompleteT
 
     @Override
     public void onTokenAdded(User token) {
-        if (completionView.getObjects().size() > Constants.MAX_MEMBERS_IN_A_CHAT) {
+        if (completionView.getObjects().size() > AppConstants.MAX_MEMBERS_IN_A_CHAT) {
             completionView.removeObject(token);
-            tvMaxUserExceed.setText(String.format(getString(R.string.max_user_exceed), Constants.MAX_MEMBERS_IN_A_CHAT));
+            tvMaxUserExceed.setText(String.format(getString(R.string.max_user_exceed), AppConstants.MAX_MEMBERS_IN_A_CHAT));
         }
     }
 
     @Override
     public void onTokenRemoved(User token) {
-        if (completionView.getObjects().size() < Constants.MAX_MEMBERS_IN_A_CHAT) {
+        if (completionView.getObjects().size() < AppConstants.MAX_MEMBERS_IN_A_CHAT) {
             tvMaxUserExceed.setText("");
         }
     }

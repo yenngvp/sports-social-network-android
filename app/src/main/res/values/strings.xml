@@ -174,7 +174,7 @@
     <string name="chats">Tin nhắn</string>
     <string name="new_chat">Tin nhắn mới</string>
     <string name="message_to">Tới: </string>
-    <string name="enter_chat">Đang tạo nhóm</string>
+    <string name="enter_chat">Đang vào chat</string>
     <string name="max_user_exceed">Số thành viên tối đa một nhóm là %d!</string>
     <string name="delete_chat">Xoá trò chuyện</string>
     <string name="loading_recent_chat">Đang tải tin nhắn</string>

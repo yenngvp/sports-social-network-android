@@ -1,7 +1,6 @@
 package vn.datsan.datsan.fragments;
 
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -45,7 +44,7 @@ import vn.datsan.datsan.activities.NewAccountActivity;
 import vn.datsan.datsan.ui.appviews.LoginPopup;
 import vn.datsan.datsan.ui.customwidgets.SimpleProgress;
 import vn.datsan.datsan.utils.AppLog;
-import vn.datsan.datsan.utils.Constants;
+import vn.datsan.datsan.utils.AppConstants;
 
 public class LoginFragment extends Fragment {
     private GoogleApiClient mGoogleApiClient;
@@ -142,7 +141,7 @@ public class LoginFragment extends Fragment {
 
         AppLog.log(AppLog.LogType.LOG_ERROR, "LoginFragment", "onActivityResult");
 
-        if (requestCode == Constants.GOOGLE_SIGN_IN_CODE) {
+        if (requestCode == AppConstants.GOOGLE_SIGN_IN_CODE) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             AppLog.log(AppLog.LogType.LOG_ERROR, "LoginFragment", "Google login finish " + result.isSuccess());
             if (result.isSuccess()) {
@@ -205,7 +204,7 @@ public class LoginFragment extends Fragment {
         progress.show();
 
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        startActivityForResult(signInIntent, Constants.GOOGLE_SIGN_IN_CODE);
+        startActivityForResult(signInIntent, AppConstants.GOOGLE_SIGN_IN_CODE);
     }
 
     private void handleFacebookAccessToken(AccessToken token) {

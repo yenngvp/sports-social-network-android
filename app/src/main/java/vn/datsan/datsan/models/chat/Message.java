@@ -92,13 +92,12 @@ public class Message {
         this.chat = chat;
     }
 
-    @Exclude
     public String getUserName() {
         return userName;
     }
 
-    public void setUserName(String userDisplayName) {
-        this.userName = userDisplayName;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public Map<String, String> getTimestamp() {
@@ -144,13 +143,10 @@ public class Message {
 
     @Override
     public boolean equals(Object obj) {
-        Message other = (Message) obj;
-        if (other == null) {
+        Message that = (Message) obj;
+        if (that == null || that.getId() == null || this.getId() == null) {
             return false;
         }
-        if (this.getId() != null && other.getId() != null && this.getId().equals(other.getId())) {
-            return true;
-        }
-        return false;
+        return that.getId().equals(this.getId());
     }
 }

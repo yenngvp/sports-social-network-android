@@ -4,6 +4,7 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.databinding.adapters.ImageViewBindingAdapter;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,10 +15,12 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import vn.datsan.datsan.R;
 import vn.datsan.datsan.utils.AppLog;
+import vn.datsan.datsan.utils.ChatFlexItemComparator;
 
 /**
  * Created by xuanpham on 7/28/16.
@@ -45,6 +48,23 @@ public abstract class FlexListAdapter extends RecyclerView.Adapter<FlexListAdapt
         notifyDataSetChanged();
     }
 
+    public void add(FlexItem item) {
+        dataSource.add(item);
+    }
+
+    public void addOrReplaceAndResort(FlexItem item) {
+        if (dataSource.contains(item)) {
+            dataSource.set(dataSource.indexOf(item), item);
+        } else {
+            dataSource.add(item);
+        }
+        Collections.sort(dataSource, new ChatFlexItemComparator());
+    }
+
+    public List<FlexItem> getDataSource() {
+        return dataSource;
+    }
+
     @Override
     public FlexViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
@@ -59,11 +79,13 @@ public abstract class FlexListAdapter extends RecyclerView.Adapter<FlexListAdapt
         holder.getTitle().setText(item.getRowTitle());
         holder.getContent().setText(item.getRowContent());
         holder.getNote().setText(item.getRowNote());
-        holder.getNote().setText(item.getRowNote());
         if (item.getRowBadge() == null) {
             holder.getBadge().setVisibility(View.INVISIBLE);
         } else {
+            holder.getBadge().setVisibility(View.VISIBLE);
             holder.getBadge().setText(item.getRowBadge());
+            // Highlight unread content
+            holder.getContent().setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         }
 
         String imageUrl = dataSource.get(position).getImageUrl();
@@ -122,11 +144,13 @@ public abstract class FlexListAdapter extends RecyclerView.Adapter<FlexListAdapt
     }
 
     public class FlexItem {
+        private String id;
         private String imageUrl;
         private String rowTitle;
         private String rowContent;
         private String rowNote;
         private String rowBadge;
+        private long sortingWeight;
 
         public FlexItem(String imageUrl, String rowTitle, String rowContent, String rowNote) {
             this.imageUrl = imageUrl;
@@ -135,12 +159,21 @@ public abstract class FlexListAdapter extends RecyclerView.Adapter<FlexListAdapt
             this.rowNote = rowNote;
         }
 
-        public FlexItem(String imageUrl, String rowTitle, String rowContent, String rowNote, String rowBadge) {
+        public FlexItem(String id, String imageUrl, String rowTitle, String rowContent, String rowNote, String rowBadge) {
+            this.id = id;
             this.imageUrl = imageUrl;
             this.rowTitle = rowTitle;
             this.rowContent = rowContent;
             this.rowNote = rowNote;
             this.rowBadge = rowBadge;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
         }
 
         public String getImageUrl() {
@@ -182,13 +215,30 @@ public abstract class FlexListAdapter extends RecyclerView.Adapter<FlexListAdapt
         public void setRowBadge(String rowBadge) {
             this.rowBadge = rowBadge;
         }
+
+        public long getSortingWeight() {
+            return sortingWeight;
+        }
+
+        public void setSortingWeight(long sortingWeight) {
+            this.sortingWeight = sortingWeight;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            FlexItem that = (FlexItem) obj;
+            if (that == null || that.getId() == null || this.getId() == null) {
+                return false;
+            }
+            return that.getId().equals(this.getId());
+        }
     }
 
     public FlexItem createItem(String imageUrl, String rowTitle, String rowContent, String rowNote) {
         return new FlexItem(imageUrl, rowTitle, rowContent, rowNote);
     }
 
-    public FlexItem createItemWithBadge(String imageUrl, String rowTitle, String rowContent, String rowNote, String badge) {
-        return new FlexItem(imageUrl, rowTitle, rowContent, rowNote, badge);
+    public FlexItem createItemWithBadge(String id, String imageUrl, String rowTitle, String rowContent, String rowNote, String badge) {
+        return new FlexItem(id, imageUrl, rowTitle, rowContent, rowNote, badge);
     }
 }

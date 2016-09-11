@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vn.datsan.datsan.models.Group;
+import vn.datsan.datsan.utils.AppConstants;
 import vn.datsan.datsan.utils.AppLog;
-import vn.datsan.datsan.utils.Constants;
 
 /**
  * Created by xuanpham on 7/29/16.
@@ -19,7 +19,7 @@ import vn.datsan.datsan.utils.Constants;
 public class GroupManager {
     private static final String TAG = FieldManager.class.getName();
     private static GroupManager instance;
-    private DatabaseReference groupDatabaseRef = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_GROUPS);
+    private DatabaseReference groupDatabaseRef = FirebaseDatabase.getInstance().getReference(AppConstants.FIREBASE_GROUPS);
     private List<Group> userGroups;
 
     public GroupManager() {

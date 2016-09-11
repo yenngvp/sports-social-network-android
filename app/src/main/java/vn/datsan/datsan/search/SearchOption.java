@@ -3,7 +3,7 @@ package vn.datsan.datsan.search;
 import java.util.ArrayList;
 import java.util.List;
 
-import vn.datsan.datsan.utils.Constants;
+import vn.datsan.datsan.utils.AppConstants;
 
 /**
  * Created by yennguyen on 7/29/16.
@@ -20,7 +20,7 @@ public class SearchOption {
     private String distanceUnit = "km";
     // Pagination paramters
     private int from = 0;
-    private int size = Constants.ELASTICSEARCH_PAGINATION_SIZE_DEFAULT;
+    private int size = AppConstants.ELASTICSEARCH_PAGINATION_SIZE_DEFAULT;
 
     public SearchOption() {
 
@@ -29,14 +29,14 @@ public class SearchOption {
     public SearchOption(String keyword) {
         this.keyword = keyword;
         // Defaulted search index
-        this.indices.add(Constants.ELASTICSEARCH_INDEX);
+        this.indices.add(AppConstants.ELASTICSEARCH_INDEX);
     }
 
     public SearchOption(String keyword, List<String> types) {
         this.keyword = keyword;
         this.types = types;
         // Defaulted search index
-        this.indices.add(Constants.ELASTICSEARCH_INDEX);
+        this.indices.add(AppConstants.ELASTICSEARCH_INDEX);
     }
 
     public SearchOption(String keyword, List<String> indices, List<String> types) {

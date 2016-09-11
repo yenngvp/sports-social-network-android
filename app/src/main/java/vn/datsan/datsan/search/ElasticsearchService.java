@@ -5,7 +5,7 @@ import com.google.firebase.database.DataSnapshot;
 import vn.datsan.datsan.search.interfaces.Searchable;
 import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.utils.AppLog;
-import vn.datsan.datsan.utils.Constants;
+import vn.datsan.datsan.utils.AppConstants;
 
 /**
  * Created by yennguyen on 7/29/16.
@@ -28,14 +28,14 @@ public class ElasticsearchService {
     public void createIndex() {
         ElasticsearchParam param = new ElasticsearchParam();
         param.setEventType(ElasticsearchEvent.CREATE_INDEX);
-        param.setIndexName(Constants.ELASTICSEARCH_INDEX);
+        param.setIndexName(AppConstants.ELASTICSEARCH_INDEX);
         new Elasticsearch().execute(param);
     }
 
     public void putMapping(String putMapping, Class eventClazz) {
         ElasticsearchParam param = new ElasticsearchParam();
         param.setEventType(ElasticsearchEvent.PUT_MAPPING);
-        param.setIndexName(Constants.ELASTICSEARCH_INDEX);
+        param.setIndexName(AppConstants.ELASTICSEARCH_INDEX);
         param.setIndexType(eventClazz.getSimpleName());
         param.setPutMapping(putMapping);
         new Elasticsearch().execute(param);
@@ -44,7 +44,7 @@ public class ElasticsearchService {
     public void search(SearchOption searchOption, CallBack.OnResultReceivedListener searchResultListener) {
         ElasticsearchParam param = new ElasticsearchParam();
         param.setEventType(ElasticsearchEvent.SEARCH);
-        param.setIndexName(Constants.ELASTICSEARCH_INDEX);
+        param.setIndexName(AppConstants.ELASTICSEARCH_INDEX);
         param.setSearchOption(searchOption);
         param.setSearchResultListener(searchResultListener);
         new Elasticsearch().execute(param);
@@ -68,7 +68,7 @@ public class ElasticsearchService {
 
         ElasticsearchParam param = new ElasticsearchParam();
         param.setEventType(eventType);
-        param.setIndexName(Constants.ELASTICSEARCH_INDEX);
+        param.setIndexName(AppConstants.ELASTICSEARCH_INDEX);
         param.setIndexType(eventClazz.getSimpleName());
 
         Object object = dataSnapshot.getValue(eventClazz);

@@ -39,9 +39,8 @@ import vn.datsan.datsan.serverdata.UserManager;
 import vn.datsan.datsan.serverdata.chat.ChatService;
 import vn.datsan.datsan.serverdata.chat.MessageService;
 import vn.datsan.datsan.ui.adapters.ChatAdapter;
-import vn.datsan.datsan.ui.customwidgets.SimpleProgress;
+import vn.datsan.datsan.utils.AppConstants;
 import vn.datsan.datsan.utils.AppLog;
-import vn.datsan.datsan.utils.Constants;
 
 
 public class ChatActivity extends SimpleActivity {
@@ -80,7 +79,7 @@ public class ChatActivity extends SimpleActivity {
             long now = DateTime.now().getMillis();
 
             if (myTypingSignal != null
-                    && (now - myTypingSignal.getTimestamp() > Constants.TYPING_SIGNAL_TIMEOUT_MILLIS)) {
+                    && (now - myTypingSignal.getTimestamp() > AppConstants.TYPING_SIGNAL_TIMEOUT_MILLIS)) {
                 // Stop my typing
                 MessageService.getInstance().stopTypingSignal(chat.getId(), myTypingSignal);
                 myTypingSignal = null;
@@ -89,7 +88,7 @@ public class ChatActivity extends SimpleActivity {
 
             // Check any incoming signal timed out
             for (TypingSignal signal : incomingTypingSignals) {
-                if (now - signal.getTimestamp() > Constants.TYPING_SIGNAL_TIMEOUT_MILLIS) {
+                if (now - signal.getTimestamp() > AppConstants.TYPING_SIGNAL_TIMEOUT_MILLIS) {
                     MessageService.getInstance().stopTypingSignal(chat.getId(), signal);
                 }
             }
@@ -98,7 +97,7 @@ public class ChatActivity extends SimpleActivity {
             AppLog.d("TYPING_SIGNAL", "After timeout There are " + incomingTypingSignals.size() + " typing ...");
 
             // Delay some millis for the next check
-            timerHandler.postDelayed(this, Constants.TYPING_SIGNAL_TIMEOUT_MILLIS);
+            timerHandler.postDelayed(this, AppConstants.TYPING_SIGNAL_TIMEOUT_MILLIS);
         }
     };
 
@@ -144,7 +143,7 @@ public class ChatActivity extends SimpleActivity {
                     boolean passedKeepAliveInterval = false;
                     if (myTypingSignal != null) {
                         long now = DateTime.now().getMillis();
-                        if (now - myTypingSignal.getTimestamp() > Constants.TYPING_SIGNAL_KEEP_ALIVE_MILLIS) {
+                        if (now - myTypingSignal.getTimestamp() > AppConstants.TYPING_SIGNAL_KEEP_ALIVE_MILLIS) {
                             passedKeepAliveInterval = true;
                         }
                     }
@@ -211,7 +210,7 @@ public class ChatActivity extends SimpleActivity {
         listenOnChatUpdate();
 
         // Start timer handler
-        timerHandler.postDelayed(timerRunnable, Constants.TYPING_SIGNAL_TIMEOUT_MILLIS);
+        timerHandler.postDelayed(timerRunnable, AppConstants.TYPING_SIGNAL_TIMEOUT_MILLIS);
     }
 
     @Override
@@ -289,7 +288,7 @@ public class ChatActivity extends SimpleActivity {
             };
             messageService.getMessageDatabaseRef(chat.getId())
                     .orderByKey()
-                    .limitToLast(Constants.CHAT_HISTORY_PAGINATION_SIZE_DEFAULT)
+                    .limitToLast(AppConstants.CHAT_HISTORY_PAGINATION_SIZE_DEFAULT)
                     .addChildEventListener(incomingMessageEventListener);
         }
     }

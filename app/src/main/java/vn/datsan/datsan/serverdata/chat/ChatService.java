@@ -1,5 +1,6 @@
 package vn.datsan.datsan.serverdata.chat;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -7,7 +8,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.util.TextUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,10 +24,9 @@ import vn.datsan.datsan.models.chat.Chat;
 import vn.datsan.datsan.models.chat.Member;
 import vn.datsan.datsan.models.chat.Message;
 import vn.datsan.datsan.serverdata.CallBack;
-import vn.datsan.datsan.serverdata.GroupManager;
 import vn.datsan.datsan.serverdata.UserManager;
+import vn.datsan.datsan.utils.AppConstants;
 import vn.datsan.datsan.utils.AppLog;
-import vn.datsan.datsan.utils.Constants;
 
 /**
  * Created by yennguyen on 8/2/16.
@@ -38,7 +37,7 @@ public class ChatService {
 
     private static ChatService instance = new ChatService();
 
-    private DatabaseReference chatDatabaseRef = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_CHATS);
+    private DatabaseReference chatDatabaseRef = FirebaseDatabase.getInstance().getReference(AppConstants.FIREBASE_CHATS);
     private ValueEventListener valueEventListener;
 
     private MemberService memberService = MemberService.getInstance();
@@ -75,11 +74,11 @@ public class ChatService {
         // Because a chat always has a list of members when creating
         // so we would create chat and member objects at the same time to make sure the consistency
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put(Constants.FIREBASE_CHATS + "/" + chatKey, chat.toMap());
-        childUpdates.put(Constants.FIREBASE_MEMBERS + "/" + chatKey, userRolesMap);
+        childUpdates.put(AppConstants.FIREBASE_CHATS + "/" + chatKey, chat.toMap());
+        childUpdates.put(AppConstants.FIREBASE_MEMBERS + "/" + chatKey, userRolesMap);
         for (Member member : initialMembers) {
             // Create chat for all users are members
-            childUpdates.put(Constants.FIREBASE_USERS + "/" + member.getUserId() + "/chats/" + chatKey, chat.toMap());
+            childUpdates.put(AppConstants.FIREBASE_USERS + "/" + member.getUserId() + "/chats/" + chatKey, chat.toMap());
         }
         FirebaseDatabase.getInstance().getReference().updateChildren(childUpdates);
 
@@ -96,7 +95,7 @@ public class ChatService {
         members.add(new Member(me.getId(), UserRole.ADMIN));
         members.add(new Member(buddy.getId(), UserRole.MEMBER));
 
-        String title = me.getName() + Constants.GROUP_NAME_SEPARATOR + buddy.getName();
+        String title = me.getName() + AppConstants.GROUP_NAME_SEPARATOR + buddy.getName();
         return createChat(title, Chat.TYPE_ONE_TO_ONE_CHAT, members, null);
     }
 
@@ -152,9 +151,13 @@ public class ChatService {
 
         for (final User user : users) {
 
-            UserManager.getInstance().getUserChatDatabaseRef(user.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+            UserManager.getInstance().getUserChatDatabaseRef(user.getId())
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    AppLog.d(TAG, ":UserManager.getInstance().getUserChatDatabaseRef(userId):onDataChange:");
+
                     List<String> currentChatIds = new ArrayList<>();
                     for (DataSnapshot data : dataSnapshot.getChildren()) {
                         String chatId = data.getKey();
@@ -209,9 +212,12 @@ public class ChatService {
                                                 callback.onResultReceived(null);
                                             } else {
                                                 // Found the correct chat
-                                                ChatService.getInstance().getChatDatabaseRef(existedChatId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                ChatService.getInstance().getChatDatabaseRef(existedChatId)
+                                                        .addListenerForSingleValueEvent(new ValueEventListener() {
                                                     @Override
                                                     public void onDataChange(DataSnapshot dataSnapshot) {
+                                                        AppLog.d(TAG, ":ValueEventListener:onDataChange2");
+
                                                         Chat chat = dataSnapshot.getValue(Chat.class);
                                                         chat.setId(dataSnapshot.getKey());
                                                         callback.onResultReceived(chat);
@@ -253,14 +259,14 @@ public class ChatService {
     }
 
     private String buildChatTitle(List<String> names) {
-        return StringUtils.join(names, Constants.GROUP_NAME_SEPARATOR);
+        return StringUtils.join(names, AppConstants.GROUP_NAME_SEPARATOR);
     }
 
     /**
      * Load chat history for current user
-     * @param callBack
+     * @param callback
      */
-    public void loadChatHistory(final CallBack.OnResultReceivedListener callBack) {
+    public void loadChatHistory(final CallBack.OnResultReceivedListener callback) {
 
         User currentUser = UserManager.getInstance().getCurrentUser();
         if (currentUser == null) { // This should not never happened but need a debug checkpoint
@@ -268,38 +274,35 @@ public class ChatService {
             return;
         }
 
-        valueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+//        valueEventListener = new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//                // TODO optimize loading history (do some kind of pagination)
+//                if (chatHistory.size() > 0) {
+//                    chatHistory.removeAll(chatHistory);
+//                }
+//
+//                for (DataSnapshot data: dataSnapshot.getChildren()) {
+//                    Chat chat = data.getValue(Chat.class);
+//                    if (chat != null) {
+//                        chat.setId(data.getKey());
+//                        chatHistory.add(chat);
+//                    }
+//                }
+//                if (callBack != null) {
+//                    Collections.reverse(chatHistory); // Want to have the latest chats on top
+//                    callBack.onResultReceived(chatHistory);
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        };
 
-                // TODO optimize loading history (do some kind of pagination)
-                if (chatHistory.size() > 0) {
-                    chatHistory.removeAll(chatHistory);
-                }
-
-                for (DataSnapshot data: dataSnapshot.getChildren()) {
-                    Chat chat = data.getValue(Chat.class);
-                    if (chat != null) {
-                        chat.setId(data.getKey());
-                        chatHistory.add(chat);
-                    }
-                }
-                if (callBack != null) {
-                    Collections.reverse(chatHistory); // Want to have the latest chats on top
-                    callBack.onResultReceived(chatHistory);
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-        UserManager.getInstance().getCurrentUserChatDatabaseRef()
-                .orderByChild("lastModifiedTimestamp")
-                .limitToLast(Constants.CHAT_HISTORY_PAGINATION_SIZE_DEFAULT)
-                .addValueEventListener(valueEventListener);
     }
 
     public void removeDatabaseRefListeners() {
@@ -323,8 +326,8 @@ public class ChatService {
 
         Map<String, Object> childUpdates = new HashMap<>();
 
-        childUpdates.put(Constants.FIREBASE_MEMBERS + "/" + chatId + "/" + userId,  null);
-        childUpdates.put(Constants.FIREBASE_USERS + "/" + userId + "/chats/" + chatId, null);
+        childUpdates.put(AppConstants.FIREBASE_MEMBERS + "/" + chatId + "/" + userId,  null);
+        childUpdates.put(AppConstants.FIREBASE_USERS + "/" + userId + "/chats/" + chatId, null);
 
         FirebaseDatabase.getInstance().getReference().updateChildren(childUpdates);
     }
@@ -343,8 +346,8 @@ public class ChatService {
 
         Map<String, Object> childUpdates = new HashMap<>();
 
-        childUpdates.put(Constants.FIREBASE_MEMBERS + "/" + chat.getId() + "/" + userId,  member.toUserRoleMap());
-        childUpdates.put(Constants.FIREBASE_USERS + "/" + userId + "/chats/" + chat.getId(), chat.toMap());
+        childUpdates.put(AppConstants.FIREBASE_MEMBERS + "/" + chat.getId() + "/" + userId,  member.toUserRoleMap());
+        childUpdates.put(AppConstants.FIREBASE_USERS + "/" + userId + "/chats/" + chat.getId(), chat.toMap());
 
         FirebaseDatabase.getInstance().getReference().updateChildren(childUpdates);
     }

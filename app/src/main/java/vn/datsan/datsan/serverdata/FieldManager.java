@@ -17,7 +17,7 @@ import vn.datsan.datsan.R;
 import vn.datsan.datsan.models.FakeStadium;
 import vn.datsan.datsan.models.Field;
 import vn.datsan.datsan.utils.AppLog;
-import vn.datsan.datsan.utils.Constants;
+import vn.datsan.datsan.utils.AppConstants;
 import vn.datsan.datsan.utils.RawIO;
 
 /**
@@ -30,7 +30,7 @@ public class FieldManager {
     private List<Field> fields;
 
     private FieldManager() {
-        fieldDatabaseRef = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_FIELDS);
+        fieldDatabaseRef = FirebaseDatabase.getInstance().getReference(AppConstants.FIREBASE_FIELDS);
     }
 
     public static FieldManager getInstance() {

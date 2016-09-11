@@ -18,8 +18,8 @@ import io.searchbox.indices.DeleteIndex;
 import io.searchbox.indices.IndicesExists;
 import io.searchbox.indices.mapping.PutMapping;
 import vn.datsan.datsan.serverdata.CallBack;
+import vn.datsan.datsan.utils.AppConstants;
 import vn.datsan.datsan.utils.AppLog;
-import vn.datsan.datsan.utils.Constants;
 import vn.datsan.datsan.search.interfaces.Searchable;
 
 
@@ -38,13 +38,13 @@ public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, Object> {
         // See https://github.com/searchbox-io/Jest/tree/master/jest
         if (jestClient == null) {
 
-            if (Constants.ELASTICSEARCH_USERNAME == null || "".equals(Constants.ELASTICSEARCH_USERNAME)) {
+            if (AppConstants.ELASTICSEARCH_USERNAME == null || "".equals(AppConstants.ELASTICSEARCH_USERNAME)) {
                 // Not required authorisation
                 // Build connection factory to the Elasticsearch server
                 JestClientFactory factory = new JestClientFactory();
                 factory.setDroidClientConfig(
                         new DroidClientConfig
-                                .Builder(Constants.ELASTICSEARCH_SERVER_URL)
+                                .Builder(AppConstants.ELASTICSEARCH_SERVER_URL)
                                 .multiThreaded(true)
                                 .build());
                 jestClient = factory.getObject();
@@ -53,9 +53,9 @@ public class Elasticsearch extends AsyncTask<ElasticsearchParam, Void, Object> {
                 JestClientFactory factory = new JestClientFactory();
                 factory.setDroidClientConfig(
                         new DroidClientConfig
-                                .Builder(Constants.ELASTICSEARCH_SERVER_URL)
-                                .defaultCredentials(Constants.ELASTICSEARCH_USERNAME,
-                                        Constants.ELASTICSEARCH_PASSWORD)
+                                .Builder(AppConstants.ELASTICSEARCH_SERVER_URL)
+                                .defaultCredentials(AppConstants.ELASTICSEARCH_USERNAME,
+                                        AppConstants.ELASTICSEARCH_PASSWORD)
                                 .multiThreaded(true)
                                 .build());
                 jestClient = factory.getObject();

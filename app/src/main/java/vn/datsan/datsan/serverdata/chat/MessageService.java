@@ -1,9 +1,5 @@
 package vn.datsan.datsan.serverdata.chat;
 
-import android.support.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -13,7 +9,6 @@ import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,8 +17,8 @@ import vn.datsan.datsan.models.chat.Chat;
 import vn.datsan.datsan.models.chat.Message;
 import vn.datsan.datsan.models.chat.TypingSignal;
 import vn.datsan.datsan.serverdata.CallBack;
+import vn.datsan.datsan.utils.AppConstants;
 import vn.datsan.datsan.utils.AppLog;
-import vn.datsan.datsan.utils.Constants;
 
 /**
  * Created by yennguyen on 8/13/16.
@@ -32,7 +27,7 @@ public class MessageService {
 
     private static final String TAG = MessageService.class.getName();
 
-    private DatabaseReference messageDatabaseRef = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_MESSAGES);
+    private DatabaseReference messageDatabaseRef = FirebaseDatabase.getInstance().getReference(AppConstants.FIREBASE_MESSAGES);
     private static MessageService instance = new MessageService();
 
     private ChildEventListener childEventListener;
@@ -70,8 +65,8 @@ public class MessageService {
         // Store the new message to messages object, and
         // Update the chat with the new last message
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put(Constants.FIREBASE_CHATS + "/" + chatId, message.getChat().toMap());
-        childUpdates.put(Constants.FIREBASE_MESSAGES + "/" + chatId + "/" + message.getId(), message.toMap());
+        childUpdates.put(AppConstants.FIREBASE_CHATS + "/" + chatId, message.getChat().toMap());
+        childUpdates.put(AppConstants.FIREBASE_MESSAGES + "/" + chatId + "/" + message.getId(), message.toMap());
 
         FirebaseDatabase.getInstance().getReference().updateChildren(childUpdates);
 
@@ -173,6 +168,6 @@ public class MessageService {
     }
 
     private String getTypingSignalKeyForChat(String chatId) {
-        return chatId + "_" + Constants.FIREBASE_TYPING_SIGNAL;
+        return chatId + "_" + AppConstants.FIREBASE_TYPING_SIGNAL;
     }
 }

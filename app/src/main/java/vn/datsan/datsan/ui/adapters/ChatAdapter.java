@@ -5,14 +5,9 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +15,6 @@ import java.util.List;
 import vn.datsan.datsan.R;
 
 import vn.datsan.datsan.models.chat.Message;
-import vn.datsan.datsan.utils.Constants;
 
 /**
  * Created by yennguyen on 8/28/16.

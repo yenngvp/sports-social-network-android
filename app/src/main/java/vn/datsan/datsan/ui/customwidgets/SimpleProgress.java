@@ -39,6 +39,7 @@ public class SimpleProgress {
     public void dismiss() {
         if (progressDialog != null) {
             progressDialog.dismiss();
+            progressDialog = null;
         }
     }
 }
