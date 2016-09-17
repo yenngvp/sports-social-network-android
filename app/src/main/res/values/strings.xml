@@ -172,6 +172,7 @@
 
     <!-- Chats -->
     <string name="chats">Tin nhắn</string>
+    <string name="type_message">Soạn tin nhắn</string>
     <string name="new_chat">Tin nhắn mới</string>
     <string name="message_to">Tới: </string>
     <string name="enter_chat">Đang vào chat</string>

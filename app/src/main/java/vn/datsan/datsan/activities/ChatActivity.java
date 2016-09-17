@@ -1,5 +1,6 @@
 package vn.datsan.datsan.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,8 +12,10 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
 import com.google.firebase.database.ChildEventListener;
@@ -28,6 +31,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.github.rockerhieu.emojicon.EmojiconGridFragment;
+import io.github.rockerhieu.emojicon.EmojiconsFragment;
+import io.github.rockerhieu.emojicon.emoji.Emojicon;
 import vn.datsan.datsan.R;
 import vn.datsan.datsan.models.User;
 import vn.datsan.datsan.models.chat.Chat;
@@ -43,14 +49,17 @@ import vn.datsan.datsan.utils.AppConstants;
 import vn.datsan.datsan.utils.AppLog;
 
 
-public class ChatActivity extends SimpleActivity {
+public class ChatActivity extends SimpleActivity
+        implements EmojiconGridFragment.OnEmojiconClickedListener,
+        EmojiconsFragment.OnEmojiconBackspaceClickedListener {
 
     private static final String TAG = ChatActivity.class.getName();
 
     @BindView(R.id.messageEdit) EditText messageEdt;
-    @BindView(R.id.chatSendButton) Button sendBtn;
 
-    @BindView(R.id.chat_container) RelativeLayout chat_container;
+//    @BindView(R.id.chat_container) RelativeLayout chat_container;
+    @BindView(R.id.emojicons_container) RelativeLayout emojicons_container;
+    @BindView(R.id.emojiSwitchImageBtn) ImageButton emojiSwitchImageBtn;
 
     private RecyclerView recyclerView;
     private ChatAdapter chatAdapter;
@@ -103,6 +112,8 @@ public class ChatActivity extends SimpleActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
@@ -167,7 +178,16 @@ public class ChatActivity extends SimpleActivity {
             }
         });
 
+        messageEdt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+//                if (b) {
+//                    showHideInput();
+//                }
+            }
+        });
 
+        setEmojiconFragment(false);
     }
 
     @Override
@@ -268,26 +288,26 @@ public class ChatActivity extends SimpleActivity {
 
                 @Override
                 public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                    AppLog.e(TAG, "We don't expect to have child message Changed");
+                    AppLog.d(TAG, "onChildChanged");
                 }
 
                 @Override
                 public void onChildRemoved(DataSnapshot dataSnapshot) {
-                    AppLog.e(TAG, "Remove message feature not supported yet!");
+                    AppLog.d(TAG, "onChildRemoved");
                 }
 
                 @Override
                 public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                    AppLog.e(TAG, "We don't expect to have child message Moved");
+                    AppLog.d(TAG, "onChildMoved");
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-
+                    AppLog.d(TAG, "onCancelled");
                 }
             };
             messageService.getMessageDatabaseRef(chat.getId())
-                    .orderByKey()
+                    .orderByChild("timestamp")
                     .limitToLast(AppConstants.CHAT_HISTORY_PAGINATION_SIZE_DEFAULT)
                     .addChildEventListener(incomingMessageEventListener);
         }
@@ -346,6 +366,46 @@ public class ChatActivity extends SimpleActivity {
         }
     }
 
+    private boolean showingEmoji;
+    private boolean showKeyboard;
+
+    /**
+     * Switch emoji <-> keyboard input
+     */
+    @OnClick(R.id.emojiSwitchImageBtn)
+    public void toggleKeyboardOrEmoji() {
+        showingEmoji = !showingEmoji;
+        showHideInput();
+    }
+
+    private void showHideInput() {
+        View view = this.getCurrentFocus();
+
+        if (showingEmoji) {
+            emojiSwitchImageBtn.setImageResource(R.drawable.ico_keyboard_32);
+        } else {
+            emojiSwitchImageBtn.setImageResource(R.drawable.emoji_happy_32);
+        }
+
+        if (showingEmoji) {
+            // Show emoji
+            emojicons_container.setVisibility(View.VISIBLE);
+            // Hide keyboard
+            if (view != null) {
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+        } else {
+            // Hide emoji
+            emojicons_container.setVisibility(View.INVISIBLE);
+            // Show keyboard
+            if (view != null) {
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(view, 0);
+            }
+        }
+    }
+
     /**
      * Send message, send to firebase
      */
@@ -386,6 +446,23 @@ public class ChatActivity extends SimpleActivity {
             chatAdapter.add(message);
             recyclerView.smoothScrollToPosition(chatAdapter.getItemCount() - 1);
         }
+    }
+
+    private void setEmojiconFragment(boolean useSystemDefault) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.emojicons, EmojiconsFragment.newInstance(useSystemDefault))
+                .commit();
+    }
+
+    @Override
+    public void onEmojiconBackspaceClicked(View v) {
+        EmojiconsFragment.backspace(messageEdt);
+    }
+
+    @Override
+    public void onEmojiconClicked(Emojicon emojicon) {
+        EmojiconsFragment.input(messageEdt, emojicon);
     }
 
     private void showSendingIndicator() {

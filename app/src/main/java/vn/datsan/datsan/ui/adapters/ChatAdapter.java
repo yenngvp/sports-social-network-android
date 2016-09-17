@@ -12,6 +12,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.rockerhieu.emojicon.EmojiconEditText;
+import io.github.rockerhieu.emojicon.EmojiconTextView;
 import vn.datsan.datsan.R;
 
 import vn.datsan.datsan.models.chat.Message;
@@ -75,33 +77,34 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
     }
 
     public class ChatViewHolder extends RecyclerView.ViewHolder {
-        private TextView txtMessage;
-        private TextView txtInfo;
+
+        private EmojiconTextView txtMessage;
+        private EmojiconTextView txtInfo;
         private LinearLayout content;
         private LinearLayout contentWithBG;
         
         public ChatViewHolder(View itemView) {
             super(itemView);
 
-            txtMessage = (TextView) itemView.findViewById(R.id.txtMessage);
+            txtMessage = (EmojiconTextView) itemView.findViewById(R.id.txtMessage);
             content = (LinearLayout) itemView.findViewById(R.id.content);
             contentWithBG = (LinearLayout) itemView.findViewById(R.id.contentWithBackground);
-            txtInfo = (TextView) itemView.findViewById(R.id.txtInfo);
+            txtInfo = (EmojiconTextView) itemView.findViewById(R.id.txtInfo);
         }
 
-        public TextView getTxtMessage() {
+        public EmojiconTextView getTxtMessage() {
             return txtMessage;
         }
 
-        public void setTxtMessage(TextView txtMessage) {
+        public void setTxtMessage(EmojiconTextView txtMessage) {
             this.txtMessage = txtMessage;
         }
 
-        public TextView getTxtInfo() {
+        public EmojiconTextView getTxtInfo() {
             return txtInfo;
         }
 
-        public void setTxtInfo(TextView txtInfo) {
+        public void setTxtInfo(EmojiconTextView txtInfo) {
             this.txtInfo = txtInfo;
         }
 
