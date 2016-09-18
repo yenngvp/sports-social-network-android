@@ -29,11 +29,6 @@ public class SocialSportApplication extends android.app.Application {
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
 
-        /*
-         * Create elasticsearch index if it not exists
-         */
-        ElasticsearchService.getInstance().createIndex();
-
         // If we need it, enable it
         //registerActivityLifecycleCallbacks(new MyActivityLifecycleHandler());
 

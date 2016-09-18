@@ -178,5 +178,8 @@
     <string name="max_user_exceed">Số thành viên tối đa một nhóm là %d!</string>
     <string name="delete_chat">Xoá trò chuyện</string>
     <string name="loading_recent_chat">Đang tải tin nhắn</string>
+    <string name="one_is_typing">{0} đang soạn tin nhắn...</string>
+    <string name="two_are_typing">{0} và {1} đang soạn tin nhắn...</string>
+    <string name="one_and_others_are_typing">{0} và {1} người khác đang soạn tin nhắn...</string>
 
 </resources>

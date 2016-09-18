@@ -28,7 +28,8 @@ public class AppConstants {
     public static final String FIREBASE_MESSAGES = "app/messages";
     public static final String FIREBASE_MEMBERS = "app/members";
     public static final String FIREBASE_MATCHS = "app/matchs";
-    public static final String FIREBASE_TYPING_SIGNAL = "TypingSignals";
+    public static final String FIREBASE_TYPING_SIGNAL = "typing_signals";
+    public static final String FIREBASE_SERVERTIME = "app/servertime";
 
     /*
      * Elasticsearch server
@@ -47,8 +48,8 @@ public class AppConstants {
 
     public static final String GROUP_NAME_SEPARATOR = ", ";
 
-    public static final int TYPING_SIGNAL_KEEP_ALIVE_MILLIS = 5000; // milliseconds
-    public static final int TYPING_SIGNAL_TIMEOUT_MILLIS = 10000;   // milliseconds
+    public static final int TYPING_SIGNAL_KEEP_ALIVE_MILLIS = 3000; // milliseconds
+    public static final int TYPING_SIGNAL_TIMEOUT_MILLIS = 5000;   // milliseconds
 
     public static final int MAX_MEMBERS_IN_A_CHAT = 50;
 }

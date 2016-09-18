@@ -9,6 +9,8 @@ import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
+import org.joda.time.DateTime;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -105,12 +107,16 @@ public class MessageService {
         return messageDatabaseRef.child(typingMessageKey);
     }
 
-    public void startTypingSignal(String chatId, TypingSignal signal) {
-        getTypingSignalDatabaseRef(chatId).child(signal.getUserId()).setValue(signal);
+    public void startTyping(String chatId, TypingSignal myTyping) {
+        myTyping.setTyping(true);
+        myTyping.setTimestamp(DateTime.now().getMillis());
+        getTypingSignalDatabaseRef(chatId).child(myTyping.getUserId()).setValue(myTyping);
     }
 
-    public void stopTypingSignal(String chatId, TypingSignal signal) {
-        getTypingSignalDatabaseRef(chatId).child(signal.getUserId()).setValue(null);
+    public void stopTyping(String chatId, TypingSignal myTyping) {
+        myTyping.setTyping(false);
+        myTyping.setTimestamp(DateTime.now().getMillis());
+        getTypingSignalDatabaseRef(chatId).child(myTyping.getUserId()).setValue(myTyping);
     }
 
     /**
@@ -139,7 +145,7 @@ public class MessageService {
                 @Override
                 public void onChildRemoved(DataSnapshot dataSnapshot) {
                     TypingSignal signal = dataSnapshot.getValue(TypingSignal.class);
-                    signal.setStopped(true);
+                    signal.setTyping(false);
                     if (callback != null) {
                         callback.onResultReceived(signal);
                     }

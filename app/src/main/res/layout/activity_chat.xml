@@ -26,7 +26,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp">
 
         <EditText
             android:id="@+id/messageEdit"
@@ -54,11 +55,21 @@
             android:layout_alignParentTop="false"
             android:layout_marginBottom="20dp"
             android:layout_above="@+id/messageEdit"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="0dp"
             android:listSelector="@android:color/transparent"
             android:transcriptMode="alwaysScroll"
             android:divider="@null"
             android:scrollbars="vertical" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Someone is typing..."
+            android:id="@+id/whoTypingTxt"
+            android:visibility="invisible"
+            android:layout_above="@+id/messageEdit"
+            android:layout_centerHorizontal="true" />
 
     </RelativeLayout>
 </LinearLayout>

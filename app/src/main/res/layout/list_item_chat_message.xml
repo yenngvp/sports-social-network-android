@@ -9,13 +9,6 @@
         android:layout_alignParentRight="true"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/txtInfo"
-            android:layout_width="wrap_content"
-            android:layout_height="30sp"
-            android:layout_gravity="right"
-            android:textSize="12sp"
-            android:textColor="@android:color/darker_gray" />
         <!--android:background="@drawable/in_message_bg"-->
 
         <LinearLayout
@@ -36,5 +29,24 @@
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/txtInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="30sp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:textSize="12sp"
+            android:textColor="@android:color/darker_gray" />
+
     </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Sent Date"
+        android:id="@+id/txtSentTime"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>

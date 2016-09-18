@@ -11,9 +11,11 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -22,6 +24,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.joda.time.DateTime;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,16 +32,19 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import vn.datsan.datsan.R;
+import vn.datsan.datsan.models.ServerTime;
 import vn.datsan.datsan.models.User;
 import vn.datsan.datsan.models.chat.Chat;
 import vn.datsan.datsan.models.chat.Message;
 import vn.datsan.datsan.models.chat.MessageType;
 import vn.datsan.datsan.models.chat.TypingSignal;
 import vn.datsan.datsan.serverdata.CallBack;
+import vn.datsan.datsan.serverdata.ServerTimeService;
 import vn.datsan.datsan.serverdata.UserManager;
 import vn.datsan.datsan.serverdata.chat.ChatService;
 import vn.datsan.datsan.serverdata.chat.MessageService;
 import vn.datsan.datsan.ui.adapters.ChatAdapter;
+import vn.datsan.datsan.ui.customwidgets.SimpleProgress;
 import vn.datsan.datsan.utils.AppConstants;
 import vn.datsan.datsan.utils.AppLog;
 
@@ -49,6 +55,7 @@ public class ChatActivity extends SimpleActivity {
 
     @BindView(R.id.messageEdit) EditText messageEdt;
     @BindView(R.id.chatSendButton) Button sendBtn;
+    @BindView(R.id.whoTypingTxt) TextView whoTypingTxt;
 
     @BindView(R.id.chat_container) RelativeLayout chat_container;
 
@@ -66,7 +73,9 @@ public class ChatActivity extends SimpleActivity {
     private Message myLatestLocalMessage;
 
     private volatile TypingSignal myTypingSignal;
-    private volatile List<TypingSignal> incomingTypingSignals = new ArrayList<>();
+    private volatile List<TypingSignal> incomingTypingSignals;
+
+    final User currentUser = UserManager.getInstance().getCurrentUser();
 
     // Timer handler for handling typing timeout
     private Handler timerHandler = new Handler();
@@ -75,26 +84,27 @@ public class ChatActivity extends SimpleActivity {
         @Override
         public void run() {
 
-            // Check for current user typing timeout, ie. user focusing text input field but stopped typing for awhile
-            long now = DateTime.now().getMillis();
-
-            if (myTypingSignal != null
-                    && (now - myTypingSignal.getTimestamp() > AppConstants.TYPING_SIGNAL_TIMEOUT_MILLIS)) {
+            // Check for current user typing timed out, ie. user focusing text input field but stopped typing for awhile
+            if (isTimedOut(myTypingSignal.getTimestamp(), AppConstants.TYPING_SIGNAL_TIMEOUT_MILLIS)) {
                 // Stop my typing
-                MessageService.getInstance().stopTypingSignal(chat.getId(), myTypingSignal);
-                myTypingSignal = null;
-                AppLog.d("TYPING_SIGNAL", "Stopped my typing due to timedout!");
+                MessageService.getInstance().stopTyping(chat.getId(), myTypingSignal);
+                AppLog.d("TYPING_SIGNAL", "Stopped my typing due to timed out!");
             }
 
             // Check any incoming signal timed out
-            for (TypingSignal signal : incomingTypingSignals) {
-                if (now - signal.getTimestamp() > AppConstants.TYPING_SIGNAL_TIMEOUT_MILLIS) {
-                    MessageService.getInstance().stopTypingSignal(chat.getId(), signal);
+            if (incomingTypingSignals.size() > 0) {
+                for (TypingSignal signal : incomingTypingSignals) {
+                    if (signal.isTyping()) {
+                        if (isTimedOut(signal.getTimestamp(), AppConstants.TYPING_SIGNAL_TIMEOUT_MILLIS)) {
+                            // Force timed out the user
+                            signal.setTyping(false);
+                        }
+                    }
                 }
-            }
 
-            // Update UI
-            AppLog.d("TYPING_SIGNAL", "After timeout There are " + incomingTypingSignals.size() + " typing ...");
+                // Update UI
+                updateTypingIndicator();
+            }
 
             // Delay some millis for the next check
             timerHandler.postDelayed(this, AppConstants.TYPING_SIGNAL_TIMEOUT_MILLIS);
@@ -123,6 +133,10 @@ public class ChatActivity extends SimpleActivity {
 
         final String chatId = chat.getId();
 
+        // Typing signals
+        myTypingSignal = new TypingSignal(currentUser.getId(), currentUser.getName());
+        incomingTypingSignals = new ArrayList<>();
+
         // Listen on message input
         messageEdt.addTextChangedListener(new TextWatcher() {
             @Override
@@ -131,34 +145,22 @@ public class ChatActivity extends SimpleActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                User currentUser = UserManager.getInstance().getCurrentUser();
+
                 int len = charSequence.length();
 
-                // Stopped typing when user clear the input
-                if (len == 0 && myTypingSignal != null) {
-                    MessageService.getInstance().stopTypingSignal(chatId, myTypingSignal);
-                    myTypingSignal = null;
+                if (len == 0) {
+                    // Stop typing when user clear the input
+                    MessageService.getInstance().stopTyping(chatId, myTypingSignal);
                 } else {
-                    // Check if passing the keep-alive interval
-                    boolean passedKeepAliveInterval = false;
-                    if (myTypingSignal != null) {
-                        long now = DateTime.now().getMillis();
-                        if (now - myTypingSignal.getTimestamp() > AppConstants.TYPING_SIGNAL_KEEP_ALIVE_MILLIS) {
-                            passedKeepAliveInterval = true;
-                        }
-                    }
+                    // Continuing typing
 
-                    // Start typing or keep alive typing signal
-                    if (myTypingSignal == null || passedKeepAliveInterval) {
-                        if (myTypingSignal == null) {
-                            myTypingSignal = new TypingSignal(currentUser.getId(), currentUser.getName());
-                        }
-                        myTypingSignal.setTimestamp(DateTime.now().getMillis());
-                        MessageService.getInstance().startTypingSignal(chatId, myTypingSignal);
+                    // Check if passed the keep-alive interval
+                    if (!myTypingSignal.isTyping()
+                            || isTimedOut(myTypingSignal.getTimestamp(), AppConstants.TYPING_SIGNAL_KEEP_ALIVE_MILLIS)) {
+                        MessageService.getInstance().startTyping(chatId, myTypingSignal);
 
                         AppLog.d("TYPING_SIGNAL", myTypingSignal.toString());
                     }
-
                 }
             }
 
@@ -166,7 +168,6 @@ public class ChatActivity extends SimpleActivity {
             public void afterTextChanged(Editable editable) {
             }
         });
-
 
     }
 
@@ -183,8 +184,7 @@ public class ChatActivity extends SimpleActivity {
         }
 
         if (myTypingSignal != null) {
-            MessageService.getInstance().stopTypingSignal(chat.getId(), myTypingSignal);
-            myTypingSignal = null;
+            MessageService.getInstance().stopTyping(chat.getId(), myTypingSignal);
         }
 
         if (chatValueEventListener != null) {
@@ -268,26 +268,26 @@ public class ChatActivity extends SimpleActivity {
 
                 @Override
                 public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                    AppLog.e(TAG, "We don't expect to have child message Changed");
+                    AppLog.d(TAG, ":onChildChanged:");
                 }
 
                 @Override
                 public void onChildRemoved(DataSnapshot dataSnapshot) {
-                    AppLog.e(TAG, "Remove message feature not supported yet!");
+                    AppLog.d(TAG, ":onChildRemoved:");
                 }
 
                 @Override
                 public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                    AppLog.e(TAG, "We don't expect to have child message Moved");
+                    AppLog.d(TAG, ":onChildMoved:");
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-
+                    AppLog.e(TAG, ":onCancelled:");
                 }
             };
             messageService.getMessageDatabaseRef(chat.getId())
-                    .orderByKey()
+                    .orderByChild("timestamp")
                     .limitToLast(AppConstants.CHAT_HISTORY_PAGINATION_SIZE_DEFAULT)
                     .addChildEventListener(incomingMessageEventListener);
         }
@@ -299,26 +299,23 @@ public class ChatActivity extends SimpleActivity {
             public void onResultReceived(Object result) {
 
                 TypingSignal signal = (TypingSignal) result;
-                User currentUser = UserManager.getInstance().getCurrentUser();
+                if (signal == null) {
+                    return;
+                }
+                // Should not care about others' timestamp due to we are not replaying on the server timestamp
+                // it's actually other devices' timestamp
+                signal.setTimestamp(DateTime.now().getMillis());
 
-                if (signal != null && signal.getUserId() != currentUser.getId()) {
-
-                    if (!signal.isStopped() && incomingTypingSignals.size() == 0) {
-                        incomingTypingSignals.add(signal);
+                if (!signal.equals(myTypingSignal)) {
+                    // Others typing (either incoming new or update)
+                    if (incomingTypingSignals.contains(signal)) {
+                        incomingTypingSignals.set(incomingTypingSignals.indexOf(signal), signal);
                     } else {
-                        for (TypingSignal s : incomingTypingSignals) {
-                            if (signal.getUserId().equals(s.getUserId())) {
-                                incomingTypingSignals.remove(s); // stopped
-                                if (!signal.isStopped()) {
-                                    // Update signal
-                                    incomingTypingSignals.add(signal);
-                                }
-                                break;
-                            }
-                        }
+                        incomingTypingSignals.add(signal);
                     }
+
                     // Update UI
-                    AppLog.d("TYPING_SIGNAL", "There are " + incomingTypingSignals.size() + " typing ...");
+                    updateTypingIndicator();
                 }
             }
         });
@@ -388,23 +385,44 @@ public class ChatActivity extends SimpleActivity {
         }
     }
 
-    private void showSendingIndicator() {
+    private void updateTypingIndicator() {
 
+        // See who is typing
+        List<TypingSignal> othersTyping = new ArrayList<>();
+        for (TypingSignal signal : incomingTypingSignals) {
+            if (signal.isTyping()) {
+                othersTyping.add(signal);
+            }
+        }
+        AppLog.d("TYPING_SIGNAL", "There are " + othersTyping.size() + " typing ...");
+
+        if (othersTyping.size() == 0) {
+            whoTypingTxt.setText("");
+            whoTypingTxt.setVisibility(View.INVISIBLE);
+        } else {
+            String message;
+            if (othersTyping.size() == 1) {
+                TypingSignal signal = othersTyping.get(0);
+                message = MessageFormat.format(getString(R.string.one_is_typing), signal.getUserName());
+            } else if (othersTyping.size() == 2) {
+                TypingSignal signal1 = othersTyping.get(0);
+                TypingSignal signal2 = othersTyping.get(1);
+                message = MessageFormat.format(getString(R.string.two_are_typing),
+                        signal1.getUserName(), signal2.getUserName());
+            } else {
+                TypingSignal signal1 = othersTyping.get(0);
+                int others = othersTyping.size() - 1;
+                message = MessageFormat.format(getString(R.string.one_and_others_are_typing),
+                        signal1.getUserName(), others);
+            }
+            whoTypingTxt.setText(message);
+            whoTypingTxt.setVisibility(View.VISIBLE);
+        }
     }
 
-    private void dismissSendingIndicator() {
-
+    private boolean isTimedOut(long timestamp, long millisToTimedOut) {
+        long millisNow = DateTime.now().getMillis();
+        return (millisNow - timestamp > millisToTimedOut);
     }
 
-    private void showSentIndicator() {
-
-    }
-
-    private void showReadIndicator() {
-
-    }
-
-    private void showTypingIndicator() {
-
-    }
 }

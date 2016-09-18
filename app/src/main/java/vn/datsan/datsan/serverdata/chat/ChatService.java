@@ -85,20 +85,6 @@ public class ChatService {
         return chat;
     }
 
-    /**
-     * Start chat with someone
-     * @return
-     */
-    public Chat createOneToOneChat(User me, User buddy) {
-        // Create chat has two members me and other
-        List<Member> members = new ArrayList<>();
-        members.add(new Member(me.getId(), UserRole.ADMIN));
-        members.add(new Member(buddy.getId(), UserRole.MEMBER));
-
-        String title = me.getName() + AppConstants.GROUP_NAME_SEPARATOR + buddy.getName();
-        return createChat(title, Chat.TYPE_ONE_TO_ONE_CHAT, members, null);
-    }
-
     public void createChatGroup(Group group) {
         chatDatabaseRef.push().setValue(group.toMap());
     }
@@ -260,49 +246,6 @@ public class ChatService {
 
     private String buildChatTitle(List<String> names) {
         return StringUtils.join(names, AppConstants.GROUP_NAME_SEPARATOR);
-    }
-
-    /**
-     * Load chat history for current user
-     * @param callback
-     */
-    public void loadChatHistory(final CallBack.OnResultReceivedListener callback) {
-
-        User currentUser = UserManager.getInstance().getCurrentUser();
-        if (currentUser == null) { // This should not never happened but need a debug checkpoint
-            AppLog.e(TAG, "loadChatHistory currentUser is NULL");
-            return;
-        }
-
-//        valueEventListener = new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//
-//                // TODO optimize loading history (do some kind of pagination)
-//                if (chatHistory.size() > 0) {
-//                    chatHistory.removeAll(chatHistory);
-//                }
-//
-//                for (DataSnapshot data: dataSnapshot.getChildren()) {
-//                    Chat chat = data.getValue(Chat.class);
-//                    if (chat != null) {
-//                        chat.setId(data.getKey());
-//                        chatHistory.add(chat);
-//                    }
-//                }
-//                if (callBack != null) {
-//                    Collections.reverse(chatHistory); // Want to have the latest chats on top
-//                    callBack.onResultReceived(chatHistory);
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        };
-
     }
 
     public void removeDatabaseRefListeners() {

@@ -1,6 +1,9 @@
 package vn.datsan.datsan.models.chat;
 
 import com.google.firebase.database.Exclude;
+import com.google.firebase.database.ServerValue;
+
+import java.util.Map;
 
 /**
  * Created by yennguyen on 7/31/16.
@@ -8,7 +11,7 @@ import com.google.firebase.database.Exclude;
 public class TypingSignal {
 
     private long timestamp;
-    private boolean stopped;
+    private boolean typing;
     private String userId;
     private String userName;
 
@@ -20,20 +23,19 @@ public class TypingSignal {
     }
 
     public long getTimestamp() {
-        return timestamp;
+        return this.timestamp;
     }
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 
-    @Exclude
-    public boolean isStopped() {
-        return stopped;
+    public boolean isTyping() {
+        return typing;
     }
 
-    public void setStopped(boolean stopped) {
-        this.stopped = stopped;
+    public void setTyping(boolean typing) {
+        this.typing = typing;
     }
 
     public String getUserId() {
@@ -56,5 +58,15 @@ public class TypingSignal {
     @Override
     public String toString() {
         return String.format("%s (%s) started typing from %d ...", userName, userId, timestamp);
+    }
+
+    @Exclude
+    @Override
+    public boolean equals(Object object) {
+        TypingSignal that = (TypingSignal) object;
+        if (that == null || that.getUserId() == null || this.getUserId() == null) {
+            return false;
+        }
+        return this.getUserId().equals(that.getUserId());
     }
 }

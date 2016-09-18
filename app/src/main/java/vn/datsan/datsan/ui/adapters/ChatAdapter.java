@@ -65,7 +65,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
         setAlignment(holder, message.isMe());
         holder.getTxtMessage().setText(message.getMessage());
         if (message.getTimestampMillis() > 0) {
-            holder.getTxtInfo().setText(message.getTimestampAsDatetime());
+            holder.getTxtSentTime().setText(message.getTimestampAsDatetime());
         }
     }
 
@@ -77,6 +77,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
     public class ChatViewHolder extends RecyclerView.ViewHolder {
         private TextView txtMessage;
         private TextView txtInfo;
+        private TextView txtSentTime;
         private LinearLayout content;
         private LinearLayout contentWithBG;
         
@@ -87,6 +88,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
             content = (LinearLayout) itemView.findViewById(R.id.content);
             contentWithBG = (LinearLayout) itemView.findViewById(R.id.contentWithBackground);
             txtInfo = (TextView) itemView.findViewById(R.id.txtInfo);
+            txtSentTime = (TextView) itemView.findViewById(R.id.txtSentTime);
         }
 
         public TextView getTxtMessage() {
@@ -119,6 +121,14 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
 
         public void setContentWithBG(LinearLayout contentWithBG) {
             this.contentWithBG = contentWithBG;
+        }
+
+        public TextView getTxtSentTime() {
+            return txtSentTime;
+        }
+
+        public void setTxtSentTime(TextView txtSentTime) {
+            this.txtSentTime = txtSentTime;
         }
     }
 

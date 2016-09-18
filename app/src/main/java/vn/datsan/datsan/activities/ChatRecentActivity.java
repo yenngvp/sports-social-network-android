@@ -211,6 +211,7 @@ public class ChatRecentActivity extends SimpleActivity {
         return new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                progress.dismiss();
                 AppLog.d(EVENT_LISTENER, ":ValueEventListener:onDataChange");
                 if (dataSnapshot.getValue() == null) {
                     return; // there is no recent chat
