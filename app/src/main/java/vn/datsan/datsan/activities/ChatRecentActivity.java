@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -59,6 +60,7 @@ public class ChatRecentActivity extends SimpleActivity {
 
     @BindView(R.id.recycler_view) RecyclerView recyclerView;
     @BindView(R.id.delete_chat_button) Button deleteChatButton;
+    @BindView(R.id.noChatsTextView) TextView noChatsTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -212,10 +214,13 @@ public class ChatRecentActivity extends SimpleActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 progress.dismiss();
+
                 AppLog.d(EVENT_LISTENER, ":ValueEventListener:onDataChange");
                 if (dataSnapshot.getValue() == null) {
+                    noChatsTextView.setVisibility(View.VISIBLE);
                     return; // there is no recent chat
                 }
+                noChatsTextView.setVisibility(View.GONE);
 
                 recentChats.removeAll(recentChats);
                 for (DataSnapshot data : dataSnapshot.getChildren()) {

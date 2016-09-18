@@ -43,6 +43,16 @@
             android:layout_marginRight="10dp"
             android:src="@android:drawable/ic_input_add" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/no_chats"
+            android:id="@+id/noChatsTextView"
+            android:visibility="gone"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
+
     </RelativeLayout>
 
 
