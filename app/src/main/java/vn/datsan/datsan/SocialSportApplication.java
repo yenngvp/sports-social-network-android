@@ -9,8 +9,15 @@ import com.facebook.appevents.AppEventsLogger;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+
+import vn.datsan.datsan.models.ServerTime;
 import vn.datsan.datsan.search.ElasticsearchService;
+import vn.datsan.datsan.serverdata.CallBack;
+import vn.datsan.datsan.serverdata.ServerTimeService;
 import vn.datsan.datsan.utils.AppLog;
+import vn.datsan.datsan.utils.AppUtils;
 import vn.datsan.datsan.utils.MyActivityLifecycleHandler;
 
 /**
@@ -32,10 +39,27 @@ public class SocialSportApplication extends android.app.Application {
         // If we need it, enable it
         //registerActivityLifecycleCallbacks(new MyActivityLifecycleHandler());
 
-        // Enable offline capability
         if (!FirebaseApp.getApps(this).isEmpty()) {
+            // Enable offline capability
             FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
+            // Get server time
+            String timeServerKey = "TODAY_SERVER_TIME";
+            ServerTimeService.getInstance().getServerTime(timeServerKey, new CallBack.OnResultReceivedListener() {
+                @Override
+                public void onResultReceived(Object result) {
+                    ServerTime serverTime = (ServerTime) result;
+                    if (result == null) return;
+
+                    // Today at device timezone
+                    DateTime dateTime = new DateTime(serverTime.getTodayAtMidnightMillis(),
+                            DateTimeZone.forOffsetHours(AppUtils.CURRENT_TIMEZONE_OFFSET_HOUR));
+                    ServerTimeService.todayAtMidnightServerTime = dateTime;
+                }
+            });
         }
+
+        AppUtils.getDisplaySize(this);
     }
 
     @Override

@@ -15,6 +15,7 @@ import java.util.List;
 import vn.datsan.datsan.R;
 
 import vn.datsan.datsan.models.chat.Message;
+import vn.datsan.datsan.utils.AppUtils;
 
 /**
  * Created by yennguyen on 8/28/16.
@@ -63,9 +64,16 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
     public void onBindViewHolder(ChatViewHolder holder, int position) {
         Message message = dataSource.get(position);
         setAlignment(holder, message.isMe());
+
         holder.getTxtMessage().setText(message.getMessage());
+        if (message.isShowSentDate()) {
+            holder.getTxtSentDate().setVisibility(View.VISIBLE);
+            holder.getTxtSentDate().setText(message.getSentDate());
+        } else {
+            holder.getTxtSentDate().setVisibility(View.GONE);
+        }
         if (message.getTimestampMillis() > 0) {
-            holder.getTxtSentTime().setText(message.getTimestampAsDatetime());
+            holder.getTxtInfo().setText(message.getSentTime());
         }
     }
 
@@ -77,7 +85,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
     public class ChatViewHolder extends RecyclerView.ViewHolder {
         private TextView txtMessage;
         private TextView txtInfo;
-        private TextView txtSentTime;
+        private TextView txtSentDate;
         private LinearLayout content;
         private LinearLayout contentWithBG;
         
@@ -88,7 +96,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
             content = (LinearLayout) itemView.findViewById(R.id.content);
             contentWithBG = (LinearLayout) itemView.findViewById(R.id.contentWithBackground);
             txtInfo = (TextView) itemView.findViewById(R.id.txtInfo);
-            txtSentTime = (TextView) itemView.findViewById(R.id.txtSentTime);
+            txtSentDate = (TextView) itemView.findViewById(R.id.txtSentDate);
         }
 
         public TextView getTxtMessage() {
@@ -123,21 +131,22 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
             this.contentWithBG = contentWithBG;
         }
 
-        public TextView getTxtSentTime() {
-            return txtSentTime;
+        public TextView getTxtSentDate() {
+            return txtSentDate;
         }
 
-        public void setTxtSentTime(TextView txtSentTime) {
-            this.txtSentTime = txtSentTime;
+        public void setTxtSentDate(TextView txtSentDate) {
+            this.txtSentDate = txtSentDate;
         }
     }
 
     private void setAlignment(ChatViewHolder holder, boolean isMe) {
         if (!isMe) {
-//            holder.getContentWithBG().setBackgroundResource(R.drawable.out_message_bg);
+            holder.getContentWithBG().setBackgroundResource(R.drawable.out_message_bg);
 
             LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.getContentWithBG().getLayoutParams();
             layoutParams.gravity = Gravity.LEFT;
+//            layoutParams.width = (int) (0.8 * AppUtils.DISPLAY_WIDTH);
             holder.getContentWithBG().setLayoutParams(layoutParams);
 
             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.content.getLayoutParams();
@@ -146,16 +155,18 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
             holder.getContent().setLayoutParams(lp);
             layoutParams = (LinearLayout.LayoutParams) holder.getTxtMessage().getLayoutParams();
             layoutParams.gravity = Gravity.LEFT;
+
             holder.getTxtMessage().setLayoutParams(layoutParams);
 
             layoutParams = (LinearLayout.LayoutParams) holder.getTxtInfo().getLayoutParams();
             layoutParams.gravity = Gravity.LEFT;
             holder.getTxtInfo().setLayoutParams(layoutParams);
         } else {
-//            holder.getContentWithBG().setBackgroundResource(R.drawable.in_message_bg);
+            holder.getContentWithBG().setBackgroundResource(R.drawable.in_message_bg);
 
             LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.getContentWithBG().getLayoutParams();
             layoutParams.gravity = Gravity.RIGHT;
+//            layoutParams.width = (int) (0.8 * AppUtils.DISPLAY_WIDTH);
             holder.getContentWithBG().setLayoutParams(layoutParams);
 
             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) holder.getContent().getLayoutParams();

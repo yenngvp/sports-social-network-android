@@ -10,6 +10,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.joda.time.DateTime;
+
 import vn.datsan.datsan.models.ServerTime;
 import vn.datsan.datsan.utils.AppConstants;
 
@@ -17,6 +19,8 @@ import vn.datsan.datsan.utils.AppConstants;
  * Created by yennguyen on 9/18/16.
  */
 public class ServerTimeService {
+
+    public static DateTime todayAtMidnightServerTime;
 
     private static final String TAG = ServerTimeService.class.getSimpleName();
     private static ServerTimeService instance;

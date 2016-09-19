@@ -12,6 +12,7 @@ import java.util.Map;
 public class ServerTime implements Serializable {
 
     private long timestamp;
+    private long todayAtMidnight;
 
     public Map<String, String> getTimestamp() {
         return ServerValue.TIMESTAMP;
@@ -24,5 +25,18 @@ public class ServerTime implements Serializable {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public Map<String, String> getTodayAtMidnight() {
+        return ServerValue.TIMESTAMP;
+    }
+
+    @Exclude
+    public long getTodayAtMidnightMillis() {
+        return todayAtMidnight;
+    }
+
+    public void setTodayAtMidnight(long todayAtMidnight) {
+        this.todayAtMidnight = todayAtMidnight;
     }
 }

@@ -26,7 +26,9 @@ import org.joda.time.DateTime;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,7 +56,6 @@ public class ChatActivity extends SimpleActivity {
     private static final String TAG = ChatActivity.class.getName();
 
     @BindView(R.id.messageEdit) EditText messageEdt;
-    @BindView(R.id.chatSendButton) Button sendBtn;
     @BindView(R.id.whoTypingTxt) TextView whoTypingTxt;
 
     @BindView(R.id.chat_container) RelativeLayout chat_container;
@@ -76,6 +77,8 @@ public class ChatActivity extends SimpleActivity {
     private volatile List<TypingSignal> incomingTypingSignals;
 
     final User currentUser = UserManager.getInstance().getCurrentUser();
+
+    private static final Map<String, Boolean> messageDates = new HashMap<>();
 
     // Timer handler for handling typing timeout
     private Handler timerHandler = new Handler();
@@ -194,6 +197,7 @@ public class ChatActivity extends SimpleActivity {
 
         MessageService.getInstance().removeTypingSignalListeners(chat.getId());
 
+        messageDates.keySet().removeAll(messageDates.keySet());
     }
 
     @Override
@@ -372,6 +376,16 @@ public class ChatActivity extends SimpleActivity {
     }
 
     private synchronized void displayMessage(Message message, boolean isServerMessage) {
+
+        String sentDate = message.getSentDate();
+        AppLog.d(TAG, sentDate);
+        if (!messageDates.keySet().contains(sentDate)) {
+            messageDates.put(sentDate, new Boolean(true));
+            message.setShowSentDate(true);
+        } else {
+            message.setShowSentDate(false);
+        }
+
         if (message.isMe() && isServerMessage && chatAdapter.getDataSource().contains(message)) {
             // I just received a new sending message of myself, I don't want to display duplicate it
             int i = chatAdapter.getDataSource().indexOf(message);

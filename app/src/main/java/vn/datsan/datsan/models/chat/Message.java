@@ -19,6 +19,7 @@ public class Message {
     private Chat chat;
     private long timestamp;
     private String userName;
+    private boolean showSentDate;
 
     public Message() {
     }
@@ -114,8 +115,22 @@ public class Message {
     }
 
     @Exclude
-    public String getTimestampAsDatetime() {
-        return AppUtils.getDateTimeAsString(this.timestamp, AppUtils.DATETIME_FORMATTER);
+    public String getSentDate() {
+        return AppUtils.getDateTimeForMessageSent(this.timestamp);
+    }
+
+    @Exclude
+    public String getSentTime() {
+        return AppUtils.getDateTimeAsString(this.timestamp, AppUtils.DATETIME_HHmm_FORMATTER);
+    }
+
+    @Exclude
+    public boolean isShowSentDate() {
+        return showSentDate;
+    }
+
+    public void setShowSentDate(boolean showSentDate) {
+        this.showSentDate = showSentDate;
     }
 
     /**

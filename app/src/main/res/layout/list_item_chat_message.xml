@@ -1,52 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Today"
+        android:id="@+id/txtSentDate"
+        android:gravity="center_horizontal"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignWithParentIfMissing="false"
+        android:paddingTop="20dp"
+        android:paddingBottom="10dp" />
+
     <LinearLayout
         android:id="@+id/content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:orientation="vertical">
-
-        <!--android:background="@drawable/in_message_bg"-->
+        android:orientation="vertical"
+        android:layout_below="@+id/txtSentDate"
+        android:layout_alignParentLeft="true">
 
         <LinearLayout
             android:id="@+id/contentWithBackground"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:layout_gravity="right"
-            android:paddingLeft="10dp"
-            android:paddingBottom="10dp"
-            android:orientation="vertical">
+            android:gravity="right">
 
             <TextView
                 android:id="@+id/txtMessage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/black"
-                android:maxWidth="240dp" />
+                android:gravity="right"
+                android:layout_weight="1"/>
 
+            <TextView
+                android:id="@+id/txtInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:text="mm:ss"
+                android:textSize="12sp"
+                android:textColor="@android:color/darker_gray" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/txtInfo"
-            android:layout_width="wrap_content"
-            android:layout_height="30sp"
-            android:layout_gravity="center"
-            android:visibility="gone"
-            android:textSize="12sp"
-            android:textColor="@android:color/darker_gray" />
-
     </LinearLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Sent Date"
-        android:id="@+id/txtSentTime"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
