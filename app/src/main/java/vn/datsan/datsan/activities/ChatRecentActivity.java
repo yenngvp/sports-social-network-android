@@ -149,6 +149,8 @@ public class ChatRecentActivity extends SimpleActivity {
     protected void onResume() {
         super.onResume();
 
+        adapter.update(adapter.getDataSource());
+
         if (UserManager.getInstance().getCurrentUser() == null
                 && FirebaseAuth.getInstance().getCurrentUser() != null) {
 
@@ -315,8 +317,7 @@ public class ChatRecentActivity extends SimpleActivity {
                 content = senderName + ": " + content;
             }
         }
-        String timestamp = AppUtils.getDateTimeAsString(chat.getLastModifiedTimestampMillis(),
-                AppUtils.DATETIME_ddMMyy_FORMATTER);
+        String timestamp = AppUtils.getDateTimeForMessageSent(chat.getLastModifiedTimestampMillis());
         String badge = chat.getUnreadMessageCount() > 0 ? String.valueOf(chat.getUnreadMessageCount()) : null;
 
         FlexListAdapter.FlexItem item = adapter.createItemWithBadge(chat.getId(), null, title, content, timestamp, badge);
