@@ -1,6 +1,8 @@
 package vn.datsan.datsan.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -11,9 +13,12 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -172,6 +177,44 @@ public class ChatActivity extends SimpleActivity {
             }
         });
 
+        messageEdt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    if (b) {
+                        imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+                    } else {
+                        imm.toggleSoftInput(0, InputMethodManager.HIDE_IMPLICIT_ONLY);
+                    }
+                }
+            }
+        });
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Listen on new incoming messages
+        listenOnIncomingMessage();
+
+        // Listen on message incoming typing signals
+        listenOnIncomingTypingSignals();
+
+        // Listen on chat update
+        listenOnChatUpdate();
+
+        // Start timer handler
+        timerHandler.postDelayed(timerRunnable, AppConstants.TYPING_SIGNAL_TIMEOUT_MILLIS);
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
     }
 
     @Override
@@ -197,30 +240,7 @@ public class ChatActivity extends SimpleActivity {
 
         MessageService.getInstance().removeTypingSignalListeners(chat.getId());
 
-        messageDates.keySet().removeAll(messageDates.keySet());
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        // Listen on new incoming messages
-        listenOnIncomingMessage();
-
-        // Listen on message incoming typing signals
-        listenOnIncomingTypingSignals();
-
-        // Listen on chat update
-        listenOnChatUpdate();
-
-        // Start timer handler
-        timerHandler.postDelayed(timerRunnable, AppConstants.TYPING_SIGNAL_TIMEOUT_MILLIS);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
+//        messageDates.keySet().removeAll(messageDates.keySet());
     }
 
     @Override
@@ -231,7 +251,7 @@ public class ChatActivity extends SimpleActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_chat, menu);
+        //getMenuInflater().inflate(R.menu.menu_chat, menu);
         return true;
     }
 
