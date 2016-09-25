@@ -76,11 +76,13 @@ public class FieldService {
                 fields = new ArrayList<>();
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
                     Field field = postSnapshot.getValue(Field.class);
-                    if (field != null)
+                    if (field != null) {
                         fields.add(field);
+                    }
                 }
-                if (callBack != null)
+                if (callBack != null) {
                     callBack.onResultReceived(fields);
+                }
             }
 
             @Override
@@ -89,26 +91,5 @@ public class FieldService {
         });
 
         return fields;
-    }
-
-    public void genFakeFields(Context context) {
-        String content = RawIO.loadStringFromRawResource(context.getResources(), R.raw.fields);
-        Gson gson = new Gson();
-        List<FakeStadium> stadiums = gson.fromJson(content, new TypeToken<ArrayList<FakeStadium>>(){}.getType());
-        AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, String.valueOf(stadiums.size()));
-
-        for (FakeStadium stadium : stadiums) {
-            if (stadium.getPhone() == null || stadium.getPhone().isEmpty())
-                continue;
-            Field field = new Field();
-            field.setName(stadium.getName());
-            field.setAddress(stadium.getAddress());
-            String phone = stadium.getPhone().trim().replace(".", "");
-            field.setPhone(phone);
-            field.setDistrict(stadium.getDistrict());
-            field.setLocation(stadium.getLocation());
-            addField(field);
-            AppLog.log(AppLog.LogType.LOG_DEBUG, TAG, "insert " + stadium.getName());
-        }
     }
 }

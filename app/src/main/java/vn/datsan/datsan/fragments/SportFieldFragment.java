@@ -164,15 +164,17 @@ public class SportFieldFragment extends Fragment implements
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         mMap.setOnInfoWindowClickListener(this);
 
-        FieldService.getInstance().getFields(new CallBack.OnResultReceivedListener() {
+        List<Field> fields = FieldService.getInstance().getFields(new CallBack.OnResultReceivedListener() {
             @Override
             public void onResultReceived(Object result) {
                 if (result != null) {
-                    List<Field> fieldList = (List<Field>) result;
-                    addMarkers(fieldList);
+                    List<Field> fields = (List<Field>) result;
+                    addMarkers(fields);
                 }
             }
         });
+
+        addMarkers(fields);
     }
 
     private void addMarkers(List<Field> fieldList) {
