@@ -13,17 +13,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import vn.datsan.datsan.R;
 import vn.datsan.datsan.activities.FieldDetailActivity;
 import vn.datsan.datsan.models.Field;
-import vn.datsan.datsan.serverdata.FieldManager;
+import vn.datsan.datsan.serverdata.FieldService;
 import vn.datsan.datsan.ui.adapters.DividerItemDecoration;
 import vn.datsan.datsan.ui.adapters.FlexListAdapter;
 import vn.datsan.datsan.ui.adapters.RecyclerTouchListener;
-import vn.datsan.datsan.utils.AppLog;
 
 public class FieldSearchFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
@@ -61,10 +59,9 @@ public class FieldSearchFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_location_search_all, container, false);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new FlexListAdapter(getActivity()){
-
+        adapter = new FlexListAdapter(getActivity()) {
             @Override
-            public void setImage(Context context, ImageView imageView, String url) {
+            public void setImage(Context context, ImageView imageView, String imageUrl) {
 
             }
         };
@@ -90,14 +87,9 @@ public class FieldSearchFragment extends Fragment {
     }
 
     private void populateData() {
-        List<Field> fieldList = FieldManager.getInstance().getFields(null);
+        List<Field> fieldList = FieldService.getInstance().getFields(null);
         if (fieldList != null) {
-            List<FlexListAdapter.FlexItem> list = new ArrayList<>();
-            for (Field field : fieldList) {
-                FlexListAdapter.FlexItem item = adapter.createItem(null, field.getName(), field.getAddress(), null);
-                list.add(item);
-            }
-            adapter.update(list);
+            adapter.update(fieldList);
         }
     }
 }

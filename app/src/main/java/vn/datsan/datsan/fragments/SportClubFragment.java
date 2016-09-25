@@ -2,7 +2,6 @@ package vn.datsan.datsan.fragments;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -16,7 +15,6 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import vn.datsan.datsan.R;
@@ -24,11 +22,10 @@ import vn.datsan.datsan.activities.GroupDetailActivity;
 import vn.datsan.datsan.activities.NewGroupActivity;
 import vn.datsan.datsan.models.Group;
 import vn.datsan.datsan.serverdata.CallBack;
-import vn.datsan.datsan.serverdata.GroupManager;
+import vn.datsan.datsan.serverdata.GroupService;
 import vn.datsan.datsan.ui.adapters.DividerItemDecoration;
 import vn.datsan.datsan.ui.adapters.FlexListAdapter;
 import vn.datsan.datsan.ui.adapters.RecyclerTouchListener;
-import vn.datsan.datsan.ui.appviews.NewFCPopup;
 import vn.datsan.datsan.utils.AppLog;
 
 /**
@@ -109,18 +106,12 @@ public class SportClubFragment extends Fragment {
     }
 
     private void populateData() {
-        GroupManager.getInstance().getUserGroups(new CallBack.OnResultReceivedListener() {
+        GroupService.getInstance().getUserGroups(new CallBack.OnResultReceivedListener() {
             @Override
             public void onResultReceived(Object result) {
                 groupList = (List<Group> )  result;
                 if (groupList != null) {
-                    List<FlexListAdapter.FlexItem> list = new ArrayList<>();
-                    for (Group group : groupList) {
-                        AppLog.log(AppLog.LogType.LOG_ERROR, "tag", group.toString());
-                        FlexListAdapter.FlexItem item = adapter.createItem(group.getLogoUrl(), group.getName(), group.getCity(), null);
-                        list.add(item);
-                    }
-                    adapter.update(list);
+                    adapter.update(groupList);
                 }
             }
         });

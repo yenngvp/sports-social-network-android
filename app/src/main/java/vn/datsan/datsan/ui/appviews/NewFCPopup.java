@@ -16,7 +16,7 @@ import java.util.List;
 
 import vn.datsan.datsan.R;
 import vn.datsan.datsan.models.Group;
-import vn.datsan.datsan.serverdata.GroupManager;
+import vn.datsan.datsan.serverdata.GroupService;
 
 /**
  * Created by xuanpham on 7/29/16.
@@ -40,7 +40,7 @@ public class NewFCPopup extends BasePopup {
             public void onClick(View view) {
                 Group group = createGroup();
                 if (group != null)
-                    GroupManager.getInstance().addGroup(group, null, new DatabaseReference.CompletionListener() {
+                    GroupService.getInstance().addGroup(group, null, new DatabaseReference.CompletionListener() {
                         @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                             

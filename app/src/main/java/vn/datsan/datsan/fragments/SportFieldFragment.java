@@ -12,24 +12,30 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
-import com.androidmapsextensions.GoogleMap;
-import com.androidmapsextensions.Marker;
-import com.androidmapsextensions.MarkerOptions;
-import com.androidmapsextensions.OnMapReadyCallback;
-import com.androidmapsextensions.SupportMapFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowCloseListener;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowLongClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import vn.datsan.datsan.R;
 import vn.datsan.datsan.activities.FieldDetailActivity;
 import vn.datsan.datsan.models.Field;
 import vn.datsan.datsan.serverdata.CallBack;
-import vn.datsan.datsan.serverdata.FieldManager;
+import vn.datsan.datsan.serverdata.FieldService;
 import vn.datsan.datsan.ui.adapters.DividerItemDecoration;
 import vn.datsan.datsan.ui.adapters.FlexListAdapter;
 import vn.datsan.datsan.ui.adapters.RecyclerTouchListener;
@@ -39,9 +45,17 @@ import vn.datsan.datsan.ui.customwidgets.Alert.SimpleAlert;
  * Created by xuanpham on 7/25/16.
  */
 
-public class SportFieldFragment extends Fragment implements GoogleMap.OnInfoWindowClickListener, OnMapReadyCallback {
+public class SportFieldFragment extends Fragment implements
+        OnMarkerClickListener,
+        OnInfoWindowClickListener,
+        OnMarkerDragListener,
+        SeekBar.OnSeekBarChangeListener,
+        OnMapReadyCallback,
+        OnInfoWindowLongClickListener,
+        OnInfoWindowCloseListener {
+
     private GoogleMap mMap;
-    FlexListAdapter adapter;
+    private FlexListAdapter adapter;
     private View searchResultView;
 
     private OnFragmentInteractionListener mListener;
@@ -65,19 +79,20 @@ public class SportFieldFragment extends Fragment implements GoogleMap.OnInfoWind
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_sport_field, null);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         searchResultView = view.findViewById(R.id.searchResultView);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.map);
-        mapFragment.getExtendedMapAsync(this);
+        mapFragment.getMapAsync(this);
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new FlexListAdapter(getActivity()) {
 
             @Override
-            public void setImage(Context context, ImageView imageView, String url) {
+            public void setImage(Context context, ImageView imageView, String imageUrl) {
 
             }
         };
@@ -130,30 +145,13 @@ public class SportFieldFragment extends Fragment implements GoogleMap.OnInfoWind
         mListener = null;
     }
 
-    private void addMarkers(List<Field> fieldList) {
-        for (Field field : fieldList) {
-            String latlon = field.getLocation();
-            if (latlon != null && latlon.length() > 6) {
-                String arr[] = latlon.split(",");
-                MarkerOptions marker = new MarkerOptions();
-                marker.position(new LatLng(Double.parseDouble(arr[0]), Double.parseDouble(arr[1])));
-                marker.title(field.getName());
-                marker.snippet(field.getAddress());
-                marker.data(field);
-                //marker.
-                mMap.addMarker(marker);
-            }
-        }
-    }
-
-
     @Override
     public void onInfoWindowClick(Marker marker) {
-        if (marker.getData() != null && marker.getData() instanceof Field) {
-            Intent intent = new Intent(getActivity(), FieldDetailActivity.class);
-            intent.putExtra("data", (Field) marker.getData());
-            startActivity(intent);
-        }
+//        if (marker.getData() != null && marker.getData() instanceof Field) {
+//            Intent intent = new Intent(getActivity(), FieldDetailActivity.class);
+//            intent.putExtra("data", (Field) marker.getData());
+//            startActivity(intent);
+//        }
     }
 
     @Override
@@ -166,7 +164,7 @@ public class SportFieldFragment extends Fragment implements GoogleMap.OnInfoWind
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         mMap.setOnInfoWindowClickListener(this);
 
-        FieldManager.getInstance().getFields(new CallBack.OnResultReceivedListener() {
+        FieldService.getInstance().getFields(new CallBack.OnResultReceivedListener() {
             @Override
             public void onResultReceived(Object result) {
                 if (result != null) {
@@ -175,6 +173,23 @@ public class SportFieldFragment extends Fragment implements GoogleMap.OnInfoWind
                 }
             }
         });
+    }
+
+    private void addMarkers(List<Field> fieldList) {
+        for (Field field : fieldList) {
+            String location = field.getLocation();
+            if (location != null && location.length() > 6) {
+                String arr[] = location.split(",");
+                MarkerOptions marker = new MarkerOptions()
+                        .position(new LatLng(Double.parseDouble(arr[0]), Double.parseDouble(arr[1])))
+                        .title(field.getName())
+                        .snippet(field.getAddress())
+                        .snippet("Suc chua: 16.300")
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.football_field))
+                        .infoWindowAnchor(0.5f, 0.5f);
+                mMap.addMarker(marker);
+            }
+        }
     }
 
     public interface OnFragmentInteractionListener {
@@ -188,6 +203,51 @@ public class SportFieldFragment extends Fragment implements GoogleMap.OnInfoWind
             searchResultView.setVisibility(View.GONE);
     }
 
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onInfoWindowClose(Marker marker) {
+
+    }
+
+    @Override
+    public void onInfoWindowLongClick(Marker marker) {
+
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        return false;
+    }
+
+    @Override
+    public void onMarkerDragStart(Marker marker) {
+
+    }
+
+    @Override
+    public void onMarkerDrag(Marker marker) {
+
+    }
+
+    @Override
+    public void onMarkerDragEnd(Marker marker) {
+
+    }
+
     public void showSearchResult(Object object) {
         if (object == null)
             return;
@@ -199,11 +259,6 @@ public class SportFieldFragment extends Fragment implements GoogleMap.OnInfoWind
 
 
         searchResultView.setVisibility(View.VISIBLE);
-        List<FlexListAdapter.FlexItem> list = new ArrayList<>();
-        for (Field field : fields) {
-            FlexListAdapter.FlexItem item = adapter.createItem(null, field.getName(), field.getAddress(), null);
-            list.add(item);
-        }
-        adapter.update(list);
+        adapter.update(fields);
     }
 }

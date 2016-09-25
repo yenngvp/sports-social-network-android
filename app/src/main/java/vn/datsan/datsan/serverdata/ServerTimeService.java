@@ -38,22 +38,17 @@ public class ServerTimeService {
         return instance;
     }
 
-    public void getServerTime(final String userId, final CallBack.OnResultReceivedListener callback) {
-        serverTimeDatabaseRef.child(userId).setValue(new ServerTime()).addOnCompleteListener(new OnCompleteListener<Void>() {
+    public void getServerTime(final String key, final CallBack.OnResultReceivedListener callback) {
+        serverTimeDatabaseRef.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                serverTimeDatabaseRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        ServerTime serverTime = dataSnapshot.getValue(ServerTime.class);
-                        callback.onResultReceived(serverTime);
-                    }
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ServerTime serverTime = dataSnapshot.getValue(ServerTime.class);
+                callback.onResultReceived(serverTime);
+            }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        callback.onResultReceived(null);
-                    }
-                });
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                callback.onResultReceived(null);
             }
         });
     }

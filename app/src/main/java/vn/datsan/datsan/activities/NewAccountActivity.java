@@ -5,33 +5,26 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import vn.datsan.datsan.R;
 import vn.datsan.datsan.models.User;
-import vn.datsan.datsan.serverdata.UserManager;
-import vn.datsan.datsan.setting.UserDefine;
+import vn.datsan.datsan.serverdata.UserService;
 import vn.datsan.datsan.ui.customwidgets.Alert.AlertInterface;
 import vn.datsan.datsan.ui.customwidgets.Alert.SimpleAlert;
 import vn.datsan.datsan.ui.customwidgets.SimpleProgress;
-import vn.datsan.datsan.utils.AppLog;
-import vn.datsan.datsan.utils.listeners.FirebaseChildEventListener;
 
 /**
  * A login screen that offers login via email/password.
@@ -138,7 +131,7 @@ public class NewAccountActivity extends AppCompatActivity {
                                     getString(R.string.close));
                         } else {
                             user.setId(task.getResult().getUser().getUid());
-                            UserManager.getInstance().addUser(user, new DatabaseReference.CompletionListener() {
+                            UserService.getInstance().addUser(user, new DatabaseReference.CompletionListener() {
                                 @Override
                                 public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
 

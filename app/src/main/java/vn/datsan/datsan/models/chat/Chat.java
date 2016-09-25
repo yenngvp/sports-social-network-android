@@ -13,13 +13,15 @@ import java.util.List;
 import java.util.Map;
 
 import vn.datsan.datsan.models.User;
-import vn.datsan.datsan.serverdata.UserManager;
+import vn.datsan.datsan.serverdata.UserService;
+import vn.datsan.datsan.ui.adapters.FlexListAdapter;
 import vn.datsan.datsan.utils.AppConstants;
+import vn.datsan.datsan.utils.AppUtils;
 
 /**
  * Created by yennguyen on 8/2/16.
  */
-public class Chat implements Parcelable {
+public class Chat implements Parcelable, FlexListAdapter.ViewItem {
 
     public static final String TYPE_CLUB_CHAT = "CUB_CHAT";
     public static final String TYPE_MATCH_CHAT = "MATCH_CHAT";
@@ -71,6 +73,99 @@ public class Chat implements Parcelable {
             return new Chat[size];
         }
     };
+
+    @Exclude
+    @Override
+    public String getItemId() {
+        return getId();
+    }
+
+    /**
+     * Get chat group avatar url
+     *
+     * @return
+     */
+    @Exclude
+    @Override
+    public String getImageUrl() {
+        return null;
+    }
+
+    /**
+     * Get chat title
+     *
+     * @return
+     */
+    @Override
+    @Exclude
+    public String getRowTitle() {
+        return getDynamicChatTitle();
+    }
+
+    /**
+     * Get last chat message short description
+     *
+     * @return
+     */
+    @Override
+    @Exclude
+    public String getRowContent() {
+        final boolean oneToOneChat;
+        if (getTitle() != null && getTitle().indexOf(AppConstants.GROUP_NAME_SEPARATOR) > 0) {
+            oneToOneChat = false; // The chat has more than 2 members
+        } else {
+            oneToOneChat = true;
+        }
+        String content = null;
+        if (getLastMessage() != null) {
+            content = getLastMessage().getMessage();
+
+            // Not show the last sender name if there is an one-to-one chat
+            if (!oneToOneChat && getLastMessage().getUserName() != null) {
+                String senderName = getLastMessage().getUserName();
+                if (senderName.length() > 18) {
+                    senderName = senderName.substring(0, 15) + "...";
+                }
+                content = senderName + ": " + content;
+            }
+        }
+
+        return content;
+    }
+
+    /**
+     * Get last message sent date
+     *
+     * @return
+     */
+    @Override
+    @Exclude
+    public String getRowNote() {
+
+        return AppUtils.getDateTimeForMessageSent(getLastModifiedTimestampMillis());
+    }
+
+    /**
+     * Get number of unread message of the chat, highlighted as badge icon
+     *
+     * @return
+     */
+    @Override
+    @Exclude
+    public String getRowBadge() {
+        return getUnreadMessageCount() > 0 ? String.valueOf(getUnreadMessageCount()) : null;
+    }
+
+    /**
+     * Get sorting value of the chat as sent time milliseconds
+     *
+     * @return
+     */
+    @Override
+    @Exclude
+    public long getSortingValue() {
+        return getLastModifiedTimestampMillis();
+    }
 
     public String getId() {
         return id;
@@ -281,7 +376,7 @@ public class Chat implements Parcelable {
      */
     private String removeMyName() {
 
-        User currentUser = UserManager.getInstance().getCurrentUser();
+        User currentUser = UserService.getInstance().getCurrentUser();
 
         if (TextUtils.isEmpty(getTitle()) || TextUtils.isEmpty(currentUser.getName())) {
             return getTitle();

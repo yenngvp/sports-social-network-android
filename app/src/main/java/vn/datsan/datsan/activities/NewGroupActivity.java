@@ -1,18 +1,10 @@
 package vn.datsan.datsan.activities;
 
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Environment;
-import android.os.Parcelable;
 import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -23,7 +15,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,10 +25,8 @@ import vn.datsan.datsan.R;
 import vn.datsan.datsan.models.Group;
 import vn.datsan.datsan.models.UserRole;
 import vn.datsan.datsan.serverdata.CallBack;
-import vn.datsan.datsan.serverdata.GroupManager;
-import vn.datsan.datsan.serverdata.UserManager;
-import vn.datsan.datsan.serverdata.storage.AppCloudDataManager;
-import vn.datsan.datsan.serverdata.storage.CloudDataStorage;
+import vn.datsan.datsan.serverdata.GroupService;
+import vn.datsan.datsan.serverdata.storage.AppCloudDataService;
 import vn.datsan.datsan.ui.customwidgets.Alert.AlertInterface;
 import vn.datsan.datsan.ui.customwidgets.Alert.SimpleAlert;
 import vn.datsan.datsan.ui.customwidgets.SimpleProgress;
@@ -89,8 +78,8 @@ public class NewGroupActivity extends SimpleActivity {
                 final SimpleProgress progress = new SimpleProgress(this, null);
                 progress.show();
 
-                final String groupKey = GroupManager.getInstance().getNewKey();
-                AppCloudDataManager.getInstance().uploadImage(avatarBitmap,
+                final String groupKey = GroupService.getInstance().getNewKey();
+                AppCloudDataService.getInstance().uploadImage(avatarBitmap,
                         groupKey + "/avatar.png", new CallBack.OnResultReceivedListener() {
                             @Override
                             public void onResultReceived(Object result) {
@@ -113,7 +102,7 @@ public class NewGroupActivity extends SimpleActivity {
     }
 
     private void doAddNewGroup(Group group, String key) {
-        GroupManager.getInstance().addGroup(group, key, new DatabaseReference.CompletionListener() {
+        GroupService.getInstance().addGroup(group, key, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if (databaseError == null) {
@@ -198,7 +187,7 @@ public class NewGroupActivity extends SimpleActivity {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
                     avatarBitmap = bitmap;
 //                    CloudDataStorage.getInstance().uploadPhoto(bitmap,
-//                            UserManager.getInstance().getUserInfo().getId() + "/avatar/");
+//                            UserService.getInstance().getUserInfo().getId() + "/avatar/");
                     groupAvatar.setImageBitmap(avatarBitmap);
                 } catch (Exception e) {
                     e.printStackTrace();

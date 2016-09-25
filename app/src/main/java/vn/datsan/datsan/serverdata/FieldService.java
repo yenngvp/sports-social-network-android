@@ -23,19 +23,19 @@ import vn.datsan.datsan.utils.RawIO;
 /**
  * Created by xuanpham on 6/20/16.
  */
-public class FieldManager {
-    private static final String TAG = FieldManager.class.getName();
-    private static FieldManager instance;
+public class FieldService {
+    private static final String TAG = FieldService.class.getName();
+    private static FieldService instance;
     private DatabaseReference fieldDatabaseRef;
     private List<Field> fields;
 
-    private FieldManager() {
+    private FieldService() {
         fieldDatabaseRef = FirebaseDatabase.getInstance().getReference(AppConstants.FIREBASE_FIELDS);
     }
 
-    public static FieldManager getInstance() {
+    public static FieldService getInstance() {
         if (instance == null) {
-            instance = new FieldManager();
+            instance = new FieldService();
         }
         return instance;
     }

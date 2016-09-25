@@ -12,12 +12,13 @@ import java.util.HashMap;
 
 import vn.datsan.datsan.models.chat.Member;
 import vn.datsan.datsan.search.interfaces.Searchable;
+import vn.datsan.datsan.ui.adapters.FlexListAdapter;
 import vn.datsan.datsan.utils.localization.VietnameseUnsignedTranslator;
 
 /**
  * Created by xuanpham on 6/20/16.
  */
-public class Group implements Searchable, Parcelable {
+public class Group implements Searchable, Parcelable, FlexListAdapter.ViewItem {
 
     public static final int TYPE_DEFAULT = 0;
     public static final int TYPE_CLUB = 1;
@@ -88,6 +89,48 @@ public class Group implements Searchable, Parcelable {
         source.put("name_unsigned", VietnameseUnsignedTranslator.getInstance().getTranslation(getName()));
 
         return source;
+    }
+
+    @Override
+    @Exclude
+    public String getItemId() {
+        return getId();
+    }
+
+    @Override
+    @Exclude
+    public String getImageUrl() {
+        return getLogoUrl();
+    }
+
+    @Override
+    @Exclude
+    public String getRowTitle() {
+        return getName();
+    }
+
+    @Override
+    @Exclude
+    public String getRowContent() {
+        return getCity();
+    }
+
+    @Override
+    @Exclude
+    public String getRowNote() {
+        return null;
+    }
+
+    @Override
+    @Exclude
+    public String getRowBadge() {
+        return null;
+    }
+
+    @Override
+    @Exclude
+    public long getSortingValue() {
+        return 0;
     }
 
     public int getType() {

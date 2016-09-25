@@ -18,17 +18,17 @@ import vn.datsan.datsan.utils.AppLog;
 /**
  * Created by xuanpham on 8/24/16.
  */
-public class AppCloudDataManager {
-    private static AppCloudDataManager instance;
+public class AppCloudDataService {
+    private static AppCloudDataService instance;
     private CloudDataStorage cloudDataStorage;
 
-    private AppCloudDataManager() {
+    private AppCloudDataService() {
         cloudDataStorage = new CloudDataStorage();
     }
 
-    public static AppCloudDataManager getInstance() {
+    public static AppCloudDataService getInstance() {
         if (instance == null) {
-            instance = new AppCloudDataManager();
+            instance = new AppCloudDataService();
         }
         return instance;
     }

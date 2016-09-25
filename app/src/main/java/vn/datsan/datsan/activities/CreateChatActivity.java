@@ -34,7 +34,7 @@ import vn.datsan.datsan.models.User;
 import vn.datsan.datsan.models.chat.Chat;
 import vn.datsan.datsan.search.AppSearch;
 import vn.datsan.datsan.serverdata.CallBack;
-import vn.datsan.datsan.serverdata.UserManager;
+import vn.datsan.datsan.serverdata.UserService;
 import vn.datsan.datsan.serverdata.chat.ChatService;
 import vn.datsan.datsan.ui.appviews.ContactsCompletionView;
 import vn.datsan.datsan.ui.customwidgets.SimpleProgress;
@@ -105,7 +105,7 @@ public class CreateChatActivity extends SimpleActivity implements TokenCompleteT
 
                     // Get selected users list
                     final List<User> usersInChat = new ArrayList<>();
-                    User me = UserManager.getInstance().getCurrentUser();
+                    User me = UserService.getInstance().getCurrentUser();
                     if (!usersInChat.contains(me)) {
                         usersInChat.add(me);
                     }
@@ -200,7 +200,7 @@ public class CreateChatActivity extends SimpleActivity implements TokenCompleteT
 
                 // Get search result type fields
                 AppLog.d(TAG, "Search found TOTAL: " + searchResult.getTotal());
-                User me = UserManager.getInstance().getCurrentUser();
+                User me = UserService.getInstance().getCurrentUser();
                 List<SearchResult.Hit<Map, Void>> hits = searchResult.getHits(Map.class);
                 List<User> newUsers = new ArrayList<>();
                 for (SearchResult.Hit<Map, Void> hit : hits) {

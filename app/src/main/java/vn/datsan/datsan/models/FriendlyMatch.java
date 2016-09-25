@@ -3,17 +3,24 @@ package vn.datsan.datsan.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.firebase.database.Exclude;
+
+import org.joda.time.DateTime;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import vn.datsan.datsan.search.interfaces.Searchable;
+import vn.datsan.datsan.ui.adapters.FlexListAdapter;
+import vn.datsan.datsan.utils.AppUtils;
 import vn.datsan.datsan.utils.localization.VietnameseUnsignedTranslator;
 
 /**
  * Created by xuanpham on 8/12/16.
  */
-public class FriendlyMatch extends FirebaseObject implements Searchable, Parcelable {
+public class FriendlyMatch implements Searchable, Parcelable, FlexListAdapter.ViewItem {
+    private String id;
     private String creatorId;
     private String creatorName;
     private String homeGroupId;
@@ -58,6 +65,63 @@ public class FriendlyMatch extends FirebaseObject implements Searchable, Parcela
             return new FriendlyMatch[size];
         }
     };
+
+    @Override
+    @Exclude
+    public String getItemId() {
+        return getId();
+    }
+
+    @Override
+    @Exclude
+    public String getImageUrl() {
+        return null;
+    }
+
+    @Override
+    @Exclude
+    public String getRowTitle() {
+        return getTitle();
+    }
+
+    @Override
+    @Exclude
+    public String getRowContent() {
+
+        DateTime startTime = new DateTime(getStartTime());
+        DateTime endTime = new DateTime(getEndTime());
+        String dayWeek = AppUtils.getWeekDayAsText(startTime);
+        String dayMonth = AppUtils.getMonthDayAsText(startTime);
+        // TODO: Shouldn't do it manually. Use Joda Duration/Period to calculate the time period
+        String timeRange = "Thời gian " + startTime.getHourOfDay() + "h:" + startTime.getMinuteOfHour() + " - " +
+                endTime.getHourOfDay() + "h:" + endTime.getMinuteOfHour();
+        String field = "\nSân : ";
+        if (getFields() == null || getFields().isEmpty()) {
+            field += "Thoả thuận sau";
+        } else {
+            field += getFields();
+        }
+        String content = dayWeek + "," + dayMonth + "\n" + timeRange + field;
+        return content;
+    }
+
+    @Override
+    @Exclude
+    public String getRowNote() {
+        return null;
+    }
+
+    @Override
+    @Exclude
+    public String getRowBadge() {
+        return null;
+    }
+
+    @Override
+    @Exclude
+    public long getSortingValue() {
+        return 0;
+    }
 
     public String getFields() {
         return fields;

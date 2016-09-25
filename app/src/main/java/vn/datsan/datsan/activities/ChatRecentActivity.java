@@ -21,7 +21,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +31,7 @@ import vn.datsan.datsan.R;
 import vn.datsan.datsan.models.User;
 import vn.datsan.datsan.models.chat.Chat;
 import vn.datsan.datsan.serverdata.CallBack;
-import vn.datsan.datsan.serverdata.UserManager;
+import vn.datsan.datsan.serverdata.UserService;
 import vn.datsan.datsan.serverdata.chat.ChatService;
 import vn.datsan.datsan.ui.adapters.DividerItemDecoration;
 import vn.datsan.datsan.ui.adapters.FlexListAdapter;
@@ -40,8 +39,6 @@ import vn.datsan.datsan.ui.adapters.RecyclerTouchListener;
 import vn.datsan.datsan.ui.customwidgets.SimpleProgress;
 import vn.datsan.datsan.utils.AppConstants;
 import vn.datsan.datsan.utils.AppLog;
-import vn.datsan.datsan.utils.AppUtils;
-import vn.datsan.datsan.utils.ChatComparator;
 
 /**
  * Created by yennguyen on 8/17/16.
@@ -74,7 +71,7 @@ public class ChatRecentActivity extends SimpleActivity {
         adapter = new FlexListAdapter(ChatRecentActivity.this) {
 
             @Override
-            public void setImage(Context context, ImageView imageView, String url) {
+            public void setImage(Context context, ImageView imageView, String imageUrl) {
 
             }
         };
@@ -89,9 +86,9 @@ public class ChatRecentActivity extends SimpleActivity {
 
                 // Starting chat
                 Intent intent = new Intent(view.getContext(), ChatActivity.class);
-                FlexListAdapter.FlexItem chatItem = adapter.getDataSource().get(position);
+                FlexListAdapter.ViewItem chatItem = adapter.get(position);
                 Chat searchChat = new Chat();
-                searchChat.setId(chatItem.getId());
+                searchChat.setId(chatItem.getItemId());
                 intent.putExtra("chat", recentChats.get(recentChats.indexOf(searchChat)));
                 startActivity(intent);
             }
@@ -99,8 +96,8 @@ public class ChatRecentActivity extends SimpleActivity {
             @Override
             public void onLongClick(View view, int position) {
 
-                final FlexListAdapter.FlexItem chatItem = adapter.getDataSource().get(position);
-                AppLog.d(TAG, "onLongClick:chatId:" + chatItem.getId());
+                final FlexListAdapter.ViewItem chatItem = adapter.get(position);
+                AppLog.d(TAG, "onLongClick:chatId:" + chatItem.getItemId());
 
                 // Show menu pop-up
                 PopupMenu popupMenu = new PopupMenu(view.getContext(), deleteChatButton);
@@ -112,8 +109,8 @@ public class ChatRecentActivity extends SimpleActivity {
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        ChatService.getInstance().deleteChat(chatItem.getId());
-                        adapter.getDataSource().remove(chatItem);
+                        ChatService.getInstance().deleteChat(chatItem.getItemId());
+                        adapter.remove(chatItem);
                         adapter.notifyDataSetChanged();
                         return false;
                     }
@@ -149,18 +146,16 @@ public class ChatRecentActivity extends SimpleActivity {
     protected void onResume() {
         super.onResume();
 
-        adapter.update(adapter.getDataSource());
-
-        if (UserManager.getInstance().getCurrentUser() == null
+        if (UserService.getInstance().getCurrentUser() == null
                 && FirebaseAuth.getInstance().getCurrentUser() != null) {
 
             final SimpleProgress progress = new SimpleProgress(this, null);
             progress.show();
 
-            UserManager.getInstance().getCurrentUserInfo(new CallBack.OnResultReceivedListener() {
+            UserService.getInstance().getCurrentUserInfo(new CallBack.OnResultReceivedListener() {
                 @Override
                 public void onResultReceived(Object result) {
-                    UserManager.getInstance().setCurrentUser((User) result);
+                    UserService.getInstance().setCurrentUser((User) result);
                     // Load chat history
                     loadRecentChat();
 
@@ -179,9 +174,9 @@ public class ChatRecentActivity extends SimpleActivity {
 
         // Remove all listeners
         if (userChatEventListener != null) {
-            UserManager.getInstance().getCurrentUserChatDatabaseRef().removeEventListener(userChatEventListener);
+            UserService.getInstance().getCurrentUserChatDatabaseRef().removeEventListener(userChatEventListener);
             userChatEventListener = null;
-            AppLog.d(EVENT_LISTENER, "Removed childEventListener: " + UserManager.getInstance().getCurrentUser().getName());
+            AppLog.d(EVENT_LISTENER, "Removed childEventListener: " + UserService.getInstance().getCurrentUser().getName());
         }
 
         if (chatEventListeners.size() > 0) {
@@ -203,7 +198,7 @@ public class ChatRecentActivity extends SimpleActivity {
 
         if (userChatEventListener == null) {
             userChatEventListener = createUserChatsEventListener();
-            UserManager.getInstance().getCurrentUserChatDatabaseRef()
+            UserService.getInstance().getCurrentUserChatDatabaseRef()
                     .limitToLast(AppConstants.CHAT_HISTORY_PAGINATION_SIZE_DEFAULT)
                     .addValueEventListener(userChatEventListener);
         }
@@ -282,9 +277,8 @@ public class ChatRecentActivity extends SimpleActivity {
                     latestChat.setUnreadMessageCount(0); // Concurrent update went wrong?
                 }
 
-                FlexListAdapter.FlexItem item = createItemFromChat(latestChat);
-                adapter.getDataSource().remove(item);
-                adapter.addOrReplaceAndResort(item);
+                adapter.remove(latestChat);
+                adapter.addOrReplaceAndResort(latestChat);
                 adapter.notifyDataSetChanged();
             }
 
@@ -293,36 +287,6 @@ public class ChatRecentActivity extends SimpleActivity {
                 AppLog.e(EVENT_LISTENER, "Cannot load recent chat: onCancelled:" + databaseError);
             }
         };
-    }
-
-    private FlexListAdapter.FlexItem createItemFromChat(Chat chat) {
-
-        final boolean oneToOneChat;
-        final String title = chat.getDynamicChatTitle();
-        if (title != null && title.indexOf(AppConstants.GROUP_NAME_SEPARATOR) > 0) {
-            oneToOneChat = false; // The chat has more than 2 members
-        } else {
-            oneToOneChat = true;
-        }
-        String content = null;
-        if (chat.getLastMessage() != null) {
-            content = chat.getLastMessage().getMessage();
-
-            // Not show the last sender name if there is an one-to-one chat
-            if (!oneToOneChat && chat.getLastMessage().getUserName() != null) {
-                String senderName = chat.getLastMessage().getUserName();
-                if (senderName.length() > 18) {
-                    senderName = senderName.substring(0, 15) + "...";
-                }
-                content = senderName + ": " + content;
-            }
-        }
-        String timestamp = AppUtils.getDateTimeForMessageSent(chat.getLastModifiedTimestampMillis());
-        String badge = chat.getUnreadMessageCount() > 0 ? String.valueOf(chat.getUnreadMessageCount()) : null;
-
-        FlexListAdapter.FlexItem item = adapter.createItemWithBadge(chat.getId(), null, title, content, timestamp, badge);
-        item.setSortingWeight(chat.getLastModifiedTimestampMillis());
-        return item;
     }
 
     @Override

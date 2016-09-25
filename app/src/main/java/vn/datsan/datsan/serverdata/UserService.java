@@ -17,21 +17,21 @@ import vn.datsan.datsan.utils.AppLog;
 /**
  * Created by xuanpham on 6/20/16.
  */
-public class UserManager {
-    private static final String TAG = UserManager.class.getName();
-    private static UserManager instance;
+public class UserService {
+    private static final String TAG = UserService.class.getName();
+    private static UserService instance;
 
     private DatabaseReference userDatabaseRef;
     private User userInfo;
     private User currentUser;
 
-    private  UserManager() {
+    private UserService() {
         userDatabaseRef = FirebaseDatabase.getInstance().getReference(AppConstants.FIREBASE_USERS);
     }
 
-    public static UserManager getInstance() {
+    public static UserService getInstance() {
         if (instance == null) {
-            instance = new UserManager();
+            instance = new UserService();
         }
         return instance;
     }

@@ -17,19 +17,19 @@ import vn.datsan.datsan.utils.AppConstants;
 /**
  * Created by xuanpham on 8/12/16.
  */
-public class FriendlyMatchManager {
-    private static final String TAG = FieldManager.class.getName();
-    private static FriendlyMatchManager instance;
+public class MatchService {
+    private static final String TAG = FieldService.class.getName();
+    private static MatchService instance;
     private DatabaseReference matchDatabaseRef;
     private List<FriendlyMatch> friendlyMatches;
 
-    private FriendlyMatchManager() {
+    private MatchService() {
         matchDatabaseRef = FirebaseDatabase.getInstance().getReference(AppConstants.FIREBASE_MATCHS);
     }
 
-    public static FriendlyMatchManager getInstance() {
+    public static MatchService getInstance() {
         if (instance == null) {
-            instance = new FriendlyMatchManager();
+            instance = new MatchService();
         }
         return instance;
     }

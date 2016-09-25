@@ -1,7 +1,5 @@
 package vn.datsan.datsan.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.firebase.database.Exclude;
 
 import java.io.Serializable;
@@ -15,7 +13,6 @@ import vn.datsan.datsan.utils.localization.VietnameseUnsignedTranslator;
 /**
  * Created by xuanpham on 6/13/16.
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class User implements Searchable, Serializable {
 
     public static final int ROLE_MEMBER = 0;

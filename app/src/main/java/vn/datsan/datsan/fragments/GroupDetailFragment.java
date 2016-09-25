@@ -1,7 +1,6 @@
 package vn.datsan.datsan.fragments;
 
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -13,13 +12,8 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import vn.datsan.datsan.R;
-import vn.datsan.datsan.activities.GroupDetailActivity;
 import vn.datsan.datsan.models.Group;
-import vn.datsan.datsan.serverdata.CallBack;
-import vn.datsan.datsan.serverdata.DataType;
-import vn.datsan.datsan.serverdata.storage.AppCloudDataManager;
 import vn.datsan.datsan.utils.AppLog;
 
 public class GroupDetailFragment extends Fragment {

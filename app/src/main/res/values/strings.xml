@@ -183,4 +183,15 @@
     <string name="two_are_typing">{0} và {1} đang soạn tin nhắn...</string>
     <string name="one_and_others_are_typing">{0} và {1} người khác đang soạn tin nhắn...</string>
 
+    <!--Map-->
+    <string name="map_not_ready">Map Not Ready</string>
+    <string name="drag_melbourne">drag_melbourne</string>
+    <string name="flat">flat</string>
+    <string name="rotation">rotation</string>
+    <string name="clear_map">clear_map</string>
+    <string name="reset_map">reset_map</string>
+    <string name="default_info_window">default_info_window</string>
+    <string name="custom_info_contents">custom_info_contents</string>
+    <string name="custom_info_window">custom_info_window</string>
+
 </resources>

@@ -10,10 +10,8 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeUtils;
 import org.joda.time.DateTimeZone;
 
-import java.util.Calendar;
 import java.util.Date;
 
 import butterknife.BindView;
@@ -21,8 +19,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import vn.datsan.datsan.R;
 import vn.datsan.datsan.models.FriendlyMatch;
-import vn.datsan.datsan.serverdata.FriendlyMatchManager;
-import vn.datsan.datsan.serverdata.UserManager;
+import vn.datsan.datsan.serverdata.MatchService;
+import vn.datsan.datsan.serverdata.UserService;
 import vn.datsan.datsan.ui.customwidgets.Alert.SimpleAlert;
 import vn.datsan.datsan.utils.AppLog;
 
@@ -133,12 +131,12 @@ public class NewFriendlyMatchActivity extends SimpleActivity {
             return;
         FriendlyMatch friendlyMatch = new FriendlyMatch();
         friendlyMatch.setTitle(topicName.getText().toString());
-        friendlyMatch.setCreatorId(UserManager.getInstance().getUserInfo().getId());
-        friendlyMatch.setCreatorName(UserManager.getInstance().getUserInfo().getName());
+        friendlyMatch.setCreatorId(UserService.getInstance().getUserInfo().getId());
+        friendlyMatch.setCreatorName(UserService.getInstance().getUserInfo().getName());
         friendlyMatch.setStartTime(startDate.getMillis());
         friendlyMatch.setEndTime(endDate.getMillis());
         friendlyMatch.setFields(fieldName.getText().toString());
-        FriendlyMatchManager.getInstance().addMatch(friendlyMatch);
+        MatchService.getInstance().addMatch(friendlyMatch);
     }
 
     private boolean checkValidation() {

@@ -1,6 +1,5 @@
 package vn.datsan.datsan.serverdata.chat;
 
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -10,7 +9,6 @@ import com.google.firebase.database.ValueEventListener;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +22,7 @@ import vn.datsan.datsan.models.chat.Chat;
 import vn.datsan.datsan.models.chat.Member;
 import vn.datsan.datsan.models.chat.Message;
 import vn.datsan.datsan.serverdata.CallBack;
-import vn.datsan.datsan.serverdata.UserManager;
+import vn.datsan.datsan.serverdata.UserService;
 import vn.datsan.datsan.utils.AppConstants;
 import vn.datsan.datsan.utils.AppLog;
 
@@ -91,7 +89,7 @@ public class ChatService {
 
     public Chat createChatGroup(List<User> users) {
 
-        User me = UserManager.getInstance().getCurrentUser();
+        User me = UserService.getInstance().getCurrentUser();
         if (!users.contains(me)) {
             users.add(me);
         }
@@ -137,12 +135,12 @@ public class ChatService {
 
         for (final User user : users) {
 
-            UserManager.getInstance().getUserChatDatabaseRef(user.getId())
+            UserService.getInstance().getUserChatDatabaseRef(user.getId())
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
-                    AppLog.d(TAG, ":UserManager.getInstance().getUserChatDatabaseRef(userId):onDataChange:");
+                    AppLog.d(TAG, ":UserService.getInstance().getUserChatDatabaseRef(userId):onDataChange:");
 
                     List<String> currentChatIds = new ArrayList<>();
                     for (DataSnapshot data : dataSnapshot.getChildren()) {
@@ -260,7 +258,7 @@ public class ChatService {
      */
     public void deleteChat(String chatId) {
 
-        User currentUser = UserManager.getInstance().getCurrentUser();
+        User currentUser = UserService.getInstance().getCurrentUser();
         String userId = currentUser.getId();
 
         // NOT actually remove the chat, just:

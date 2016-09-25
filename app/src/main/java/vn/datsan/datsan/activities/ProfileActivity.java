@@ -12,7 +12,7 @@ import butterknife.ButterKnife;
 import vn.datsan.datsan.R;
 import vn.datsan.datsan.models.User;
 import vn.datsan.datsan.serverdata.CallBack;
-import vn.datsan.datsan.serverdata.UserManager;
+import vn.datsan.datsan.serverdata.UserService;
 import vn.datsan.datsan.ui.customwidgets.SimpleProgress;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -38,11 +38,11 @@ public class ProfileActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        if (UserManager.getInstance().getCurrentUser() == null) {
+        if (UserService.getInstance().getCurrentUser() == null) {
             final SimpleProgress progress = new SimpleProgress(ProfileActivity.this, null);
             progress.show();
 
-            UserManager.getInstance().getCurrentUserInfo(new CallBack.OnResultReceivedListener() {
+            UserService.getInstance().getCurrentUserInfo(new CallBack.OnResultReceivedListener() {
                 @Override
                 public void onResultReceived(Object result) {
                     progress.dismiss();

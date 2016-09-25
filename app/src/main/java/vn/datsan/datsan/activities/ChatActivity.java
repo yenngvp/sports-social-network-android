@@ -2,7 +2,6 @@ package vn.datsan.datsan.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -13,12 +12,9 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -39,19 +35,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import vn.datsan.datsan.R;
-import vn.datsan.datsan.models.ServerTime;
 import vn.datsan.datsan.models.User;
 import vn.datsan.datsan.models.chat.Chat;
 import vn.datsan.datsan.models.chat.Message;
 import vn.datsan.datsan.models.chat.MessageType;
 import vn.datsan.datsan.models.chat.TypingSignal;
 import vn.datsan.datsan.serverdata.CallBack;
-import vn.datsan.datsan.serverdata.ServerTimeService;
-import vn.datsan.datsan.serverdata.UserManager;
+import vn.datsan.datsan.serverdata.UserService;
 import vn.datsan.datsan.serverdata.chat.ChatService;
 import vn.datsan.datsan.serverdata.chat.MessageService;
 import vn.datsan.datsan.ui.adapters.ChatAdapter;
-import vn.datsan.datsan.ui.customwidgets.SimpleProgress;
 import vn.datsan.datsan.utils.AppConstants;
 import vn.datsan.datsan.utils.AppLog;
 
@@ -81,7 +74,7 @@ public class ChatActivity extends SimpleActivity {
     private volatile TypingSignal myTypingSignal;
     private volatile List<TypingSignal> incomingTypingSignals;
 
-    final User currentUser = UserManager.getInstance().getCurrentUser();
+    final User currentUser = UserService.getInstance().getCurrentUser();
 
     private static final Map<String, Boolean> messageDates = new HashMap<>();
 
@@ -354,7 +347,7 @@ public class ChatActivity extends SimpleActivity {
                     chat.setId(dataSnapshot.getKey());
 
                     // Current user has seen the chat, update the user with this
-                    UserManager.getInstance().getCurrentUserChatDatabaseRef(chat.getId()).setValue(chat);
+                    UserService.getInstance().getCurrentUserChatDatabaseRef(chat.getId()).setValue(chat);
                 }
 
                 @Override
@@ -378,7 +371,7 @@ public class ChatActivity extends SimpleActivity {
         }
 
         // Construct message
-        User currentUser = UserManager.getInstance().getCurrentUser();
+        User currentUser = UserService.getInstance().getCurrentUser();
         Message message = new Message(MessageType.TEXT_MESSAGE);
         message.setMessage(messageText);
         message.setUserId(currentUser.getId());

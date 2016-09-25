@@ -16,18 +16,18 @@ import vn.datsan.datsan.utils.AppLog;
 /**
  * Created by xuanpham on 7/29/16.
  */
-public class GroupManager {
-    private static final String TAG = FieldManager.class.getName();
-    private static GroupManager instance;
+public class GroupService {
+    private static final String TAG = FieldService.class.getName();
+    private static GroupService instance;
     private DatabaseReference groupDatabaseRef = FirebaseDatabase.getInstance().getReference(AppConstants.FIREBASE_GROUPS);
     private List<Group> userGroups;
 
-    public GroupManager() {
+    public GroupService() {
     }
 
-    public static GroupManager getInstance() {
+    public static GroupService getInstance() {
         if (instance == null) {
-            instance = new GroupManager();
+            instance = new GroupService();
         }
         return instance;
     }

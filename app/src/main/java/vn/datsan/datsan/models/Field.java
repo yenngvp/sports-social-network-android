@@ -3,20 +3,19 @@ package vn.datsan.datsan.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.firebase.database.Exclude;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import vn.datsan.datsan.search.interfaces.Searchable;
+import vn.datsan.datsan.ui.adapters.FlexListAdapter;
 import vn.datsan.datsan.utils.localization.VietnameseUnsignedTranslator;
 
 /**
  * Created by xuanpham on 6/20/16.
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class Field implements Searchable, Parcelable {
+public class Field implements Searchable, Parcelable, FlexListAdapter.ViewItem {
     private String id;
     private String name;
     private String address;
@@ -85,6 +84,41 @@ public class Field implements Searchable, Parcelable {
         source.put("address_unsigned", VietnameseUnsignedTranslator.getInstance().getTranslation(getAddress()));
 
         return source;
+    }
+
+    @Override
+    public String getItemId() {
+        return getId();
+    }
+
+    @Override
+    public String getImageUrl() {
+        return null;
+    }
+
+    @Override
+    public String getRowTitle() {
+        return getName();
+    }
+
+    @Override
+    public String getRowContent() {
+        return getAddress();
+    }
+
+    @Override
+    public String getRowNote() {
+        return null;
+    }
+
+    @Override
+    public String getRowBadge() {
+        return null;
+    }
+
+    @Override
+    public long getSortingValue() {
+        return 0;
     }
 
     public String getId() {

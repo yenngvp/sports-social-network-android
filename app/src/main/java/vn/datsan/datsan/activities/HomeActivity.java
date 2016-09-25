@@ -39,7 +39,7 @@ import vn.datsan.datsan.fragments.SportFieldFragment;
 import vn.datsan.datsan.models.User;
 import vn.datsan.datsan.search.AppSearch;
 import vn.datsan.datsan.serverdata.CallBack;
-import vn.datsan.datsan.serverdata.UserManager;
+import vn.datsan.datsan.serverdata.UserService;
 import vn.datsan.datsan.ui.appviews.LoginPopup;
 import vn.datsan.datsan.ui.appviews.MaterialSearchView;
 import vn.datsan.datsan.ui.customwidgets.SimpleProgress;
@@ -295,6 +295,8 @@ public class HomeActivity extends AppCompatActivity implements
 
         } else if (id == R.id.nav_send) {
 
+        } else if (id == R.id.map_demo) {
+            startActivity(new Intent(HomeActivity.this, MapMarkerActivity.class));
         }
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -324,16 +326,16 @@ public class HomeActivity extends AppCompatActivity implements
     public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
         AppLog.log(AppLog.LogType.LOG_ERROR, TAG, "AuthChanged");
         if (firebaseAuth.getCurrentUser() != null) {
-            UserManager.getInstance().getCurrentUserInfo(new CallBack.OnResultReceivedListener() {
+            UserService.getInstance().getCurrentUserInfo(new CallBack.OnResultReceivedListener() {
                 @Override
                 public void onResultReceived(Object result) {
-                    UserManager.getInstance().setCurrentUser((User) result);
+                    UserService.getInstance().setCurrentUser((User) result);
 
                     // TODO: Wait until here before "Dismiss spinner"?
                 }
             });
         } else {
-            UserManager.getInstance().setCurrentUser(null);
+            UserService.getInstance().setCurrentUser(null);
         }
 
         reloadView();

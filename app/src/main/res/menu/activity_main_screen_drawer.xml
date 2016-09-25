@@ -17,6 +17,10 @@
             android:id="@+id/nav_manage"
             android:icon="@drawable/ic_menu_manage"
             android:title="Cài đặt" />
+        <item
+            android:id="@+id/map_demo"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Map" />
     </group>
 
     <item android:title="Communicate">
