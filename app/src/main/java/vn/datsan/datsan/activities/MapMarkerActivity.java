@@ -130,15 +130,15 @@ public class MapMarkerActivity extends AppCompatActivity implements
             int badge;
             // Use the equals() method on a Marker to check for equals.  Do not use ==.
             if (marker.equals(mBrisbane)) {
-                badge = R.drawable.badge_qld;
+                badge = R.drawable.arrow;
             } else if (marker.equals(mAdelaide)) {
-                badge = R.drawable.badge_sa;
+                badge = R.drawable.football_field;
             } else if (marker.equals(mSydney)) {
-                badge = R.drawable.badge_nsw;
+                badge = R.drawable.football_field;
             } else if (marker.equals(mMelbourne)) {
-                badge = R.drawable.badge_victoria;
+                badge = R.drawable.football_field;
             } else if (marker.equals(mPerth)) {
-                badge = R.drawable.badge_wa;
+                badge = R.drawable.football_field;
             } else {
                 // Passing 0 to setImageResource will clear the image view.
                 badge = 0;
