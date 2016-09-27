@@ -6,4 +6,5 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.HomeActivity"
-    map:cameraZoom="14"/>
+    map:cameraZoom="14"
+    tools:layout="@layout/fragment_sport_field" />

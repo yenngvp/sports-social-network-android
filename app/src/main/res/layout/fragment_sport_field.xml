@@ -8,8 +8,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <include
-            layout="@layout/mapview_layout"/>
+        <!--<include-->
+            <!--layout="@layout/mapview_layout"/>-->
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:map="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".activities.HomeActivity"
+            map:cameraZoom="14"
+            tools:layout="@layout/fragment_sport_field" />
 
         <RelativeLayout
             android:id="@+id/searchResultView"
@@ -40,5 +50,12 @@
         </RelativeLayout>
     </RelativeLayout>
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/currentLocationFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_my_location_48px" />
 
 </FrameLayout>

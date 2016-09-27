@@ -1,9 +1,15 @@
 package vn.datsan.datsan.fragments;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +20,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Toast;
+import android.location.Location;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -29,8 +36,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.location.LocationServices;
+
 import java.util.List;
 
+import butterknife.OnClick;
 import vn.datsan.datsan.R;
 import vn.datsan.datsan.activities.FieldDetailActivity;
 import vn.datsan.datsan.models.Field;
@@ -40,6 +54,7 @@ import vn.datsan.datsan.ui.adapters.DividerItemDecoration;
 import vn.datsan.datsan.ui.adapters.FlexListAdapter;
 import vn.datsan.datsan.ui.adapters.RecyclerTouchListener;
 import vn.datsan.datsan.ui.customwidgets.Alert.SimpleAlert;
+import vn.datsan.datsan.utils.AppLog;
 
 /**
  * Created by xuanpham on 7/25/16.
@@ -52,9 +67,24 @@ public class SportFieldFragment extends Fragment implements
         SeekBar.OnSeekBarChangeListener,
         OnMapReadyCallback,
         OnInfoWindowLongClickListener,
-        OnInfoWindowCloseListener {
+        OnInfoWindowCloseListener,
+        ConnectionCallbacks,
+        OnConnectionFailedListener {
+
+    private static final String TAG = SportFieldFragment.class.getSimpleName();
 
     private GoogleMap mMap;
+
+    /**
+     * Provides the entry point to Google Play services.
+     */
+    private GoogleApiClient mGoogleApiClient;
+
+    /**
+     * Represents a geographical location.
+     */
+    private Location mLastLocation;
+
     private FlexListAdapter adapter;
     private View searchResultView;
 
@@ -119,6 +149,18 @@ public class SportFieldFragment extends Fragment implements
                 searchResultView.setVisibility(View.GONE);
             }
         });
+
+        buildGoogleApiClient();
+
+        FloatingActionButton currentLocationFab = (FloatingActionButton) view.findViewById(R.id.currentLocationFab);
+        currentLocationFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AppLog.d(TAG, "Request my last known location");
+                requestCurrentLocation();
+            }
+        });
+
         return view;
     }
 
@@ -145,6 +187,31 @@ public class SportFieldFragment extends Fragment implements
         mListener = null;
     }
 
+    /**
+     * Builds a GoogleApiClient. Uses the addApi() method to request the LocationServices API.
+     */
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+    }
+
     @Override
     public void onInfoWindowClick(Marker marker) {
 //        if (marker.getData() != null && marker.getData() instanceof Field) {
@@ -159,22 +226,27 @@ public class SportFieldFragment extends Fragment implements
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(10.777098, 106.695487);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Quan 1, tp.HCM"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-        mMap.setOnInfoWindowClickListener(this);
+        if (mLastLocation != null) {
+            LatLng currentLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+            mMap.addMarker(new MarkerOptions().position(currentLocation).title("Current Location"));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
+            mMap.setOnInfoWindowClickListener(this);
+        }
 
         List<Field> fields = FieldService.getInstance().getFields(new CallBack.OnResultReceivedListener() {
             @Override
             public void onResultReceived(Object result) {
                 if (result != null) {
                     List<Field> fields = (List<Field>) result;
-                    addMarkers(fields);
+                    if (fields != null) {
+                        addMarkers(fields);
+                    }
                 }
             }
         });
-
-        addMarkers(fields);
+        if (fields != null) {
+            addMarkers(fields);
+        }
     }
 
     private void addMarkers(List<Field> fieldList) {
@@ -262,5 +334,61 @@ public class SportFieldFragment extends Fragment implements
 
         searchResultView.setVisibility(View.VISIBLE);
         adapter.update(fields);
+    }
+
+    /**
+     * Runs when a GoogleApiClient object successfully connects.
+     */
+    @Override
+    public void onConnected(Bundle connectionHint) {
+        requestCurrentLocation();
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        // Refer to the javadoc for ConnectionResult to see what error codes might be returned in
+        AppLog.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
+    }
+
+
+    @Override
+    public void onConnectionSuspended(int cause) {
+        // The connection to Google Play services was lost for some reason. We call connect() to
+        // attempt to re-establish the connection.
+        AppLog.i(TAG, "Connection suspended");
+        mGoogleApiClient.connect();
+    }
+
+    private void requestCurrentLocation() {
+        // Provides a simple way of getting a device's location and is well suited for
+        // applications that do not require a fine-grained location and that do not need location
+        // updates. Gets the best and most recent location currently available, which may be null
+        // in rare cases when a location is not available.
+        if (ActivityCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (mLastLocation != null) {
+            AppLog.d(TAG, String.format("Location (%s, %s)", mLastLocation.getLatitude(), mLastLocation.getLongitude()));
+
+            LatLng currentLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+            mMap.addMarker(new MarkerOptions()
+                    .position(currentLocation)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.current_location))
+                    .title("Current Location"));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
+            mMap.setOnInfoWindowClickListener(this);
+        } else {
+            Toast.makeText(getActivity(), R.string.no_location_detected, Toast.LENGTH_LONG).show();
+        }
     }
 }

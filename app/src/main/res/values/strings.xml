@@ -193,5 +193,7 @@
     <string name="default_info_window">default_info_window</string>
     <string name="custom_info_contents">custom_info_contents</string>
     <string name="custom_info_window">custom_info_window</string>
+    <string name="no_location_detected">Không xác định được vị trí hiện tại!</string>
+
 
 </resources>
