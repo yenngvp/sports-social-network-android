@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    tools:context=".activities.ChatActivity">
+    tools:context=".chat.ui.activities.ChatActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

@@ -1,4 +1,4 @@
-package vn.datsan.datsan.activities;
+package vn.datsan.datsan.chat.ui.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -35,15 +35,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import vn.datsan.datsan.R;
+import vn.datsan.datsan.activities.SimpleActivity;
 import vn.datsan.datsan.models.User;
-import vn.datsan.datsan.models.chat.Chat;
-import vn.datsan.datsan.models.chat.Message;
-import vn.datsan.datsan.models.chat.MessageType;
-import vn.datsan.datsan.models.chat.TypingSignal;
+import vn.datsan.datsan.chat.models.Chat;
+import vn.datsan.datsan.chat.models.Message;
+import vn.datsan.datsan.chat.models.MessageType;
+import vn.datsan.datsan.chat.models.TypingSignal;
 import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.serverdata.UserService;
-import vn.datsan.datsan.serverdata.chat.ChatService;
-import vn.datsan.datsan.serverdata.chat.MessageService;
+import vn.datsan.datsan.chat.services.ChatService;
+import vn.datsan.datsan.chat.services.MessageService;
 import vn.datsan.datsan.ui.adapters.ChatAdapter;
 import vn.datsan.datsan.utils.AppConstants;
 import vn.datsan.datsan.utils.AppLog;

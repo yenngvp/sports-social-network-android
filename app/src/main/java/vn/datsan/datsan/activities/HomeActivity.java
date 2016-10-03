@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vn.datsan.datsan.R;
+import vn.datsan.datsan.chat.ui.activities.ChatRecentActivity;
 import vn.datsan.datsan.fragments.SportClubFragment;
 import vn.datsan.datsan.fragments.FriendlyMatchFragment;
 import vn.datsan.datsan.fragments.SportFieldFragment;
@@ -41,7 +42,6 @@ import vn.datsan.datsan.search.AppSearch;
 import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.serverdata.UserService;
 import vn.datsan.datsan.ui.appviews.LoginPopup;
-import vn.datsan.datsan.ui.appviews.MaterialSearchView;
 import vn.datsan.datsan.ui.customwidgets.SimpleProgress;
 import vn.datsan.datsan.utils.AppLog;
 
@@ -52,7 +52,6 @@ public class HomeActivity extends AppCompatActivity implements
     private TextView userName;
     private Button loginLogout;
     LoginPopup loginPopup;
-    MaterialSearchView searchView;
     TabLayout tabs;
     ViewPager viewPager;
     SportFieldFragment sportFieldFragment;
@@ -238,7 +237,6 @@ public class HomeActivity extends AppCompatActivity implements
         return true;
     }
 
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         AppLog.log(AppLog.LogType.LOG_ERROR, "Tag", "Click");
         int id = item.getItemId();

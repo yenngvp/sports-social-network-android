@@ -1,4 +1,4 @@
-package vn.datsan.datsan.activities;
+package vn.datsan.datsan.chat.ui.activities;
 
 import android.app.Activity;
 import android.content.Context;
@@ -30,12 +30,13 @@ import butterknife.ButterKnife;
 import io.searchbox.client.JestResult;
 import io.searchbox.core.SearchResult;
 import vn.datsan.datsan.R;
+import vn.datsan.datsan.activities.SimpleActivity;
 import vn.datsan.datsan.models.User;
-import vn.datsan.datsan.models.chat.Chat;
+import vn.datsan.datsan.chat.models.Chat;
 import vn.datsan.datsan.search.AppSearch;
 import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.serverdata.UserService;
-import vn.datsan.datsan.serverdata.chat.ChatService;
+import vn.datsan.datsan.chat.services.ChatService;
 import vn.datsan.datsan.ui.appviews.ContactsCompletionView;
 import vn.datsan.datsan.ui.customwidgets.SimpleProgress;
 import vn.datsan.datsan.utils.AppConstants;

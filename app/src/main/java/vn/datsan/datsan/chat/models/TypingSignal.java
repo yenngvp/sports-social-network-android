@@ -1,9 +1,6 @@
-package vn.datsan.datsan.models.chat;
+package vn.datsan.datsan.chat.models;
 
 import com.google.firebase.database.Exclude;
-import com.google.firebase.database.ServerValue;
-
-import java.util.Map;
 
 /**
  * Created by yennguyen on 7/31/16.

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
-import vn.datsan.datsan.models.chat.Member;
+import vn.datsan.datsan.chat.models.Member;
 import vn.datsan.datsan.search.interfaces.Searchable;
 import vn.datsan.datsan.ui.adapters.FlexListAdapter;
 import vn.datsan.datsan.utils.localization.VietnameseUnsignedTranslator;

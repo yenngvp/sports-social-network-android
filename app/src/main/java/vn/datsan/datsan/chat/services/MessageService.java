@@ -1,4 +1,4 @@
-package vn.datsan.datsan.serverdata.chat;
+package vn.datsan.datsan.chat.services;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -15,9 +15,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import vn.datsan.datsan.models.chat.Chat;
-import vn.datsan.datsan.models.chat.Message;
-import vn.datsan.datsan.models.chat.TypingSignal;
+import vn.datsan.datsan.chat.models.Chat;
+import vn.datsan.datsan.chat.models.Message;
+import vn.datsan.datsan.chat.models.TypingSignal;
 import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.utils.AppConstants;
 import vn.datsan.datsan.utils.AppLog;

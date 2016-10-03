@@ -1,4 +1,4 @@
-package vn.datsan.datsan.activities;
+package vn.datsan.datsan.chat.ui.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -28,11 +28,13 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import vn.datsan.datsan.R;
+import vn.datsan.datsan.activities.HomeActivity;
+import vn.datsan.datsan.activities.SimpleActivity;
 import vn.datsan.datsan.models.User;
-import vn.datsan.datsan.models.chat.Chat;
+import vn.datsan.datsan.chat.models.Chat;
 import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.serverdata.UserService;
-import vn.datsan.datsan.serverdata.chat.ChatService;
+import vn.datsan.datsan.chat.services.ChatService;
 import vn.datsan.datsan.ui.adapters.DividerItemDecoration;
 import vn.datsan.datsan.ui.adapters.FlexListAdapter;
 import vn.datsan.datsan.ui.adapters.RecyclerTouchListener;

@@ -1,4 +1,4 @@
-package vn.datsan.datsan.models.chat;
+package vn.datsan.datsan.chat.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;

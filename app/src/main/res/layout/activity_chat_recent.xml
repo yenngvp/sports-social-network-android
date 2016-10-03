@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context=".activities.ChatRecentActivity">
+    tools:context=".chat.ui.activities.ChatRecentActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"

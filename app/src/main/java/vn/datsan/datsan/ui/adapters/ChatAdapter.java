@@ -14,8 +14,7 @@ import java.util.List;
 
 import vn.datsan.datsan.R;
 
-import vn.datsan.datsan.models.chat.Message;
-import vn.datsan.datsan.utils.AppUtils;
+import vn.datsan.datsan.chat.models.Message;
 
 /**
  * Created by yennguyen on 8/28/16.

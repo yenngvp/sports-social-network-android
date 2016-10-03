@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context="vn.datsan.datsan.activities.CreateChatActivity">
+    tools:context=".chat.ui.activities.CreateChatActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"

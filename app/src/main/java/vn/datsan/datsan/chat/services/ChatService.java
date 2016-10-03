@@ -1,4 +1,4 @@
-package vn.datsan.datsan.serverdata.chat;
+package vn.datsan.datsan.chat.services;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -18,9 +18,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 import vn.datsan.datsan.models.Group;
 import vn.datsan.datsan.models.User;
 import vn.datsan.datsan.models.UserRole;
-import vn.datsan.datsan.models.chat.Chat;
-import vn.datsan.datsan.models.chat.Member;
-import vn.datsan.datsan.models.chat.Message;
+import vn.datsan.datsan.chat.models.Chat;
+import vn.datsan.datsan.chat.models.Member;
+import vn.datsan.datsan.chat.models.Message;
 import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.serverdata.UserService;
 import vn.datsan.datsan.utils.AppConstants;

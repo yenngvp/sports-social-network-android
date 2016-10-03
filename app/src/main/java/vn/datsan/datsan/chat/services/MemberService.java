@@ -1,4 +1,4 @@
-package vn.datsan.datsan.serverdata.chat;
+package vn.datsan.datsan.chat.services;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -9,7 +9,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import vn.datsan.datsan.models.chat.Member;
+import vn.datsan.datsan.chat.models.Member;
 import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.utils.AppConstants;
 import vn.datsan.datsan.utils.AppLog;

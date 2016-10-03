@@ -1,4 +1,4 @@
-package vn.datsan.datsan.models.chat;
+package vn.datsan.datsan.chat.models;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

@@ -1,4 +1,4 @@
-package vn.datsan.datsan.models.chat;
+package vn.datsan.datsan.chat.models;
 
 /**
  * Created by yennguyen on 7/31/16.

@@ -2,7 +2,7 @@ package vn.datsan.datsan.utils;
 
 import java.util.Comparator;
 
-import vn.datsan.datsan.models.chat.Chat;
+import vn.datsan.datsan.chat.models.Chat;
 
 /**
  * Created by yennguyen on 9/11/16.
