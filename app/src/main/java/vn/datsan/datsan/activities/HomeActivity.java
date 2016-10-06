@@ -32,6 +32,7 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.ButterKnife;
 import vn.datsan.datsan.R;
 import vn.datsan.datsan.chat.ui.activities.ChatRecentActivity;
 import vn.datsan.datsan.fragments.SportClubFragment;
@@ -62,7 +63,7 @@ public class HomeActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_home);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
-//        ButterKnife.bind(this);
+        ButterKnife.bind(this);
         FirebaseAuth.getInstance().addAuthStateListener(this);
 
         FacebookSdk.sdkInitialize(this.getApplicationContext());
@@ -76,23 +77,6 @@ public class HomeActivity extends AppCompatActivity implements
         // Set Tabs inside Toolbar
         tabs = (TabLayout) findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
-
-        FloatingActionButton chatFab = (FloatingActionButton) findViewById(R.id.chatFab);
-        chatFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                if (currentUser == null || currentUser.isAnonymous()) {
-                    loginPopup.show();
-                } else {
-                    // Show chat history
-                    Intent intent = new Intent(HomeActivity.this, ChatRecentActivity.class);
-                    startActivity(intent);
-                }
-            }
-        });
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -234,6 +218,14 @@ public class HomeActivity extends AppCompatActivity implements
             }
         });
 
+        MenuItem chatMenuItem = menu.findItem(R.id.action_chat);
+        chatMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                goToChat();
+                return true;
+            }
+        });
         return true;
     }
 
@@ -291,15 +283,26 @@ public class HomeActivity extends AppCompatActivity implements
 
         } else if (id == R.id.nav_share) {
 
-        } else if (id == R.id.nav_send) {
-
         } else if (id == R.id.map_demo) {
             startActivity(new Intent(HomeActivity.this, MapMarkerActivity.class));
+        } else if (id == R.id.nav_send) {
+            goToChat();
         }
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void goToChat() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null || currentUser.isAnonymous()) {
+            loginPopup.show();
+        } else {
+            // Show chat history
+            Intent intent = new Intent(HomeActivity.this, ChatRecentActivity.class);
+            startActivity(intent);
+        }
     }
 
     public View.OnClickListener onLoginLogoutBtnClicked = new View.OnClickListener() {

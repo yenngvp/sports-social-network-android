@@ -10,7 +10,7 @@ import vn.datsan.datsan.BuildConfig;
 /**
  * Created by yennguyen on 10/06/2016.
  */
-public class AppConstants {
+public final class AppConstants {
 
     /**
      * AppConstants for Firebase URL
@@ -48,8 +48,11 @@ public class AppConstants {
 
     public static final String GROUP_NAME_SEPARATOR = ", ";
 
-    public static final int TYPING_SIGNAL_KEEP_ALIVE_MILLIS = 3000; // milliseconds
-    public static final int TYPING_SIGNAL_TIMEOUT_MILLIS = 5000;   // milliseconds
+    public static final int TYPING_SIGNAL_KEEP_ALIVE_MILLIS = 2000; // milliseconds
+    public static final int TYPING_SIGNAL_TIMEOUT_MILLIS = 3000;   // milliseconds
 
     public static final int MAX_MEMBERS_IN_A_CHAT = 50;
+
+    public static final String TODAY_SERVER_TIME = "TODAY_SERVER_TIME";
+
 }

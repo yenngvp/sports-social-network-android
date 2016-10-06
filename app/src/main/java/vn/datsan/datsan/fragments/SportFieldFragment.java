@@ -42,7 +42,10 @@ import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationServices;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.OnClick;
 import vn.datsan.datsan.R;
@@ -74,6 +77,10 @@ public class SportFieldFragment extends Fragment implements
     private static final String TAG = SportFieldFragment.class.getSimpleName();
 
     private GoogleMap mMap;
+
+    private Map<String, Marker> markers;
+
+    private List<Field> fields;
 
     /**
      * Provides the entry point to Google Play services.
@@ -214,26 +221,53 @@ public class SportFieldFragment extends Fragment implements
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-//        if (marker.getData() != null && marker.getData() instanceof Field) {
-//            Intent intent = new Intent(getActivity(), FieldDetailActivity.class);
-//            intent.putExtra("data", (Field) marker.getData());
-//            startActivity(intent);
-//        }
+        Field field = getFieldFromMaker(marker);
+        if (field == null) return;
+
+        Intent intent = new Intent(getActivity(), FieldDetailActivity.class);
+        intent.putExtra("data", field);
+        startActivity(intent);
+    }
+
+    private Field getFieldFromMaker(Marker marker) {
+        if (fields == null || !markers.containsValue(marker)) {
+            return null;
+        }
+
+        String fieldId = null;
+        for (Map.Entry<String, Marker> entry : markers.entrySet()) {
+            if (entry.equals(marker)) {
+                fieldId = entry.getKey();
+                break;
+            }
+        }
+
+        for (Field field : fields) {
+            if (field.getId().equals(fieldId)) {
+                return field;
+            }
+        }
+
+        return null;
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        // We will provide our own zoom controls.
+        mMap.getUiSettings().setZoomControlsEnabled(false);
+        mMap.getUiSettings().setMyLocationButtonEnabled(false);
+
         // Add a marker in Sydney and move the camera
         if (mLastLocation != null) {
             LatLng currentLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
             mMap.addMarker(new MarkerOptions().position(currentLocation).title("Current Location"));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 20));
             mMap.setOnInfoWindowClickListener(this);
         }
 
-        List<Field> fields = FieldService.getInstance().getFields(new CallBack.OnResultReceivedListener() {
+        fields = FieldService.getInstance().getFields(new CallBack.OnResultReceivedListener() {
             @Override
             public void onResultReceived(Object result) {
                 if (result != null) {
@@ -250,18 +284,22 @@ public class SportFieldFragment extends Fragment implements
     }
 
     private void addMarkers(List<Field> fieldList) {
+        if (markers == null) {
+            markers = new HashMap<>();
+        }
         for (Field field : fieldList) {
             String location = field.getLocation();
             if (location != null && location.length() > 6) {
                 String arr[] = location.split(",");
-                MarkerOptions marker = new MarkerOptions()
+                MarkerOptions markerOptions = new MarkerOptions()
                         .position(new LatLng(Double.parseDouble(arr[0]), Double.parseDouble(arr[1])))
                         .title(field.getName())
                         .snippet(field.getAddress())
                         .snippet("Suc chua: 16.300")
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.football_field))
                         .infoWindowAnchor(0.5f, 0.5f);
-                mMap.addMarker(marker);
+                Marker marker = mMap.addMarker(markerOptions);
+                markers.put(field.getId(), marker);
             }
         }
     }
@@ -376,6 +414,7 @@ public class SportFieldFragment extends Fragment implements
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
+        Toast.makeText(getActivity(), "Requesting current location...", Toast.LENGTH_LONG).show();
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (mLastLocation != null) {
             AppLog.d(TAG, String.format("Location (%s, %s)", mLastLocation.getLatitude(), mLastLocation.getLongitude()));

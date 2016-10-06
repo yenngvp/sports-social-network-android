@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:src="@drawable/btn_sent_msg"
+            android:src="@drawable/ic_menu_send"
             android:background="@null"
             android:textColor="@color/background_material_light"/>
 

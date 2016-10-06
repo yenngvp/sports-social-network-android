@@ -2,6 +2,7 @@ package vn.datsan.datsan;
 
 
 import android.content.Context;
+import android.provider.SyncStateContract;
 import android.support.multidex.MultiDex;
 
 import com.facebook.FacebookSdk;
@@ -16,6 +17,7 @@ import vn.datsan.datsan.models.ServerTime;
 import vn.datsan.datsan.search.ElasticsearchService;
 import vn.datsan.datsan.serverdata.CallBack;
 import vn.datsan.datsan.serverdata.ServerTimeService;
+import vn.datsan.datsan.utils.AppConstants;
 import vn.datsan.datsan.utils.AppLog;
 import vn.datsan.datsan.utils.AppUtils;
 import vn.datsan.datsan.utils.MyActivityLifecycleHandler;
@@ -44,7 +46,7 @@ public class SocialSportApplication extends android.app.Application {
             FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
             // Get server time
-            String timeServerKey = "TODAY_SERVER_TIME";
+            final String timeServerKey = AppConstants.TODAY_SERVER_TIME;
             ServerTimeService.getInstance().getServerTime(timeServerKey, new CallBack.OnResultReceivedListener() {
                 @Override
                 public void onResultReceived(Object result) {
@@ -55,6 +57,7 @@ public class SocialSportApplication extends android.app.Application {
                     DateTime dateTime = new DateTime(serverTime.getTodayAtMidnightMillis(),
                             DateTimeZone.forOffsetHours(AppUtils.CURRENT_TIMEZONE_OFFSET_HOUR));
                     ServerTimeService.todayAtMidnightServerTime = dateTime;
+                    AppLog.i(timeServerKey, dateTime.toString());
                 }
             });
         }
