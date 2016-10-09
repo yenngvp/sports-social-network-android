@@ -93,7 +93,7 @@ public class FriendlyMatchFragment extends Fragment {
     }
 
     private void populateData() {
-        MatchService.getInstance().getMaths(new CallBack.OnResultReceivedListener() {
+        MatchService.getInstance().getMatches(new CallBack.OnResultReceivedListener() {
             @Override
             public void onResultReceived(Object result) {
                 matches = (List<FriendlyMatch> )  result;

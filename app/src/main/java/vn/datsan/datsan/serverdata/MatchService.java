@@ -58,7 +58,7 @@ public class MatchService {
         });
     }
 
-    public List<FriendlyMatch> getMaths(final CallBack.OnResultReceivedListener callBack) {
+    public List<FriendlyMatch> getMatches(final CallBack.OnResultReceivedListener callBack) {
 
         if (friendlyMatches != null && !friendlyMatches.isEmpty()) {
             return friendlyMatches;

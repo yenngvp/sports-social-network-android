@@ -57,6 +57,7 @@ import vn.datsan.datsan.ui.adapters.DividerItemDecoration;
 import vn.datsan.datsan.ui.adapters.FlexListAdapter;
 import vn.datsan.datsan.ui.adapters.RecyclerTouchListener;
 import vn.datsan.datsan.ui.customwidgets.Alert.SimpleAlert;
+import vn.datsan.datsan.utils.AppConstants;
 import vn.datsan.datsan.utils.AppLog;
 
 /**
@@ -267,18 +268,20 @@ public class SportFieldFragment extends Fragment implements
             mMap.setOnInfoWindowClickListener(this);
         }
 
-        fields = FieldService.getInstance().getFields(new CallBack.OnResultReceivedListener() {
-            @Override
-            public void onResultReceived(Object result) {
-                if (result != null) {
-                    List<Field> fields = (List<Field>) result;
-                    if (fields != null) {
-                        addMarkers(fields);
+        fields = FieldService.getInstance().getFields();
+        if (fields == null) {
+            FieldService.getInstance().getFields(new CallBack.OnResultReceivedListener() {
+                @Override
+                public void onResultReceived(Object result) {
+                    if (result != null) {
+                        List<Field> fields = (List<Field>) result;
+                        if (fields != null) {
+                            addMarkers(fields);
+                        }
                     }
                 }
-            }
-        });
-        if (fields != null) {
+            });
+        } else {
             addMarkers(fields);
         }
     }
@@ -295,7 +298,6 @@ public class SportFieldFragment extends Fragment implements
                         .position(new LatLng(Double.parseDouble(arr[0]), Double.parseDouble(arr[1])))
                         .title(field.getName())
                         .snippet(field.getAddress())
-                        .snippet("Suc chua: 16.300")
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.football_field))
                         .infoWindowAnchor(0.5f, 0.5f);
                 Marker marker = mMap.addMarker(markerOptions);
@@ -398,6 +400,7 @@ public class SportFieldFragment extends Fragment implements
     }
 
     private void requestCurrentLocation() {
+
         // Provides a simple way of getting a device's location and is well suited for
         // applications that do not require a fine-grained location and that do not need location
         // updates. Gets the best and most recent location currently available, which may be null

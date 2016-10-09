@@ -87,7 +87,7 @@ public class FieldSearchFragment extends Fragment {
     }
 
     private void populateData() {
-        List<Field> fieldList = FieldService.getInstance().getFields(null);
+        List<Field> fieldList = FieldService.getInstance().getFields();
         if (fieldList != null) {
             adapter.update(fieldList);
         }

@@ -55,4 +55,7 @@ public final class AppConstants {
 
     public static final String TODAY_SERVER_TIME = "TODAY_SERVER_TIME";
 
+    // Location defaulted to UBND Quan 1, TpHCM
+    public static final double LOCATION_DEFAULT_LAT = 10.780593;
+    public static final double LOCATION_DEFAULT_LON = 106.699299;
 }

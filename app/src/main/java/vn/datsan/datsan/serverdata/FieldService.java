@@ -64,11 +64,11 @@ public class FieldService {
         });
     }
 
-    public List<Field> getFields(final CallBack.OnResultReceivedListener callBack) {
+    public List<Field> getFields() {
+        return fields;
+    }
 
-        if (fields != null && !fields.isEmpty()) {
-            return fields;
-        }
+    public void getFields(final CallBack.OnResultReceivedListener callBack) {
 
         fieldDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -89,7 +89,5 @@ public class FieldService {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
-
-        return fields;
     }
 }
