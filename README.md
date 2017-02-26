@@ -1,13 +1,18 @@
 # README #
 
 
-### Repository for Datsan - Android ###
+### Repository of Sports Social Network - Android App ###
 
-* App dành cho Android tablet và phone
-* Version 0.1
-* Quản lý đặt sân đá banh và xây dựng cộng đồng chơi thể thao ở Việt Nam
+* Targeted devices: Android tablet and phone
+* Version 0.5
+* Project goals:
+** Sports Social Network is a real time social network for hobby football players and teams to book a football fields easily. The booking information for a field is interacted in real time and may share live book status to public network. Users can searches nearby football fields map on very smart a UI/UX app.
+** Whenever a booking made a notification is sent out for all members of the team and the field owner, and whenever the booking cancelled a message is also broadcasted to other teams to take the chance of booking.
+** It's a team communication app for hobby football players supports messaging, photo and video sharing. The app supports individual player to search for nearby team to ask to join to play and vice versus.
+** The sport community may send a challenge invite to other teams for a games and use the game result to record and calculate the team's ranking in the social of sporting teams.
 
-### Thành viên ###
+
+### Members ###
 
 * Yên Nguyễn
 * Công Lê
