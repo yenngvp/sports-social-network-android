@@ -25,3 +25,6 @@
 
 ### Firebase project ###
 * https://console.firebase.google.com/project/project-4260171669835038324/overview
+
+### LICENSE
+The GNU General Public License v3.0: https://www.gnu.org/licenses/gpl-3.0.en.html
