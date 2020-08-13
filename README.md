@@ -7,7 +7,7 @@
 * Version 0.5
 * Project goals:
 
-1. Sports Social Network is a real time social network for hobby football players and teams to book a football fields easily. The booking information for a field is interacted in real time and may share live booking status to the public network. Users can searches for nearby football fields on map on a very smart UI/UX app.
+1. Sports Social Network is a sports social network for football players and teams. Player and team could make a court reservation via the app. The booking information for a court is interacted in real time and may share live booking status to the public network. Users can searches for nearby football fields on map on a very smart UI/UX app.
 2. Whenever a booking made a notification is sent out for all members of the team and the field owner and whenever the booking cancelled a message is also broadcasted to other teams to take another chance of booking.
 3. It's a team communication app for hobby football players supports messaging, photo and video sharing. The app supports individual player to search for nearby team to ask to join to play and vice versus.
 4. The sport community may send a challenge invite to other teams for a games and use the game result to record and calculate the team's ranking in the social of sporting teams.
